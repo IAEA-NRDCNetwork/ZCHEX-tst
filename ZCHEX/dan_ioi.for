@@ -80,7 +80,7 @@ C----   LENFLD: length of fields in code string
 
       RETURN
 
-C---- ERROR OPENING DICTIONARY
+C---- ERROR Opening DICTIONARY
   805 IERR = 6
       CALL DANERROR(NUM,IERR)
       RETURN 1
