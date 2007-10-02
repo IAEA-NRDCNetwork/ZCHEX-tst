@@ -1,0 +1,53 @@
+TRANS             E000   20050809                                 10000  0    0 
+ENTRY            E1943   20050731                                 E1943  0    1 
+SUBENT        E1943001   20050731                                 E1943  1    1 
+BIB                  9         13                                 E1943  1    2 
+TITLE      Angular distributions of protons from the alpha        E1943  1    3 
+           particle bombardment of 10B, 14N, 16O and 20Ne         E1943  1    4 
+AUTHOR     (H.Yamaguchi)                                          E1943  1    5 
+INSTITUTE  (2JPNTOK) Institute for Nuclear Study                  E1943  1    6 
+REFERENCE  (J,PTP,16,(4),583,196104) Main reference               E1943  1    7 
+           (R,INS-J-35,196012) H.Yamaguchi+, Numerical data       E1943  1    8 
+REL-REF    (N,E1942001,I.Nonaka+,J,JPJ,14,(10),1260,195910)       E1943  1    9 
+           Details of scattering chamber given                    E1943  1   10 
+PART-DET   (P)                                                    E1943  1   11 
+FACILITY   (CYCLO,2JPNTOK) Institute for Nuclear Study            E1943  1   12 
+ERR-ANALYS The absolute value of the beam energy is in accuracy   E1943  1   13 
+           of a few %.                                            E1943  1   14 
+HISTORY    (20050722C)                                            E1943  1   15 
+ENDBIB              13          0                                 E1943  1   16 
+COMMON               1          3                                 E1943  1   17 
+EN-RSL                                                            E1943  1   18 
+PER-CENT                                                          E1943  1   19 
+ 0.5                                                              E1943  1   20 
+ENDCOMMON            3          0                                 E1943  1   21 
+ENDSUBENT           20          0                                 E1943  199999 
+SUBENT        E1943003   20050731                                 E1943  3    1 
+BIB                  5          9                                 E1943  3    2 
+REACTION   (7-N-14(A,P)8-O-17,PAR,SIG)                            E1943  3    3 
+EN-SEC     (E-EXC,8-O-17)                                         E1943  3    4 
+LEVEL-PROP ((1.) 8-O-17,E-LVL=0.0,SPIN=2.5,PARITY=+1.)            E1943  3    5 
+           ((2.) 8-O-17,E-LVL=0.871,SPIN=0.5,PARITY=+1.)          E1943  3    6 
+           ((3.) 8-O-17,E-LVL=3.058,SPIN=0.5,PARITY=-1.)          E1943  3    7 
+           ((4.) 8-O-17,E-LVL=3.846,SPIN=3.5,PARITY=-1.)          E1943  3    8 
+SAMPLE     - Chemical-form of target is element. 99% N2           E1943  3    9 
+           - Target-thickness: 39 cm Hg                           E1943  3   10 
+STATUS     (TABLE) Data taken from Table II, p585 in reference    E1943  3   11 
+ENDBIB               9          0                                 E1943  3   12 
+NOCOMMON             0          0                                 E1943  3   13 
+DATA                 4          9                                 E1943  3   14 
+EN         E-EXC      DATA       LVL-FLAG                         E1943  3   15 
+MEV        MEV        MB         NO-DIM                           E1943  3   16 
+ 26.8       0.0        1.37       1.0                             E1943  3   17 
+ 26.8       0.871      0.29       2.0                             E1943  3   18 
+ 26.8       3.058      0.29       3.0                             E1943  3   19 
+ 28.1       0.0        1.31       1.0                             E1943  3   20 
+ 28.1       0.871      0.21       2.0                             E1943  3   21 
+ 28.1       3.058      0.27       3.0                             E1943  3   22 
+ 28.1       3.846      0.83       4.0                             E1943  3   23 
+ 33.3       0.0        0.82       1.0                             E1943  3   24 
+ 33.3       0.871      0.10       2.0                             E1943  3   25 
+ENDDATA             11          0                                 E1943  3   26 
+ENDSUBENT           25          0                                 E1943  399999 
+ENDENTRY             2          0                                 E194399999999 
+ENDTRANS             1          0                                 Z999999999999 
