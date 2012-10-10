@@ -1,0 +1,29 @@
+TRANS                    20121010                                 30000  0    0 
+ENTRY            32694   20120216                                 32694  0    1 
+SUBENT        32694001   20120216                                 32694  1    1 
+BIB                  6         16                                 32694  1    2 
+TITLE      Measurement of cross sections for the 10B(n,a)7Li      32694  1    3 
+           reaction at 4.0 and 5.0 MeV using an asymmetrical      32694  1    4 
+           twin gridded ionization chamber                        32694  1    5 
+AUTHOR     (Zhang Guohui,Liu Xiang,Liu Jiaming,Xue Zhihua,Wu Hao, 32694  1    6 
+           Chen Jinxiang)                                         32694  1    7 
+INSTITUTE  (3CPRBJG)                                              32694  1    8 
+REFERENCE  (J,CPL,28,(8),082801,2011)                             32694  1    9 
+ERR-ANALYS (ERR-1,5.,8.) Uncertainty of the background            32694  1   10 
+           subtraction for alpha counts                           32694  1   11 
+           (ERR-2,,,U) 238U fission counts                        32694  1   12 
+           (ERR-3) BF3 normalization in the background subtraction32694  1   13 
+           (ERR-4,1.,2.,U) Statistics uncertainty of alpha counts 32694  1   14 
+           (ERR-5) Number of atoms in the 10B samples             32694  1   15 
+           (ERR-6) Number of atoms in the 238U samples            32694  1   16 
+           (MONIT-ERR) 238U fission cross section                 32694  1   17 
+HISTORY    (20120216C)Compiled by Jimin WANG(CNDC)                32694  1   18 
+ENDBIB              16          0                                 32694  1   19 
+COMMON               5          3                                 32694  1   20 
+ERR-2      ERR-3      ERR-5      ERR-6      MONIT-ERR             32694  1   21 
+PER-CENT   PER-CENT   PER-CENT   PER-CENT   PER-CENT              32694  1   22 
+2.5        2.5        2.5        1.3        1.0                   32694  1   23 
+ENDCOMMON            3          0                                 32694  1   24 
+ENDSUBENT           23          0                                 32694  199999 
+ENDENTRY             1          0                                 3269499999999 
+ENDTRANS             1          0                                 Z999999999999 
