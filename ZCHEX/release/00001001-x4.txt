@@ -1,0 +1,18 @@
+TRANS                    20150205                                 00000  0    0 
+ENTRY            00001   20141119                                 00001  0    1 
+SUBENT        00001001   20141119                                 00001  1    1 
+BIB                  8          9                                 00001  1    2 
+TITLE      Recommended charged-particle induced reaciton cross    00001  1    3 
+            sections                                              00001  1    4 
+AUTHOR     (S.M.Qaim)                                             00001  1    5 
+INSTITUTE  (2GERJUL)                                              00001  1    6 
+REFERENCE  (R,IAEA-TECDOC-1211,2001)                              00001  1    7 
+MONITOR    (28-NI-0(D,X)29-CU-61,,SIG)                            00001  1    8 
+MONIT-REF  (,S.M.Qaim+,R,IAEA-TECDOC-1211,2001)                   00001  1    9 
+REL-REF    (N,,S.M.Qaim+,R,IAEA-TECDOC-1211,2001)                 00001  1   10 
+HISTORY    (20141113C)                                            00001  1   11 
+ENDBIB               9          0                                 00001  1   12 
+NOCOMMON             0          0                                 00001  1   13 
+ENDSUBENT           12          0                                 00001  199999 
+ENDENTRY             1          0                                 0000199999999 
+ENDTRANS             1          0                                 Z999999999999 
