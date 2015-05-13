@@ -1,0 +1,30 @@
+TRANS                    20120723                                 G0000  0    0 
+ENTRY            G0029   20110902                                 G0029  0    1 
+SUBENT        G0029001   20110902                                 G0029  1    1 
+BIB                  7         10                                 G0029  1    2 
+TITLE      Fragmentation and systematics of the pygmy dipole      G0029  1    3 
+            resonance in the stable N=82 isotones                 G0029  1    4 
+AUTHOR     (D.Savran, M.Elvers, J.Endres, M.Fritzsche, B.Loeher,  G0029  1    5 
+            N.Pietralla, V.Yu.Ponomarev, C.Romig,                 G0029  1    6 
+            L.Schnorrenberger, K.Sonnabend, A.Zilges)             G0029  1    7 
+INSTITUTE  (2GERGSI,2GERKLN,2GERTHD,2GERFRK)                      G0029  1    8 
+REFERENCE  (J,PR/C,84,024326,2011) Data given in table            G0029  1    9 
+FACILITY   (LINAC,2GERTHD) Electron linear accelerator S-DALINAC  G0029  1   10 
+STATUS     (APRVD) Denitz Savran (2011-09-02)                     G0029  1   11 
+HISTORY    (20110901C) On                                         G0029  1   12 
+ENDBIB              10          0                                 G0029  1   13 
+NOCOMMON             0          0                                 G0029  1   14 
+ENDSUBENT           13          0                                 G0029  199999 
+SUBENT        G0029002   20110902                                 G0029  2    1 
+BIB                  1          1                                 G0029  2    2 
+REACTION   ((54-XE-136(G,EL),,WID,,SQ)/(54-XE-136(G,TOT),,WID))   G0029  2    3 
+ENDBIB               1          0                                 G0029  2    4 
+NOCOMMON             0          0                                 G0029  2    5 
+DATA                 3          1                                 G0029  2    6 
+EN-RES     DATA       DATA-ERR                                    G0029  2    7 
+KEV        EV         EV                                          G0029  2    8 
+ 3626.      0.027      0.006                                      G0029  2    9 
+ENDDATA              3          0                                 G0029  2   10 
+ENDSUBENT            9          0                                 G0029  299999 
+ENDENTRY             2          0                                 G002999999999 
+ENDTRANS             1          0                                 Z999999999999 
