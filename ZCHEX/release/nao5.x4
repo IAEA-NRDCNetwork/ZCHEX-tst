@@ -1,0 +1,16 @@
+TRANS                    20140311                                 D0000  0    0 
+ENTRY            D4288   20140109                                 D4288  0    1 
+SUBENT        D4288001   20140109                                 D4288  1    1 
+BIB                  6          7                                 D4288  1    2 
+TITLE      Activation cross-sections of deuteron induced          D4288  1    3 
+           reaction of natural Ni up to 40 MeV                    D4288  1    4 
+AUTHOR     (N.Amjed,F.Tarkanyi,F.Ditroi,S.Takacs,H.Yuki)          D4288  1    5 
+INSTITUTE  (3PAKGCL,3HUNDEB,2JPNTOH)                              D4288  1    6 
+REFERENCE  (J,ARI,82,87,2013)                                     D4288  1    7 
+FACILITY   (CYCLO,2JAPTOH)                                        D4288  1    8 
+HISTORY    (20140109C)                                            D4288  1    9 
+ENDBIB               7          0                                 D4288  1   10 
+NOCOMMON             0          0                                 D4288  1   11 
+ENDSUBENT           10          0                                 D4288  199999 
+ENDENTRY             1          0                                 D428899999999 
+ENDTRANS             1          0                                 Z999999999999 
