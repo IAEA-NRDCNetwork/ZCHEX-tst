@@ -1,0 +1,44 @@
+TRANS                    20120802                                 2000000000000 
+ENTRY     C      20788   19840207                                 2078800000001C
+SUBENT    C   20788001   19840207                                 2078800100001C
+BIB                  6          7                                 2078800100002C
+INSTITUTE  (2SWDAE )                                              2078800100003 
+REFERENCE  (R,AE-503,197504)                                      2078800100004T
+AUTHOR     (E.Almen-Ramstrom)                                     2078800100005C
+TITLE      A Systematic study of neutron inelastic scattering     2078800100006C
+            in the energy range 2.0 to 4.5 MeV.                   2078800100007C
+FACILITY   (VDG  ) 6MV,   Klystron bunching of 1.5ns at 1MHz      2078800100008T
+HISTORY    (19740318C)                                            2078800100009T
+ENDBIB               7          0                                 2078800100010C
+NOCOMMON             0          0                                 2078800100011 
+ENDSUBENT           10          0                                 2078800199999C
+SUBENT    C   20788003   19840207                                 2078800300001C
+BIB                  1          1                                 2078800300002C
+REACTION   (22-TI-0(N,INL)22-TI-0,PAR,SIG)                        2078800300003D
+ENDBIB               1          0                                 2078800300004C
+NOCOMMON             0          0                                 2078800300005 
+DATA                 6          4                                 2078800300006C
+EN         E-LVL      E-LVL-MIN  E-LVL-MAX  DATA       DATA-ERR   2078800300007 
+MEV        MEV        MEV        MEV        MB         MB         2078800300008 
+ 3.0000E+00            1.7230E+00 1.8210E+00 1.1000E+01 3.0000E+002078800300009C
+ 3.2500E+00            1.7230E+00 1.8210E+00 1.4000E+01 4.0000E+002078800300010C
+ 3.2500E+00 2.0100E+00                       2.0000E+01 5.0000E+002078800300011C
+ 3.2500E+00            2.1610E+00 2.2950E+00 8.4000E+01 1.7000E+012078800300012C
+ENDDATA              6          0                                 2078800300013C
+ENDSUBENT           12          0                                 2078800399999C
+SUBENT    C   20788009   19840207                                 2078800900001C
+BIB                  1          1                                 2078800900002C
+REACTION   (27-CO-59(N,INL)27-CO-59,PAR,SIG)                      2078800900003D
+ENDBIB               1          0                                 2078800900004C
+NOCOMMON             0          0                                 2078800900005 
+DATA                 6          4                                 2078800900006C
+EN         E-LVL      E-LVL-MIN  E-LVL-MAX  DATA       DATA-ERR   2078800900007 
+MEV        MEV        MEV        MEV        MB         MB         2078800900008C
+ 2.2700E+00 1.1900E+00                       2.7400E+02 4.1000E+012078800900009C
+ 2.2700E+00 1.2910E+00                       9.6000E+01 1.4000E+012078800900010C
+ 2.7700E+00            1.4340E+00 1.4820E+00 2.7400E+02 4.1000E+012078800900011C
+ 2.7700E+00 1.7440E+00                       1.4100E+02 2.1000E+012078800900012C
+ENDDATA              6          0                                 2078800900013C
+ENDSUBENT           12          0                                 2078800999999C
+ENDENTRY             3          0                                 2078899999999 
+ENDTRANS             1          0                                 Z999999999999 
