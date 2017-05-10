@@ -1,0 +1,41 @@
+TRANS                    20170228                                 30000  0    0 
+ENTRY            33080   20150107                                 33080  0    1 
+SUBENT        33080001   20150107                                 33080  1    1 
+BIB                  7         11                                 33080  1    2 
+TITLE      Cross sections of the (n,p) reaction on the 78Se and   33080  1    3 
+           80Se isotopes measured for 13.73 MeV to 14.77 MeV and  33080  1    4 
+           estimated for 10 MeV to 20 MeV neutron energies        33080  1    5 
+AUTHOR     (F.M.D.Attar, S.D.Dhole, V.N.Bhoraskar)                33080  1    6 
+INSTITUTE  (3INDIND) Fergusson College, Pune                      33080  1    7 
+           (3INDPOO)                                              33080  1    8 
+REFERENCE  (J,PR/C,90,064609,2014)                                33080  1    9 
+FACILITY   (CCW,3INDPOO) 14 MeV neutron generator                 33080  1   10 
+ERR-ANALYS (ERR-1)      Detector efficiency           (~1.5%)     33080  1   11 
+           (ERR-2,,14.) Self absorption of gamma-rays  (<14%)     33080  1   12 
+HISTORY    (20150107C)                                            33080  1   13 
+ENDBIB              11          0                                 33080  1   14 
+COMMON               1          3                                 33080  1   15 
+ERR-1                                                             33080  1   16 
+PER-CENT                                                          33080  1   17 
+ 1.5                                                              33080  1   18 
+ENDCOMMON            3          0                                 33080  1   19 
+ENDSUBENT           18          0                                 33080  199999 
+SUBENT        33080002   20150107                                 33080  2    1 
+BIB                  3          3                                 33080  2    2 
+REACTION   (34-SE-78(N,P)33-AS-78,,SIG)                           33080  2    3 
+ERR-ANALYS (MONIT-ERR,2.,3.7) 56Fe(n,p)56Mn cross section (2-3.7%)33080  2    4 
+STATUS     (TABLE) Table II of Phys.Rev.C90(2014)064609           33080  2    5 
+ENDBIB               3          0                                 33080  2    6 
+NOCOMMON             0          0                                 33080  2    7 
+DATA                 3          5                                 33080  2    8 
+EN         DATA       DATA-ERR                                    33080  2    9 
+MEV        MB         MB                                          33080  2   10 
+ 13.73      15.6       1.5                                        33080  2   11 
+ 14.07      17.        1.6                                        33080  2   12 
+ 14.42      18.6       1.6                                        33080  2   13 
+ 14.68      20.4       1.7                                        33080  2   14 
+ 14.77      22.        1.7                                        33080  2   15 
+ENDDATA              7          0                                 33080  2   16 
+ENDSUBENT           15          0                                 33080  299999 
+ENDENTRY             2          0                                 3308099999999 
+ENDTRANS             1          0                                 Z999999999999 
