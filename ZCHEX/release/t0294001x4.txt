@@ -1,0 +1,22 @@
+TRANS                    20171031                                 T0000  0    0 
+ENTRY     C      T0294   20171029                                 T0294  0    1 
+SUBENT    C   T0294001   20171029                                 T0294  1    1 
+BIB                  7          9                                 T0294  1    2 
+TITLE      Optical model analysis of the 208Pb(p,n)208Bi (IAS)    T0294  1    3 
+            reaction                                              T0294  1    4 
+AUTHOR     (T.J.Woods, C.A.Whitten Jr, G.J.Igo)                   T0294  1    5 
+INSTITUTE  (1USAMIN,1USACLA)                                      T0294  1    6 
+REFERENCE  (J,NP/A,198,542,1972)                                  T0294  1    7 
+FACILITY   (CYCLO,1USACLA)                                        T0294  1    8 
+LEVEL-PROP (83-BI-209,IAS-NUMB=0.,SPIN=0.,PARITY=1.)              T0294  1    9 
+            Isobaric analog state for the ground state 208Pb.     T0294  1   10 
+HISTORY    (20040204C) CAJAD + VM                                 T0294  1   11 
+ENDBIB               9          0                                 T0294  1   12 
+COMMON               1          3                                 T0294  1   13 
+IAS-NUMB                                                          T0294  1   14 
+NO-DIM                                                            T0294  1   15 
+ 0.                                                               T0294  1   16 
+ENDCOMMON            3          0                                 T0294  1   17 
+ENDSUBENT           16          0                                 T0294  199999 
+ENDENTRY             1          0                                 T029499999999 
+ENDTRANS             1          0                                 Z999999999999 
