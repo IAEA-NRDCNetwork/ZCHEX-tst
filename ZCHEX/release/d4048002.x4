@@ -1,0 +1,42 @@
+TRANS                    20180411                                 D0000  0    0 
+ENTRY            D4048   20180411                                 D4048  0    1 
+SUBENT        D4048001   20180411                                 D4048  1    1 
+BIB                  6          8                                 D4048  1    2 
+TITLE      Excitation function of 22-Ne(p,n)22-Na reaction:       D4048  1    3 
+           possibility of production of 22-Na at a small          D4048  1    4 
+           cyclotron                                              D4048  1    5 
+AUTHOR     (S.Takacs, F.Tarkanyi, S.M.Qaim)                       D4048  1    6 
+INSTITUTE  (3HUNDEB,2GERJUL)                                      D4048  1    7 
+REFERENCE  (J,ARI,47,303,1996) main reference                     D4048  1    8 
+FACILITY   (CYCLO,3HUNDEB) MGC 20E cyclotron Debrecen             D4048  1    9 
+HISTORY    (19960819C)                                            D4048  1   10 
+ENDBIB               8          0                                 D4048  1   11 
+NOCOMMON             0          0                                 D4048  1   12 
+ENDSUBENT           11          0                                 D4048  199999 
+SUBENT        D4048002   20060731                                 D4048  2    1 
+BIB                  1          1                                 D4048  2    2 
+REACTION   (10-NE-22(P,N)11-NA-22,,SIG,,,EXP)                     D4048  2    3 
+ENDBIB               1          0                                 D4048  2    4 
+NOCOMMON             0          0                                 D4048  2    5 
+DATA                 4         15                                 D4048  2    6 
+EN         EN-ERR     DATA       ERR-T                            D4048  2    7 
+MEV        MEV        MB         MB                               D4048  2    8 
+        5.5        0.9       152.        22.                      D4048  2    9 
+        7.2        0.7       194.        27.                      D4048  2   10 
+        8.6        0.5       256.        36.                      D4048  2   11 
+        9.9        0.4       278.        39.                      D4048  2   12 
+       10.6        1.0       227.        32.                      D4048  2   13 
+       11.0        0.3       269.        38.                      D4048  2   14 
+       11.6        0.7       236.        33.                      D4048  2   15 
+       12.4        0.5       202.        28.                      D4048  2   16 
+       13.1        0.4       192.        27.                      D4048  2   17 
+       13.3        1.3       157.        23.                      D4048  2   18 
+       13.8        0.3       170.        24.                      D4048  2   19 
+       14.4        0.9       112.        17.                      D4048  2   20 
+       15.4        0.6       121.        17.                      D4048  2   21 
+       16.4        0.4       104.        15.                      D4048  2   22 
+       17.3        0.3       103.        16.                      D4048  2   23 
+ENDDATA             17          0                                 D4048  2   24 
+ENDSUBENT           23          0                                 D4048  299999 
+ENDENTRY             2          0                                 D404899999999 
+ENDTRANS             1          0                                 Z999999999999 
