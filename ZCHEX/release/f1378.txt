@@ -1,0 +1,51 @@
+TRANS                    20190306                                 F0000  0    0 
+ENTRY            F1378   20190102                                 F1378  0    1 
+SUBENT        F1378001   20190102                                 F1378  1    1 
+BIB                  7         11                                 F1378  1    2 
+TITLE       (d,t) reactions on medium and heavy nuclei.           F1378  1    3 
+AUTHOR     (N.A.Vlasov,S.P.Kalinin,A.A.Ogloblin,V.I.Chuev)        F1378  1    4 
+INSTITUTE  (4RUSKUR)                                              F1378  1    5 
+REFERENCE  (J,ZET,38,280,1960)                                    F1378  1    6 
+           (J,JET,11,203,1960) English translation                F1378  1    7 
+REL-REF    (M,F1369001,N.A.Vlasov+,J,ZET,37,54,1959) Technique of F1378  1    8 
+           triton spectra measurement is given.                   F1378  1    9 
+           (M,F1369001,N.A.Vlasov+,J,JET,10,39,1960) English      F1378  1   10 
+           translation                                            F1378  1   11 
+FACILITY   (CYCLO,4RUSKUR)                                        F1378  1   12 
+HISTORY    (20190102C)                                            F1378  1   13 
+ENDBIB              11          0                                 F1378  1   14 
+COMMON               1          3                                 F1378  1   15 
+EN                                                                F1378  1   16 
+MEV                                                               F1378  1   17 
+        20.                                                       F1378  1   18 
+ENDCOMMON            3          0                                 F1378  1   19 
+ENDSUBENT           18          0                                 F1378  199999 
+SUBENT        F1378002   20190104                                 F1378  2    1 
+BIB                  2          2                                 F1378  2    2 
+REACTION   (26-FE-56(D,T)26-FE-55,,DA/DE)                         F1378  2    3 
+STATUS     (CURVE) Fig.1                                          F1378  2    4 
+ENDBIB               2          0                                 F1378  2    5 
+COMMON               3          3                                 F1378  2    6 
+ANG-MIN    ANG-MAX    ERR-DIG                                     F1378  2    7 
+ADEG       ADEG       MB/SR/MEV                                   F1378  2    8 
+        15.        40.    0.00403                                 F1378  2    9 
+ENDCOMMON            3          0                                 F1378  2   10 
+DATA                 2         12                                 F1378  2   11 
+E-EXC      DATA                                                   F1378  2   12 
+MEV        MB/SR/MEV                                              F1378  2   13 
+     0.5802    0.65428                                            F1378  2   14 
+     0.4244    0.69976                                            F1378  2   15 
+     0.3467    0.76795                                            F1378  2   16 
+     0.2301    0.86646                                            F1378  2   17 
+     0.1130    0.82860                                            F1378  2   18 
+    -0.0828    0.64682                                            F1378  2   19 
+    -0.2396    0.47261                                            F1378  2   20 
+    -0.3575    0.27566                                            F1378  2   21 
+    -0.4747    0.23780                                            F1378  2   22 
+    -0.6308    0.21510                                            F1378  2   23 
+    -0.8259    0.19998                                            F1378  2   24 
+    -0.9819    0.18486                                            F1378  2   25 
+ENDDATA             14          0                                 F1378  2   26 
+ENDSUBENT           25          0                                 F1378  299999 
+ENDENTRY             2          0                                 F137899999999 
+ENDTRANS             1          0                                 Z999999999999 
