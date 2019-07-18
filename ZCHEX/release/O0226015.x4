@@ -1,0 +1,94 @@
+REQUEST        3222001   20190716          3     160141               0  0    0
+ENTRY            O0226   20100708   20110107   20101118       O042O0226000    1
+SUBENT        O0226001   20100708   20110107   20101118       O042O0226001    1
+BIB                 12         36                                 O0226001    2
+TITLE      Scattering of protons from C-12.                       O0226001    3
+AUTHOR     (C.W.Reich,G.C.Phillips,J.L.Russell)                   O0226001    4
+INSTITUTE  (1USARIC)                                              O0226001    5
+REFERENCE  (J,PR,104,143,1956)   nsr index is 56Re39.             O0226001    6
+HISTORY    (19960709C)                                            O0226001    7
+           (19961110A) additional result are corrected.           O0226001    8
+           (20100707A) BIB section upgraded.                      O0226001    9
+           Correction in Reaction lines in subents 015-017 was    O0226001   10
+           made, according M.Kokkoris remarks                     O0226001   11
+SAMPLE     A natural carbon contains about 1% C-13 was used.      O0226001   12
+           A large-volume scattering chamber and differential     O0226001   13
+           pumping system were designed and built at the Rice     O0226001   14
+           institute. The target gas employed in the scattering   O0226001   15
+           experiments was methane at pressures of the order of   O0226001   16
+           1/2 cm Hg.                                             O0226001   17
+ADD-RES    (COMP).                                                O0226001   18
+           Phase analysis.                                        O0226001   19
+           Some experimental data are not included in this entry  O0226001   20
+           as author's data have been presented by small size     O0226001   21
+           figures. There are data for elastic scattering at      O0226001   22
+           127.8, 148.9, 106.4 169.2 angular  degree  and  angularO0226001   23
+           distributions of gamma-rays from inelastic scattering  O0226001   24
+           at 4.43 MeV level of 12-C.                             O0226001   25
+DETECTOR   (SCIN).The scintillation crystals employed as detectorsO0226001   26
+           with the two photomultiplier counters were CsI(Tl)     O0226001   27
+           crystals of 12 mil thickness .                         O0226001   28
+FACILITY   (VDG,1USARIC)                                          O0226001   29
+METHOD     (BCINT)                                                O0226001   30
+           (SITA)                                                 O0226001   31
+ERR-ANALYS (ERR-DIG).Digitizing error of Data.                    O0226001   32
+           (ERR-1).The uncertainty in the geometry.               O0226001   33
+           (ERR-2).The error in the current integration.          O0226001   34
+           (ERR-3).The angular uncertainty.                       O0226001   35
+           (ERR-4).The error in the detector efficiency.          O0226001   36
+           (ERR-5).The error in the gas purity.                   O0226001   37
+STATUS     (CURVE).By Cajad- J,PR,104,143,1956.                   O0226001   38
+ENDBIB              36                                            O0226001   39
+COMMON               5          3                                 O0226001   40
+ERR-1      ERR-2      ERR-3      ERR-4      ERR-5                 O0226001   41
+PER-CENT   PER-CENT   ADEG       PER-CENT   PER-CENT              O0226001   42
+        0.5         3.        0.1         2.         1.           O0226001   43
+ENDCOMMON            3                                            O0226001   44
+ENDSUBENT           43                                            O022600199999
+SUBENT        O0226015   20100708   20110107   20101118       O042O0226015    1
+BIB                  3          3                                 O0226015    2
+REACTION   (6-C-12(P,EL)6-C-12,,DA)                               O0226015    3
+ERR-ANALYS (ANG-ERR-D).Digitizing error of angle.                 O0226015    4
+STATUS     (CURVE).Figure 3a                                      O0226015    5
+ENDBIB               3                                            O0226015    6
+COMMON               3          3                                 O0226015    7
+EN         ANG-ERR-D  ERR-DIG                                     O0226015    8
+MEV        ADEG       B/SR                                        O0226015    9
+      4.613        0.4    0.5E-03                                 O0226015   10
+ENDCOMMON            3                                            O0226015   11
+DATA                 2         29                                 O0226015   12
+ANG-CM     DATA-CM                                                O0226015   13
+ADEG       B/SR                                                   O0226015   14
+       47.4     0.1266                                            O0226015   15
+        54.  0.979E-01                                            O0226015   16
+       55.1  0.915E-01                                            O0226015   17
+       59.1  0.788E-01                                            O0226015   18
+       63.1  0.692E-01                                            O0226015   19
+       69.1  0.552E-01                                            O0226015   20
+       74.4  0.489E-01                                            O0226015   21
+       78.9  0.464E-01                                            O0226015   22
+        84.  0.458E-01                                            O0226015   23
+       88.5  0.455E-01                                            O0226015   24
+       89.3  0.503E-01                                            O0226015   25
+       94.7  0.523E-01                                            O0226015   26
+       99.8  0.556E-01                                            O0226015   27
+       105.  0.633E-01                                            O0226015   28
+       109.  0.729E-01                                            O0226015   29
+      115.6   0.81E-01                                            O0226015   30
+      119.6  0.878E-01                                            O0226015   31
+      124.2  0.987E-01                                            O0226015   32
+      126.3     0.1019                                            O0226015   33
+      128.9      0.102                                            O0226015   34
+      134.4     0.1116                                            O0226015   35
+      138.3     0.1117                                            O0226015   36
+      140.8     0.1149                                            O0226015   37
+      143.3     0.1137                                            O0226015   38
+      147.8      0.114                                            O0226015   39
+      150.3     0.1182                                            O0226015   40
+      154.2     0.1157                                            O0226015   41
+      157.4     0.1138                                            O0226015   42
+      161.2     0.1139                                            O0226015   43
+ENDDATA             31                                            O0226015   44
+ENDSUBENT           43                                            O022601599999
+ENDENTRY             2                                            O022699999999
+ENDREQUEST           1                                            Z999999999999
