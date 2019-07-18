@@ -1,0 +1,50 @@
+REQUEST         301001   20050906          3     103057               0  0    0
+ENTRY            21341     801104                                 21341000    1
+SUBENT        21341001     801104                                 21341001    1
+BIB                 14         29                                 21341001    2
+INSTITUTE  (2GERMUN)                                              21341001    3
+REFERENCE  (J,ZP/B,163,218,196105)                                21341001    4
+AUTHOR     (K.HEINLOTH)                                           21341001    5
+TITLE      -SCATTERING OF SUBTHERMAL NEUTRONS BY H2O, CH2O2       21341001    6
+            AND C6H6.- (IN GERMAN).                               21341001    7
+FACILITY   (CHOPS,2GERMUN) SLOW CHOPPER GIVING NEUTRONS OF 0.2    21341001    8
+            TO 2.7 MILLI-EV.                                      21341001    9
+           (SPECC,2GERMUN) LEAD MONOCRYSTAL SPECTROMETER GIVING   21341001   10
+            NEUTRONS OF 36 MILLI-EV.                              21341001   11
+           (REAC,2GERMUN) REACTOR FRM.                            21341001   12
+INC-SOURCE (REAC )                                                21341001   13
+SAMPLE     .1-2 MM THICK, THICKNESS OPTIMIZED WITH RESPECT TO     21341001   14
+            INSCATTERING AND COUNTING RATE.                       21341001   15
+METHOD     .TRANSMISSION MEASUREMENT.                             21341001   16
+DETECTOR   (BF3  )                                                21341001   17
+COMMENT    .MOLECULAR DYNAMICS DISCUSSED.                         21341001   18
+STATUS     (NDD  ) DATA TAKEN FROM NEUDADA, FROM GRAPH J OF REF., 21341001   19
+            DATA OF OTHER GRAPHS NOT AVAILABLE.                   21341001   20
+HISTORY    (19800207T) G.C.                                       21341001   21
+           (19800222E)                                            21341001   22
+CORRECTION .FOR EPITHERMAL NEUTRON BACKGROUND (MEASUREMENTS       21341001   23
+            WITH CADMIUM SHEET IN THE BEAM).                      21341001   24
+ERR-ANALYS .MAXIMUM ERROR OF 3 PERCENT FOR MEASUREMENTS ON        21341001   25
+            SOLID AND LIQUID SAMPLES, DUE TO THICKNESS OF SAMPLE  21341001   26
+            HOLDER AND UNCERTAINTIES IN SAMPLE DENSITIES.         21341001   27
+           .MAXIMUM ERROR OF 5 PERCENT FOR GASEOUS SAMPLES IN     21341001   28
+            THE COLD ENERGY RANGE, 10 PERCENT AT 36 MILLI-EV,     21341001   29
+            DUE TO UNCERTAINTIES IN SAMPLE DENSITIES AND TO       21341001   30
+            STATISTICS.                                           21341001   31
+ENDBIB              29                                            21341001   32
+COMMON               2          3                                 21341001   33
+TEMP       DATA-ERR                                               21341001   34
+DEG-C      PER-CENT                                               21341001   35
+ 1.8000E+01 3.0000E+00                                            21341001   36
+ENDCOMMON            3                                            21341001   37
+ENDSUBENT           36                                            2134100199999
+SUBENT        21341004     800222                                 21341004    1
+BIB                  2          2                                 21341004    2
+REACTION   (1-H-CMP(N,TOT),,SIG) FORMIC ACID, C2H2O2              21341004    3
+STATUS     (UNOBT) DATA AS GRAPHS IN REF,UNOBT,0.2-36. MILLI-EV.  21341004    4
+ENDBIB               2                                            21341004    5
+NOCOMMON             0          0                                 21341004    6
+NODATA               0          0                                 21341004    7
+ENDSUBENT            6                                            2134100499999
+ENDENTRY             2                                            2134199999999
+ENDREQUEST           1                                            Z999999999999
