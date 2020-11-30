@@ -1,0 +1,92 @@
+TRANS                    20201130                                 30000  0    0 
+ENTRY            33143   20200716                                 33143  0    1 
+SUBENT        33143001   20200716                                 33143  1    1 
+BIB                 15         46                                 33143  1    2 
+TITLE      58Ni(n,p)58Co and 58Ni(n,2n)57Ni reactions at the      33143  1    3 
+           neutron energy of 14.54 MeV with covariance analysis   33143  1    4 
+AUTHOR     (I.Pasha, B.Rudraswamy, Y.S.Sheela, S.V.Suryanarayana, 33143  1    5 
+           E.Radha, R.Pachuau)                                    33143  1    6 
+INSTITUTE  (3INDBGL,3INDMNP,3INDTRM,3INDKAL,3INDTAT)              33143  1    7 
+REFERENCE  (J,IPA,58,241,2020)                                    33143  1    8 
+FACILITY   (CCW,3INDTRM) Purnima neutron generator                33143  1    9 
+SAMPLE     The natNi and 197Au foils of weights 130 and 126 mg,   33143  1   10 
+           respectively, were wrapped with 0.011 mm thick Al foil.33143  1   11 
+DETECTOR   (HPGE) The gamma-ray counting of the irradiated foils  33143  1   12 
+           were perform using a Baltic HPGe detector having 30%   33143  1   13 
+           relative efficiency and coupled to a PC-based 4k       33143  1   14 
+           multichannel analyzer.                                 33143  1   15 
+           The resolution of the HPGe detector has a FWHM of      33143  1   16 
+           1.8 keV at 1.33 MeV gamma-ray for 60CO.                33143  1   17 
+METHOD     (ACTIV,STTA) The stack of Ni-Au samples was            33143  1   18 
+           irradiated for 2 hour.                                 33143  1   19 
+           After irradiation, samples were cooled for 0.2-1.2 hour33143  1   20 
+INC-SOURCE (D-T)                                                  33143  1   21 
+MONITOR    (79-AU-197(N,2N)79-AU-196,,SIG)                        33143  1   22 
+DECAY-MON  (79-AU-196-G,6.1669D,DG,335.7,0.87)                    33143  1   23 
+COVARIANCE  (XY,2,N,REACTION)                                     33143  1   24 
+            1 (28-NI-58(N,P)27-CO-58,,SIG)                        33143  1   25 
+            2 (28NI-58(N,2N)28-NI-57,,SIG)                        33143  1   26 
+            (Z,3,NO-DIM,COR)                                      33143  1   27 
+            1                                                     33143  1   28 
+            0.1176  1                                             33143  1   29 
+ERR-ANALYS (ERR-T) Total uncertainty propagated from :            33143  1   30 
+           (MONIT-ERR,,,F) Monitor reaction cross section, Au     33143  1   31 
+           (ERR-1,,,U) Gamma-ray peak counts, Ni                  33143  1   32 
+           (ERR-2,,,F) Gamma-ray peak counts, Au                  33143  1   33 
+           (ERR-3,,,U) Decay constant, Ni                         33143  1   34 
+           (ERR-4,2.x,,F) Decay constant, Au                      33143  1   35 
+           (ERR-1,,,F) Weight, Ni                                 33143  1   36 
+           (ERR-6,,,F) Weight, Au                                 33143  1   37 
+           (ERR-7,,,F) Isotopic abundance, Ni                     33143  1   38 
+           (ERR-8,,,F) Average atomic mass, Ni                    33143  1   39 
+           (ERR-9,,,F) Average atomic mass, Au                    33143  1   40 
+           (ERR-10,,,U) Gamma-ray abundance, Ni                   33143  1   41 
+           (ERR-11,,,R) Gamma-ray abundance, Au                   33143  1   42 
+           (ERR-12,,U) Efficiency of detector, Ni                 33143  1   43 
+           (ERR-13,,,F) Efficiency of detector, Au                33143  1   44 
+           (ERR-14,,,U) Gamma attenuation, Ni                     33143  1   45 
+           (ERR-15,,,F) Gamma attenuation, Au                     33143  1   46 
+STATUS     (TABLE) Table5 of Ind. J. Pure Appl. Phy. 58 (2020) 24133143  1   47 
+HISTORY    (20200716C) Imranpasha                                 33143  1   48 
+ENDBIB              46          0                                 33143  1   49 
+COMMON              12          6                                 33143  1   50 
+MONIT      MONIT-ERR  ERR-2      ERR-4      ERR-5      ERR-6      33143  1   51 
+ERR-7      ERR-8      ERR-9      ERR-11     ERR-13     ERR-15     33143  1   52 
+B          PER-CENT   PER-CENT   PER-CENT   PER-CENT   PER-CENT   33143  1   53 
+PER-CENT   PER-CENT   PER-CENT   PER-CENT   PER-CENT   PER-CENT   33143  1   54 
+     2.1236     0.9651     0.9293     0.6542  2.213E-02  2.283E-0233143  1   55 
+  1.322E-02  6.904E-06  3.046E-07     0.3448     1.9883     0.654233143  1   56 
+ENDCOMMON            6          0                                 33143  1   57 
+ENDSUBENT           56          0                                 33143  199999 
+SUBENT        33143002   20200716                                 33143  2    1 
+BIB                  2          2                                 33143  2    2 
+REACTION   (28-NI-58(N,P)27-CO-58,,SIG)                           33143  2    3 
+DECAY-DATA (27-CO-58-G,70.86D,DG,810.7,0.9945)                    33143  2    4 
+ENDBIB               2          0                                 33143  2    5 
+NOCOMMON             0          0                                 33143  2    6 
+DATA                 9          1                                 33143  2    7 
+EN         EN-RSL-FW  DATA       ERR-T      ERR-1      ERR-3      33143  2    8 
+ERR-10     ERR-12     ERR-14                                      33143  2    9 
+MEV        MEV        B          B          PER-CENT   PER-CENT   33143  2   10 
+PER-CENT   PER-CENT   PER-CENT                                    33143  2   11 
+      14.54       0.24     0.3469    0.02777     7.3324  1.412E-0333143  2   12 
+  1.005E-02     1.9128     0.3037                                 33143  2   13 
+ENDDATA              6          0                                 33143  2   14 
+ENDSUBENT           13          0                                 33143  299999 
+SUBENT        33143003   20200716                                 33143  3    1 
+BIB                  2          2                                 33143  3    2 
+REACTION   (28-NI-58(N,2N)28-NI-57,,SIG)                          33143  3    3 
+DECAY-DATA (28-NI-57,35.60HR,DG,1377.6,0.8170)                    33143  3    4 
+ENDBIB               2          0                                 33143  3    5 
+NOCOMMON             0          0                                 33143  3    6 
+DATA                 9          1                                 33143  3    7 
+EN         EN-RSL-FW  DATA       ERR-T      ERR-1      ERR-3      33143  3    8 
+ERR-10     ERR-12     ERR-14                                      33143  3    9 
+MEV        MEV        B          B          PER-CENT   PER-CENT   33143  3   10 
+PER-CENT   PER-CENT   PER-CENT                                    33143  3   11 
+      14.54       0.24     0.0247    0.00168     5.7354  1.377E-0233143  3   12 
+  2.937E-02     2.6865     0.2317                                 33143  3   13 
+ENDDATA              6          0                                 33143  3   14 
+ENDSUBENT           13          0                                 33143  399999 
+ENDENTRY             3          0                                 3314399999999 
+ENDTRANS             1          0                                 Z999999999999 
