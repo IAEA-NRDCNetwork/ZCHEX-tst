@@ -1,0 +1,42 @@
+REQUEST        1302001   20201130          3     104400               0  0    0
+ENTRY            11748   20160608   20160902   20160824       141811748000    1
+SUBENT        11748001   20160608   20160902   20160824       141811748001    1
+BIB                 10         16                                 11748001    2
+INSTITUTE  (1USAMTR)                                              11748001    3
+REFERENCE  (J,PR,129,769,1963)                                    11748001    4
+AUTHOR     (B.Keisch)                                             11748001    5
+TITLE      Yield ratios of isomers produced by neutron activation 11748001    6
+FACILITY   No information                                         11748001    7
+INC-SPECT  Thermal spectrum                                       11748001    8
+METHOD     (ACTIV)                                                11748001    9
+ERR-ANALYS (DATA-ERR) Quoted uncertainties include systematic and 11748001   10
+            statistical errors, no further details given          11748001   11
+STATUS     (TABLE) Tables 1 and 2, Phys.Rev.129,769,1963          11748001   12
+HISTORY    (19760730T) Translated from SCISRS                     11748001   13
+           (19831011A) Converted to REACTION formalism            11748001   14
+           (19860421A) BIB updates.                               11748001   15
+           (20160518A) OS. Author's name corrected, converted to  11748001   16
+            lower case, STATUS updated, Isomer assignments in     11748001   17
+            sub.20 corrected, DECAY-DATA and SAMPLE updated       11748001   18
+ENDBIB              16                                            11748001   19
+NOCOMMON             0          0                                 11748001   20
+ENDSUBENT           19                                            1174800199999
+SUBENT        11748020   20160608   20160902   20160824       141811748020    1
+BIB                  4          7                                 11748020    2
+REACTION   (63-EU-151(N,G)63-EU-152-M1/G+M2,,SIG/RAT,,MXW)        11748020    3
+SAMPLE     (63-EU-151,ENR=0.921)                                  11748020    4
+DECAY-DATA (63-EU-152-M1,,DG,344.,,DG,,122.)                      11748020    5
+           (63-EU-152-G,,DG,344.,,DG,,122.)                       11748020    6
+HISTORY    (20160518A) Isomer codes in REACTION and DECAY-DATA    11748020    7
+            corrected, gamma energies added, not-referenced       11748020    8
+            half-lives deleted, SAMPLE added                      11748020    9
+ENDBIB               7                                            11748020   10
+NOCOMMON             0          0                                 11748020   11
+DATA                 3          1                                 11748020   12
+EN-DUMMY   DATA       DATA-ERR                                    11748020   13
+EV         NO-DIM     NO-DIM                                      11748020   14
+ 0.0253     0.56       0.04                                       11748020   15
+ENDDATA              3                                            11748020   16
+ENDSUBENT           15                                            1174802099999
+ENDENTRY             2                                            1174899999999
+ENDREQUEST           1                                            Z999999999999
