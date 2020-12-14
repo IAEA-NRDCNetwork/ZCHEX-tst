@@ -1,0 +1,69 @@
+REQUEST        1321001   20201201          3     191728               0  0    0
+ENTRY            E1877   20180223   20180223   20180223       E111E1877000    1
+SUBENT        E1877001   20180223   20180223   20180223       E111E1877001    1
+BIB                 12         30                                 E1877001    2
+TITLE      Excitation functions for proton-induced reactions of   E1877001    3
+           140Ce and 142Ce up to Ep=15 MeV                        E1877001    4
+AUTHOR     (M.Furukawa)                                           E1877001    5
+INSTITUTE  (2JPNTOK) Department of Chemistry, Faculty of Science  E1877001    6
+REFERENCE  (J,NP/A,90,253,1967)                                   E1877001    7
+INC-SOURCE Beam intensity is about 0.5 uA.                        E1877001    8
+SAMPLE     - Target is natural.                                   E1877001    9
+           - Chemical-form of target: Ceric oxide or cerous       E1877001   10
+             fluoride                                             E1877001   11
+           - Physical-form of target is solid.                    E1877001   12
+           - Target-thickness is about 5 mg/cm2.                  E1877001   13
+           - Backing is aluminium. Deposited on aluminium foil    E1877001   14
+METHOD     (ACTIV) Irradiated between 0.5 min and 2 h             E1877001   15
+           (EDEG) Degraded by aluminium placed between targets.   E1877001   16
+                  The stopping power was taken from the           E1877001   17
+                  compilation of Sternheimer [R.M. Sternheimer,   E1877001   18
+                  Phys. Rev. 115(1959)137].                       E1877001   19
+FACILITY   (CYCLO,2JPNTOK) Institute for Nuclear Study            E1877001   20
+ERR-ANALYS Uncertainties in target thickness, beam currents and   E1877001   21
+           disintegration rates of residual nuclei                E1877001   22
+           (DATA-ERR) No information on source of uncertainties   E1877001   23
+ADD-RES    (TRCS) The sum of measured cross sections for 140Ce is E1877001   24
+                  compared with the calculation on the basis of   E1877001   25
+                  the continuum theory [M.M. Shapiro, Phys. Rev.  E1877001   26
+                  90(1953)171].                                   E1877001   27
+           (COMP) Statistical model                               E1877001   28
+STATUS     (TABLE) Taken from Table 2, p255 in reference          E1877001   29
+HISTORY    (20040226C) Kc + On                                    E1877001   30
+           (20170922A) In 003, changed 59-PR-139 -> 58-CE-139 and E1877001   31
+                       Added (58-CE-139,DG) by JS                 E1877001   32
+ENDBIB              30                                            E1877001   33
+NOCOMMON             0          0                                 E1877001   34
+ENDSUBENT           33                                            E187700199999
+SUBENT        E1877002   20180223   20180223   20180223       E111E1877002    1
+BIB                  5          7                                 E1877002    2
+REACTION   (58-CE-140(P,N)59-PR-140,,SIG)                         E1877002    3
+DECAY-DATA (59-PR-140,3.4MIN,AR,0.51,1.08)                        E1877002    4
+METHOD     (COINC) Detect annihilation radiation and annihilation E1877002    5
+                   radiation in coincidence.                      E1877002    6
+DETECTOR   (NAICR) To detect 0.51 MeV gamma from positron         E1877002    7
+                   annihilation                                   E1877002    8
+REL-REF    (D,P0033001,J.P.Blaser+,J,HPA,24,441,1951)             E1877002    9
+ENDBIB               7                                            E1877002   10
+NOCOMMON             0          0                                 E1877002   11
+DATA                 3         14                                 E1877002   12
+EN         DATA       DATA-ERR                                    E1877002   13
+MEV        MB         MB                                          E1877002   14
+       5.57        7.6        2.0                                 E1877002   15
+       6.64        41.                                            E1877002   16
+       7.18        86.                                            E1877002   17
+       7.50        91.                                            E1877002   18
+       8.19       160.        25.                                 E1877002   19
+       8.68       225.                                            E1877002   20
+       9.72       426.                                            E1877002   21
+      10.05       563.                                            E1877002   22
+      11.31       807.       130.                                 E1877002   23
+      11.83       950.                                            E1877002   24
+      12.68       946.                                            E1877002   25
+      13.33       815.       145.                                 E1877002   26
+      13.87       772.                                            E1877002   27
+      14.59       558.       100.                                 E1877002   28
+ENDDATA             16                                            E1877002   29
+ENDSUBENT           28                                            E187700299999
+ENDENTRY             2                                            E187799999999
+ENDREQUEST           1                                            Z999999999999
