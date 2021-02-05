@@ -1,0 +1,27 @@
+ENTRY            O0790   20200227   20200623   20200616       O076
+SUBENT        O0790001   20200227   20200623   20200616       O076
+BIB                  6         19
+TITLE       2-H(18-F,p+alpha)15-N reaction applied to nova
+           gamma-ray emission
+REFERENCE  (J,PR/C,67,052801,2003)
+           (J,NP/A,718,259,2003) Short communication
+           see:  nucl-ex/0304014,4/15/2003
+AUTHOR     (N.De Sereville, A.Coc, C.Angulo, M.Assuncao,
+           D.Beaumel, B.Bouzid, S.Cherubini, M.Couder, P.Demaret,
+           F.De Oliveira Santos, P.Figuera, S.Fortier, M.Gaelens,
+           F.Hammache, J.Kiener, A.Lefebvre, D.Labar, P.Leleux,
+           M.Loiselet, A.Ninane, S.Ouichaoui, G.Ryckewaert,
+           N.Smirnova, V.Tatischeff, J.-P.Thibaud)
+INSTITUTE  (2FR CSN,2BLGLEU,2FR PAR,3ALGUHB,2FR GAN,2ITYLNS,
+           2GERGSI,2BLGPCL)
+FACILITY   (CYCLO,2BLGLEU)
+HISTORY    (20040823C)
+           (20040707R) Data table was received from V.Taischeff.
+           (20041012U) Last checking has been done.
+           (20200227D) SD: Entry deleted. Data moved to O1515.003
+            (final publ.).
+ENDBIB              19
+NOCOMMON             0          0
+ENDSUBENT           22
+NOSUBENT      O0790002   20200227   20200623   20200616       O076
+ENDENTRY             2
