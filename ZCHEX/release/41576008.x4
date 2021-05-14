@@ -1,0 +1,52 @@
+REQUEST        4081001   20210514          3     102855               0  0    0
+ENTRY            41576   20150707   20150817   20150810       416941576000    1
+SUBENT        41576001   20150707   20150817   20150810       416941576001    1
+BIB                 10         24                                 41576001    2
+INSTITUTE  (4ZZZDUB) All authors from 4ZZZDUB.                    41576001    3
+              L.B.Pikelner = L.B.Pikel'ner                        41576001    4
+REFERENCE  (J,NP/A,398,(1),93,1983)                               41576001    5
+           #doi:10.1016/0375-9474(83)90649-8                      41576001    6
+AUTHOR     (V.P.Alfimenkov, S.B.Borzakov, Vo Van Thuan,           41576001    7
+           Yu.D.Mareev,L.B.Pikelner, A.S.Khrykin,E.I.Sharapov)    41576001    8
+TITLE       Parity nonconservation in neutron resonances.         41576001    9
+FACILITY   (REAC,4ZZZDUB) Fast pulse reactor IBR-30. At EN<1.5 eV.41576001   10
+            Pulse duration 70 microsec, mean power 20 kW.         41576001   11
+           (ACCEL,4ZZZDUB) Booster mode of IBR-30 with electron   41576001   12
+            accelerator. At higher neutron energy. Pulse duration 41576001   13
+           4 microsec, mean power 5 kW.                           41576001   14
+INC-SOURCE (POLNS,REAC) Polarized neutrons.                       41576001   15
+           Polarizer was installed at 32 m distance from reactor  41576001   16
+           core. Neutron polarization 0.5 - 0.6 .                 41576001   17
+           Polarization reversal was made each 40 sec.            41576001   18
+METHOD     (TRN,TOF) 58 m flight paths.                           41576001   19
+            Total measuring time 200-300 h for every target.      41576001   20
+DETECTOR   (SCIN) Liquid scintillation detector or scintillation  41576001   21
+           detector with Li glass. As transmitted through the     41576001   22
+           sample neutron detector.                               41576001   23
+PART-DET   (N)                                                    41576001   24
+HISTORY    (20111005A) M.M.                                       41576001   25
+           (20150707A) Subents 002-006,009,010 were corrected.    41576001   26
+ENDBIB              24                                            41576001   27
+NOCOMMON             0          0                                 41576001   28
+ENDSUBENT           27                                            4157600199999
+SUBENT        41576008   20111005   20111215   20111212       415441576008    1
+BIB                  4          5                                 41576008    2
+REACTION   (48-CD-111(N,TOT),,SIG,,RES)                           41576008    3
+            Total cross section at maximum of resonance.          41576008    4
+SAMPLE       2.05*10**23 nuclei/cm**2 .                           41576008    5
+ERR-ANALYS (DATA-ERR) Error is not specified                      41576008    6
+STATUS     (TABLE) Table 1 of J,NP/A,398,(1),93,1983.             41576008    7
+ENDBIB               5                                            41576008    8
+COMMON               1          3                                 41576008    9
+MOMENTUM L                                                        41576008   10
+NO-DIM                                                            41576008   11
+1.                                                                41576008   12
+ENDCOMMON            3                                            41576008   13
+DATA                 3          1                                 41576008   14
+EN-RES     DATA       DATA-ERR                                    41576008   15
+EV         B          B                                           41576008   16
+ 4.53      3.8        0.5                                         41576008   17
+ENDDATA              3                                            41576008   18
+ENDSUBENT           17                                            4157600899999
+ENDENTRY             2                                            4157699999999
+ENDREQUEST           1                                            Z999999999999
