@@ -134,6 +134,14 @@ C---- Set key length
 
 c?    CALL READ_KEY(NOPEN(NUM),SKEY,LNTH,IKEY,KEY1,REC,ISTAT,IERR,*800)
       CALL READZ_KEY(NUM,SKEY,LNTH,IKEY,KEY1,REC,ISTAT,IERR,*800)
+c	write (*,*) '...DANGET_new:[',istat,']'
+	if (istat.eq.'INT') then
+c	    write (*,*) '...DANGET_new: internal code [',KEY,']'
+	    write (*,*) '  ...Internal code [',KEY,']'
+     *      ,' ignored.',NUM,' Dictionary'
+	    IERR=20
+	    goto 800
+	end if
 
       IF (IFLD.EQ.0) THEN                     ! Return all fields
         LINE = REC
@@ -508,14 +516,15 @@ c?    CALL READ_SEQ(NOPEN(NUM),REC,ISTAT,IERR,*900,*500)
       RETURN
 
 C---- END-OF-FILE, CLOSE DICTIONARY
-  500 CALL CLOSE_DIC(NUM)
+c-236sf7  500 CALL CLOSE_DIC(NUM)
+  500 continue
       RETURN 1
 
   820 CALL DANERROR(NUM,16)                  ! ILLEGAL RECORD RETRIEVAL OPTION
       RETURN
 
   900 CALL DANERROR(NUM,IERR)
-      CALL CLOSE_DIC(NUM)
+c-236sf7      CALL CLOSE_DIC(NUM)
 
   950 RETURN
       END
@@ -839,13 +848,378 @@ C*    N: message #
      * 'key not found                      '/ ! #20
 
 !     IF (NDIC.EQ.0) THEN
-      IF ((NDIC.EQ.0).OR.(NDIC.GT.20)) THEN
+      IF ((N.LE.0).OR.(N.GT.20)) THEN
         write (*,2000) MESS(N),NDIC
       ELSE
-        write (*,1000) MESS(N),NDIC
+        write (*,*) NDIC,' dictionary: unknown ERROR',N
       END IF
       RETURN
 
  1000 FORMAT(' **** ',A35,' for dictionary ',I3)
  2000 FORMAT(' **** ',A35)
       END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      SUBROUTINE DANGET236sf7(NUM,KEY,IKEY,IFLD,LINE,STATUS,IERR)
+c
+c	CALL DANGET_236sf7(236,KEY(1:30),0,0,DICLINE,ISTATx,IERR1x)
+c
+C*  Gets a record from the specified dictionary using the specified key
+C*    and returns the desired field; returns status.
+C*  Errors are returned to the caller
+C*    NUM: dictionary number (I2)
+C*    KEY: key for record being retrieved (A*)
+C*    IKEY: key ID (I); 0 = 1st key
+C*    IFLD: field number requested (I); 0 = all fields
+C*                                     -1 = primary key
+C*    LINE: information returned to the caller (A80)
+C*    STATUS: status code for line (A3)
+C*    IERR: error flag (return) (I); 0 = no error   
+
+C---- Units for open dictionaries.  Set in OPEN_NEW.
+      COMMON/DANUNITS/NOPEN(1000)
+
+C---- DAN_TOP variables
+C-      NKEY: # of keys for dictionary
+C-      NFLD: # of fields in code
+C----   LENFLD: length of fields in code string
+      COMMON/TOPREC/NKEY(1000),NFLD(1000)
+      COMMON/TOPSTR/LENFLD(20,1000)
+
+      CHARACTER*(*) KEY
+      CHARACTER*3 STATUS,ISTAT
+      CHARACTER*30 SKEY,KEY1
+      CHARACTER*80 REC,LINE
+
+C---- Current AN, SAN, Section. (Set in READ_NEXT)
+      COMMON/ANSAN/INTSAN,ACNUM
+      CHARACTER*5 ACNUM 
+      CHARACTER*8 SUBACNUM
+   10 FORMAT(A5,I3.3)
+      WRITE(SUBACNUM,10) ACNUM,INTSAN
+
+
+      SKEY = KEY                            ! Restore key as 20 chars.
+      LINE = ' '                            ! Initialize return string
+
+c	write (*,*) '  >>>1>>>NOPEN(236)=',NOPEN(236)
+      CALL OPEN_NEW(NUM,IERR,*950)          ! Open dictionary
+c	write (*,*) '  >>>2>>>NOPEN(236)=',NOPEN(236)
+
+C---  Check field number (max. 10)
+      IF (IFLD.LT.-1 .OR. IFLD.GT.NFLD(NUM)) THEN
+        IERR = 5
+        GOTO 800
+      END IF
+
+C---  Check key number (max. 3)
+      IF (IKEY.LT.0 .OR. IKEY.GT.NKEY(NUM)-1) THEN
+        IERR = 13
+        GOTO 800
+      END IF
+
+C---- Set key length
+      IF (IKEY.EQ.0) THEN
+        LNTH = 30
+      ELSE
+        LNTH = LENFLD(IKEY,NUM)
+      END IF
+
+	IERR=1
+      CALL OPEN_NEW(33,IERR,*950)          ! Open dictionary
+      CALL OPEN_NEW(227,IERR,*950)         ! Open dictionary
+
+1000	continue
+	CALL DANORD_STA_NEW(num,'N',0,LINE,KEY1,ISTAT,IERR,*800) ! READ NEXT RECORD
+c	write (*,*) '---LINE=',LINE
+c	write (*,*) '---KEY=[',KEY,'] KEY1=[',KEY1,']'
+c	write (*,*) '  >>>.>>>NOPEN(236)=',NOPEN(236)
+c	if (KEY1.eq.',DA,*') write (*,*) '---KEY=[',KEY,'] KEY1=[',KEY1,']'
+c	if (KEY1.eq.',AP,*F') write (*,*) '---KEY=[',KEY,'] KEY1=[',KEY1,']'
+c	write (*,*) '---KEY=[',KEY,'] KEY1=[',KEY1,']'
+	if (icompare_236sf7(KEY,KEY1).ne.0) goto 1000
+	write (*,*)
+     +	SUBACNUM,' '
+     +	,'---SF58(SF7=*)--- found:'
+     +	,' SF58=[',KEY(1:mylen(KEY)),']'
+	write (*,*) '                              '
+     +	,' DICT236:[',KEY1(1:mylen(KEY1)),']'
+c     +	,' SUB=',SUBACNUM
+        IERR = 0
+c	write (*,*) '***LINE=',LINE
+c	write (*,*) '  >>>3>>>NOPEN(236)=',NOPEN(236)
+
+      STATUS = ISTAT
+      RETURN
+
+  800 continue
+c      CALL CLOSE_DIC(NUM)
+c	write (*,*) '  >>>4>>>NOPEN(236)=',NOPEN(236)
+c	write (*,*) '***exit***---------------',IERR
+	IERR=16
+
+  950 RETURN
+      END
+
+
+	function icompare_236sf7(KEY00,KEY1)
+	CHARACTER*(*) KEY00
+	CHARACTER*30  KEY1,code33
+	CHARACTER*300 KEY,KEY2,KEY3,KEY4,KEY5,KEY0
+	COMMON/search227/iSearch227
+	DATA iSearch227/0/
+c	iSearch227=1
+	KEY0=KEY00 !2021-06-18
+	idebug=0
+	idebug2=0
+	lenKEY0=len(KEY0)
+c	if (KEY1.eq.',DA,*') idebug=1
+c	if (KEY1.eq.'PRE,AP,*F') idebug=1
+c	if (KEY1.eq.',AP,*F') idebug=1
+c	icompare_236sf7=0
+c	if (KEY0.eq.KEY1) return
+	ldic33=MY_LDIC(33)
+c	write (*,*)'...ldic33=',ldic33
+	ldic227=MY_LDIC(227)
+c	write (*,*)'...ldic227=',ldic227
+	icompare_236sf7=-1
+	ii=index(KEY1,'*')
+	if (ii.le.0) return
+	if (ii.gt.1) then
+		if (KEY0(1:ii-1).ne.KEY1(1:ii-1)) return
+	endif
+	ldic33full=ldic33
+	if (iSearch227.ne.0) ldic33full=ldic33+ldic227
+	do 111 i1=1,ldic33full
+	    KEY=' '
+	    KEY=KEY1
+	    ii2f=index(KEY,'*F')-index(KEY,'*')
+c	    ix=igetCode33(33,i1,code33,ii2f)
+	    ix=igetCode33or227(i1,ldic33,code33,ii2f)
+c	    write (*,*) 'ix=',ix
+	    if (ix.ne.0) goto 111
+	    i=replaceStr1(key,300,'*',code33)
+	    if (KEY(1:lenKEY0).eq.KEY0) then
+		icompare_236sf7=0
+		return
+	    endif
+	    ii=index(KEY,'*')
+	    if (ii.le.0) goto 111
+
+	    !--- there is more '*'s
+	    KEY2=KEY
+	    if (ii.gt.1) then !check beginning to avoid loop
+		if (KEY0(1:ii-1).ne.KEY(1:ii-1)) goto 111
+	    endif
+	    ii2f=index(KEY,'*F')-index(KEY,'*')
+	    do 222 i2=1,ldic33full
+		KEY=KEY2
+c		ix=igetCode33(33,i2,code33,ii2f)
+		ix=igetCode33or227(i2,ldic33,code33,ii2f)
+		if (ix.ne.0) goto 222
+		i=replaceStr1(key,300,'*',code33)
+		if (KEY(1:lenKEY0).eq.KEY0) then
+		    icompare_236sf7=0
+		    return
+		endif
+		ii=index(KEY,'*')
+		if (ii.le.0) goto 222
+
+		!--- there is more '*'s
+		KEY3=KEY
+		if (ii.gt.1) then !check beginning to avoid loop
+		    if (KEY0(1:ii-1).ne.KEY(1:ii-1)) goto 222
+		endif
+		ii2f=index(KEY,'*F')-index(KEY,'*')
+		do 333 i3=1,ldic33full
+		    KEY=KEY3
+c		    ix=igetCode33(33,i3,code33,ii2f)
+		    ix=igetCode33or227(i3,ldic33,code33,ii2f)
+		    if (ix.ne.0) goto 333
+		    i=replaceStr1(key,300,'*',code33)
+		    if (KEY(1:lenKEY0).eq.KEY0) then
+			icompare_236sf7=0
+			return
+		    endif
+		    ii=index(KEY,'*')
+		    if (ii.le.0) goto 333
+
+		!--- there is more '*'s
+		KEY4=KEY
+		if (ii.gt.1) then !check beginning to avoid loop
+!2021	write(*,*)'_ii_',ii,'[',trim(key0),'][',trim(key),']'
+		    if (KEY0(1:ii-1).ne.KEY(1:ii-1)) goto 333
+		endif
+		ii2f=index(KEY,'*F')-index(KEY,'*')
+		do 444 i4=1,ldic33full
+		    KEY=KEY4
+c		    ix=igetCode33(33,i4,code33,ii2f)
+		    ix=igetCode33or227(i4,ldic33,code33,ii2f)
+		    if (ix.ne.0) goto 444
+		    i=replaceStr1(key,300,'*',code33)
+		    if (idebug.ne.0) then
+			write (*,*) i1,i2,i3,i4
+			write (*,*) '		---key0=',key0
+			write (*,*) '		---key1=',key1
+			write (*,*) '		---code=[',code33(1:mylen(code33)),']'
+			write (*,*) '		---key =[',key(1:mylen(key)+10),']'
+		    endif
+		    if (KEY(1:lenKEY0).eq.KEY0) then
+			icompare_236sf7=0
+			return
+		    endif
+		    ii=index(KEY,'*')
+		    if (ii.le.0) goto 444
+
+
+444		continue
+333		continue
+222	    continue
+111	continue
+	return
+	end
+
+	function igetCode33or227(IREC,ldic33,getCode33,ii2f)
+	CHARACTER*30 getCode33
+	CHARACTER*300 code33
+	CHARACTER*3   STATUS
+	if (IREC.le.ldic33) then
+	    igetCode33or227=igetCode33(33,IREC,getCode33,ii2f)
+	else
+	    igetCode33or227=igetCode227(227,IREC-ldic33,getCode33)
+	end if
+	return
+	end
+
+	function igetCode33(NUMdic,IREC,getCode33,ii2f)
+	CHARACTER*30 getCode33
+	CHARACTER*300 code33
+	CHARACTER*3   STATUS
+	getCode33=' '
+	igetCode33=-1
+	call READZ_NUM(NUMdic,code33,IREC,STATUS,IERR,*800,*900)
+	if (IERR.ne.0) goto 800
+c	write (*,*) ' flag33=<',code33(45:45),'>','[',code33(1:30),']'
+	getCode33=code33(1:30)
+	if (code33(45:45).eq.'7') igetCode33=0
+c	if (code33(45:45).eq.'7') write(*,*) '[',code33(1:3),']'
+	if (ii2f.eq.0) then
+c		ii2f==0 if SF7 has '*F'
+c		then return code33 without last 'F' 
+c		in order to replace * to 1-st letter
+	    if (code33(1:2).eq.'FF') getCode33='F'
+	    if (code33(1:2).eq.'HF') getCode33='H'
+	    if (code33(1:2).eq.'LF') getCode33='L'
+	endif
+	return
+800	continue
+900	continue
+	return
+	end
+
+	function igetCode227(NUMdic,IREC,getCode33)
+	CHARACTER*30 getCode33
+	CHARACTER*300 code33
+	CHARACTER*3   STATUS
+	getCode33=' '
+	igetCode227=-1
+	call READZ_NUM(NUMdic,code33,IREC,STATUS,IERR,*800,*900)
+	if (IERR.ne.0) goto 800
+c	write (*,*) IREC,' flag227=<',code33(44:44),'>','[',code33(1:30),']'
+	getCode33=code33(1:30)
+	if (code33(44:44).ne.'Z') igetCode227=0
+	if (index(code33,'*').gt.0) then
+c		cases like: '112-*-280'
+		getCode33=' '
+		igetCode227=-1
+	endif
+	if (getCode33(1:1).eq.' ') getCode33=getCode33(2:30)
+	if (getCode33(1:1).eq.' ') getCode33=getCode33(2:30)
+c	write (*,*) IREC,' flag227=<',code33(44:44),'>','[',getCode33,']'
+	return
+800	continue
+900	continue
+	return
+	end
+
+
+
+      function replaceStr1(str0,lstr0,str1,str2)
+	CHARACTER(LEN=*) str0,str1,str2
+c	CHARACTER*lstr0 str0
+c	CHARACTER*1 str1,str2
+	lstr1=len(str1)
+c	lstr2=len(str2)
+	lstr2=mylen(str2)
+	replaceStr1=0
+c	return !---debug
+	do i=1,300
+	ind=INDEX(str0,str1)
+c	write (*,*) ' ind=',ind,' L1=',lstr1,' L2=',lstr2
+	if (ind.le.0) return
+	lshift=lstr0-(ind+lstr1)
+c	write (*,*) ' ind=',ind,' L1=',lstr1,' L2=',lstr2,' shft=',lshift
+	iend1=ind+lstr2+lshift
+	if (iend1.gt.lstr0) iend1=lstr0
+	lll=iend1-(ind+lstr2)
+c	write (*,*) ind+lstr2,ind+lstr2+lshift,iend1,' :='
+c     +	,ind+lstr1,ind+lstr1+lshift,ind+lstr1+lll
+c	str0(ind+lstr2:iend1)=str0(ind+lstr1:ind+lstr1+lshift)
+c	write (*,*) '  to:',ind+lstr2,' [',str0(ind+lstr2:ind+lstr2+10),']'
+c	write (*,*) 'from:',ind+lstr1,' [',str0(ind+lstr1:ind+lstr1+10),']'
+	str0(ind+lstr2:iend1)=str0(ind+lstr1:ind+lstr1+lll)
+	str0(ind:ind+lstr2-1)=str2(1:lstr2)
+	replaceStr1=replaceStr1+1
+	return
+	end do
+	return
+      end
+
+!      function mylen(str)
+!	CHARACTER*1 str(1)
+!	mylen=0
+!	do i=1,300
+!c	call outCharArray(str(i),1)
+!	if (str(i).eq.' ') return
+!	mylen=mylen+1
+!	end do
+!	return
+!      end
+      function mylen(str)
+	CHARACTER*(*) str
+	mylen=0
+	do i=1,300
+c	call outCharArray(str(i),1)
+	if (str(i:i).eq.' ') return
+	mylen=mylen+1
+	end do
+	return
+      end
