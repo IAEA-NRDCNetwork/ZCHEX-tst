@@ -1,4 +1,5 @@
       SUBROUTINE PASS1
+	save !zvv:2019-07-18
 C**
 C* Written by Victoria McLane
 C*            National Nuclear Data Center
@@ -85,6 +86,7 @@ C     File LABEL processing
 
       CALL READ_NEXT(1,ID,*998)                ! Read first record
       CALL SYS_LOCATE(ID,1,IMSNG,ISECND,*220,*290) ! Check for LABEL
+!	write (*,*) '____ID=',ID
       IF(ID.GT.2.AND.ID.LT.18) GOTO 280
 
   220 ILAB = ID                                ! Store Label ID
@@ -288,6 +290,7 @@ C---- File empty
  1100 FORMAT(/' File labeled: ',A10,A1,A22)
       END
       SUBROUTINE ALTER_FLAG(IALT,ID,INTSAN,IERR)
+	save !zvv:2019-07-18
 
 C* Checks alteration code.
 C*   IALT:   alteration code
@@ -298,11 +301,13 @@ C*                        42 = subentry missing alter code
 
 C---- Total counts for records, entries, subentries. (Initialized in ALTER_FLAG)
       COMMON/COUNTS/KOUNT(4)
+      COMMON/zCOUNTS/kountE,kountS
 
       CHARACTER ALTCOD(7)/'C','*','I','T','R','D',' '/  ! Legal ALTER flags
       CHARACTER IALT,ALTSUB/' '/
 
       DATA KOUNT/4*0/                   ! Initialize counts
+c      data kountE,kountS/0,0/
 
       IERR = 0                          ! Turn off error flag
 
@@ -337,6 +342,7 @@ C---- Error
       RETURN
       END
       SUBROUTINE AN_CHECK(ACNUM,INTAN,INTSAN)
+	save !zvv:2019-07-18
 
 C* Sets accession number and checks.  Initializes flags for entry.
 C*   ACNUM:  hollerith accession number (A5)
@@ -352,6 +358,7 @@ C---- Input record. (Set in READ_NEXT)
 
 C---- Operating mode. (Set in OPENUP)
       COMMON/OPMODE/ITYPE,IWARNG
+      COMMON/COUNTS/KOUNT(4)
 
       CHARACTER*3 SACNUM
       CHARACTER*5 ACNUM,ANSUB
@@ -359,10 +366,17 @@ C---- Operating mode. (Set in OPENUP)
 
       DATA HLDAC,HLDSAC/2*0/
 
+!	write(*,*)'___ACNUM=[',ACNUM(1:5),'] KARD(7:11)=[',KARD(7:11),']'
+!	if (KARD(7:11).LE.ACNUM(1:5)) then
+!	    write(*,*)'___KARD.LE.ACNUM___'
+!	end if
+
+
       INTSAN = 0                       ! INITIALIZE SAN FOR ENTRY
       ACNUM(1:5) = KARD(7:11)          ! STORE AN
       IF(ITYPE.EQ.2) ISEQ(1:5) = ACNUM ! SET AN FOR COL.67-79 CHECK
-      CALL PUTAN(ACNUM)                ! WRITE AN ON OUTPUT 
+      CALL PUTAN(ACNUM,KARD(15:22))    ! WRITE AN ON OUTPUT 
+      KOUNT(2)=KOUNT(2)+1
       HLDSAC = 0                       ! INITIALIZE LAST SAN
 
       INTAN = INTFORM(ACNUM,5,IGOOF,2)     ! STORE ACCESSION # AS INTEGER
@@ -372,7 +386,10 @@ C---- Operating mode. (Set in OPENUP)
         RETURN
       END IF
 
-      IF (INTAN.LT.HLDAC) THEN             ! ACCESSION # LESS THEN LAST
+!	write(*,*)'___INTAN=[',INTAN,'] HLDAC=[',HLDAC,']'
+!2020      IF (INTAN.LT.HLDAC) THEN             ! ACCESSION # LESS THEN LAST
+!2020-06-25: LT ==> LE to avoid tye same ENTRY accession number, e.g. prelim.1470
+      IF (INTAN.LE.HLDAC) THEN             ! ACCESSION # LESS THEN LAST
         CALL ERR_REC1(KEY2,IPTR,KARD,ISEQ,IALT,5) ! ERROR MESSAGE
       ELSE                                           
         HLDAC = INTAN                        ! STORE LAST AN
@@ -407,7 +424,7 @@ C---- FORM INTEGER ACCESSION # FOR COMPARISON AND CHECK.
         ACNUM = ANSUB                    ! SET AN FROM SUBENT
         INTAN = INTFORM(ANSUB,5,IGOOF,2) ! SET INTEGER AN
         HLDAC = INTAN                    ! SET AN FOR COMPARISON WITH NEXT
-        CALL PUTAN(ACNUM)                ! WRITE AN ON OUTPUT 
+        CALL PUTAN(ACNUM,KARD(15:22))    ! WRITE AN ON OUTPUT 
       END IF
 
       INTSAN = INTFORM(SACNUM,3,IGOOF,1) ! FORM SUBENTRY # FOR COMPARISON
@@ -427,6 +444,7 @@ C---- ERROR IN SAN. IF LAST SAN WAS 0 OR 1, INCREMENT BY 1.
       RETURN
       END
       SUBROUTINE BIB1(ISECND,IMSNG,ID,*,*)
+	save !zvv:2019-07-18
 
 C* Processes BIB section.
 C*   ISECND: sequence flag, 1 = last keyword out of sequence
@@ -484,7 +502,9 @@ c_g77      DATA ARROW/' '/
 
       IF (ID.EQ.-2) GOTO 220              ! Branch for first record read.
 
+!	write(*,*)'___KARD:[',KEY2,IPTR,KARD,']'
       CALL READ_NEXT(1,ID,*990)           ! Read first record
+!	write(*,*)'___KARD:[',KEY2,IPTR,KARD,']'
   110 CALL SYS_LOCATE(ID,11,IMSNG,ISECND,*900,*210) 
                                           ! Check for ENDBIB
   210 IF (ID.GT.0) GOTO 950               ! Branch for Illegal System ID
@@ -539,10 +559,11 @@ C---- ENDBIB not found.
 
 C---- End-of-file found. Print error message. Terminate.
   990 CALL ERR_EOF(1,9)                    ! Error message
-      ISTOP = 1
+      ISTOP=1
       RETURN 2
       END
       SUBROUTINE CHAR_CHECK(KARD)
+	save !zvv:2019-07-18
 
 C* Checks for legal characters.
 C*   KARD: input array
@@ -582,6 +603,7 @@ C---- Error pointers. (Initialized in BIBSUB)
       RETURN
       END
       SUBROUTINE DATA1(INDX,ID,IMSNG,ISECND,*)
+	save !zvv:2019-07-18
 
 C* Processes the DATA section
 C* Input/output of routine
@@ -752,15 +774,22 @@ C---- End System ID not found
 C---- END System ID found.
   900 IF (ITYPE.EQ.2) THEN                ! Transmission mode
 c-zvv        NRLIN = (IHCNT/6)+1
+c	write (*,*) '-zvv- IHCNT=',IHCNT
         NRLIN = (IHCNT+5)/6	!-zvv-
+c-zvv	write (*,*) '-zvv- IHCNT=',IHCNT,' NDATR=',NDATR,' NRLIN=',NRLIN
+	if (NRLIN.le.0) NRLIN=1
         NDATR = NDATR/NRLIN
         IF (INDX.EQ.2) NDATR = NDATR - 2  ! DATA, reset line count
+c-zvv	write (*,*) ' IHCNT=',IHCNT,' N1CNT=',N1CNT
         IF (N1CNT.NE.IHCNT) THEN
+c-zvv	write (*,*) '-zvv-1- N1CNT=',N1CNT,' NDATR=',NDATR
+c-zvv     *	,' IHCNT=',IHCNT,' NRLIN=',NRLIN
           CALL ERR_INSERT(1,4,10,SETMES(INDX))
         END IF
+	if (INDX.eq.1) NDATR=NDATR*NRLIN
         IF (N2CNT.NE.NDATR) THEN
-c	write (*,*) '-zvv- N2CNT=',N2CNT,' NDATR=',NDATR
-c     *	,' IHCNT=',IHCNT,' NRLIN=',NRLIN
+c-zvv	write (*,*) '-zvv-2- N2CNT=',N2CNT,' NDATR=',NDATR
+c-zvv     *	,' IHCNT=',IHCNT,' NRLIN=',NRLIN,' INDX=',INDX
           CALL ERR_INSERT(1,5,10,SETMES(INDX))
         END IF
       END IF
@@ -781,6 +810,7 @@ C---- End-of-file found
   930 CALL ERR_EOF(1,ID)                         ! Error message
       END
       SUBROUTINE DATE_CHECK(IDAT,NDIG,IERR)
+	save !zvv:2019-07-18
 
 C*  Checks date in format YYYYMMDD or YYMMDD (for year < 2000).
 C*    IDAT: input date (6A1)
@@ -816,7 +846,7 @@ C---- Check date range.
 C---- Check month
       IY = INTDAT/10000
       IM = (INTDAT-(IY*10000))/100
-      IF (IM.LT.0 .OR. IM.GT.12) GOTO 800
+      IF (IM.LE.0 .OR. IM.GT.12) GOTO 800
 
       IF(NDIG.EQ. 6) RETURN
 
@@ -838,6 +868,7 @@ C---- Illegal date structure
       RETURN
       END
       SUBROUTINE FLOAT_CHECK(ICNT,STRING,IARW,IERR,IFDAT)
+	save !zvv:2019-07-18
 
 C* Checks data fields for legal floating point numbers.  Stores numbers.
 C*   ICNT:   field count
@@ -868,6 +899,7 @@ C*   IFDAT:  data found on record flag
       RETURN
       END
       SUBROUTINE HEAD_CHECK(KNTFLD,KDIC,FOUND,IERRM,*)
+      save !zvv:2019-03-06:really needed
 
 C* Checks for legal titles or units, 
 C*            blanks embedded in code,
@@ -913,6 +945,7 @@ C---- Last record. (Set in READ_NEXT, READ_CONT)
       CHARACTER KPTR
 
       INTEGER FOUND
+!	save IDEP !zvv:2019-03-06
 
       EQUIVALENCE (KEYC(1)(1:10),KEY),(KEYC(1)(11:11),IPTR),
      *            (KEYC(2)(1:1),KARD(1:1))
@@ -949,8 +982,10 @@ C---- Set up section index for stored pointers
         IF(IERR1.NE.0) GOTO 380
 
         IF (ISTAT.EQ.'OBS') THEN             ! Obsolete code
-          CALL ERR_MES1(1,14)                ! Error message 
+!2022          CALL ERR_MES1(1,14)                ! Error message 
+          CALL ERR_MES(1,31)                ! Error message 20220608
           CALL FLAGIT(1,ARROW,NOW,11,IERRM)
+c	write(*,*)'_KARD:[',KEY2,'[',trim(KEYD)
         END IF
 
 C----   LEGAL KEYWORD FOUND. 
@@ -965,7 +1000,7 @@ C----     Check if blanks at end of last record
             LFLG = 1                           ! Set blank on last field
             KNTFLD = KNTFLD+1                    ! Increment field #
             CALL ERR_FIELD(2,KNTFLD,1)          ! Error message 
-            ISTOP = 1
+            ISTOP=2
             GOTO 242
           END IF
           IF (LFLG.NE.0) THEN                ! Blank field found
@@ -974,6 +1009,7 @@ C----     Check if blanks at end of last record
           END IF
         END IF
 
+!zvv	write(*,*)'_zv_HEAD_CHECK:KDIC=',KDIC,' LDX=',LDX,' IDEP=',IDEP
         IF (KDIC.EQ.24) THEN
           IF (DICLINE(3:3).EQ.'*') THEN
             IF (LDX.LT.3) THEN
@@ -1015,6 +1051,7 @@ C---- Too many fields.
       RETURN 1
       END
       SUBROUTINE LOCATE(ID,IDLAST,IDNOW,ISECND,*,*,*,*)
+	save !zvv:2019-07-18
 
 C* Tries to relocate when expected System ID has not been read.
 C* Input to routine
@@ -1118,6 +1155,8 @@ C---- Not found. Write out of sequence message.
       END
       SUBROUTINE READ_NEXT(IWAY,ID,*)
 
+	save !zvv:2019-03-07:really needed
+
 C* Reads the input file
 C* Input to routine
 C*   IWAY: 1  =  check for duplicate records and skip
@@ -1178,6 +1217,8 @@ C-      N1REC: # of records read in section
 C----   NSUB:  # of subentries read in entry
       COMMON/RECCNT/N1CNT,N2CNT,N1REC,NSUB
 
+      COMMON/zCOUNTS/kountE,kountS
+
       CHARACTER*80 NOWREC,LSTREC
 
       EQUIVALENCE (NOWREC(1:10),KEY(1:10)),(NOWREC(11:11),IPTR),
@@ -1225,10 +1266,23 @@ C----   NSUB:  # of subentries read in entry
       IF(ID.GT.0) ISECT = ID               ! For System ID, set section
 
       IF(ID.EQ.3) THEN                     ! ENTRY
+
+c	ialt=NOWREC(11:11) !---zvv---2011.05.10
+	if (NOWREC(11:11).eq.' ') kountE=kountE+1
+c	if (ialt.eq.' ') write (*,*) '---new ENTRY: ',NOWREC(1:10),kountE
+c	if (ialt.eq.'C') write (*,*) '---mod ENTRY: ',NOWREC(1:10),kountE
+c	write (*,*) '---ENTRY: ',NOWREC(18:22)
+c     +	,' IALT=[',NOWREC(11:11),'] new=',kountE
+
           CALL AN_CHECK(ACNUM,INTAN,INTSAN)  ! Check accession #
           NENT = NENT+1                      ! Increment ENTRY count
 
       ELSE IF(ID.EQ.6.OR.ID.EQ.7) THEN     ! SUBENT, NOSUBENT
+
+	ialt=NOWREC(11:11) !---zvv---2011.05.10
+c	if (ialt.eq.' ') write (*,*) '---new SUBENT: ',NOWREC(1:10)
+c	if (ialt.eq.'C') write (*,*) '---modif SUBENT: ',NOWREC(1:10)
+
           CALL SAN_CHECK(ACNUM,INTAN,INTSAN) 
                                              ! Check subaccession # 
       END IF
@@ -1239,6 +1293,7 @@ C*    TRANSMISSION MODE
 
       NSUBRC = NSUBRC+1                    ! Increment record count for subentry
 
+c-zvv-	write (*,*) '---zvv---ID=',ID,'[',NOWREC(12:22),']'
       IF (ID.EQ.1) THEN                    ! TRANS ID
         INTSAN = 0                           ! Initialize SAN
         NSEQ = 0                             ! Initialize seq.#
@@ -1310,6 +1365,7 @@ c	write (*,*) '-zvv- NSUB=',NSUB,' N1=',N1
         N2CNT = INTFORM(NOWREC(23:33),11,IERR2,1)
         IF(IERR2.NE.0) CALL FLAGIT(1,ARROW,23,11,IERR2) ! Set error markers
         N1CNT = INTFORM(NOWREC(12:22),11,IERR1,2)
+c-zvv-	write (*,*) '---zvv---N1CNT=',N1CNT,'[',NOWREC(12:22),']'
         IF (IERR1.NE.0) GOTO 390
 
       ELSE
@@ -1348,6 +1404,7 @@ C---- End-of-file return.
  8000 FORMAT(A80)
       END
       SUBROUTINE SEQ_CHECK(ISEQ,ACNUM,NSAN,NSEQ)
+	save !zvv:2019-07-18
 
 C* Checks AN, SAN, sequence # in columns 67-79 against expected.
 C*   ISEQ:  sequence #, columns 67-79 (A13)
@@ -1366,6 +1423,8 @@ C---- Error pointers. (Initialized in BIBSUB)
 
 C---- CHECK AN
 c      write (*,*) '-zvv-4 ISEQ=',ISEQ(1:5),' ACNUM=',ACNUM
+c      write (*,*) '___1___ISEQ=[',ISEQ,']'
+c     *	,' ACNUM=',ACNUM,' NSAN=',NSAN,' NSEQ=',NSEQ
       IF(ISEQ(1:5).EQ.ACNUM) GOTO 300
       IF (ACNUM(2:5).EQ.'9999') THEN         ! END LABEL
         IF(ISEQ(2:5).EQ.'9999' .AND. ISEQ(1:1).GE.ACNUM(1:1)) GOTO 300
@@ -1376,20 +1435,22 @@ c      write (*,*) '-zvv-4 ISEQ=',ISEQ(1:5),' ACNUM=',ACNUM
 
 C---- CHECK SAN
   300 NOWSAN = INTFORM(ISEQ(6:8),3,NONO,1)
+c      write (*,*) '___3___ISEQ=',ISEQ(6:8),' SAN:',NOWSAN,' N=',NONO
       IF(NONO.NE.0) GOTO 390
       IF(NOWSAN.EQ.NSAN) GOTO 400
   390 CALL FLAGIT(1,ARROW,72,3,IERRS)        ! SET ERROR MARKERS
 
 C---- CHECK SEQUENCE #
   400 NOWSEQ = INTFORM(ISEQ(9:13),5,NONO,1)
+c      write (*,*) '___4___NOWSEQ:',NOWSEQ,' NSEQ=',NSEQ
       IF(NONO.NE.0) GOTO 490
       IF(NOWSEQ.EQ.NSEQ) GOTO 500
       NSEQ = NOWSEQ
   490 CALL FLAGIT(1,ARROW,75,5,IERRS)        ! Set error markers
 
   500 IF (IERRS.NE.0) THEN                   ! Error found
-c	write (*,*) '-zvv-3 ',' NOWSEQ=',NOWSEQ
-c     *	,' NSEQ=',NSEQ,' NONO=',NONO
+c      write (*,*) '___5___NOWSEQ=',NOWSEQ
+c     *	,' NSEQ=',NSEQ,' NONO=',NONO,' IERRS=',IERRS
         CALL ERR_MES(1,3)                      ! Error message 
         IERR = IERRS
       END IF
@@ -1397,6 +1458,7 @@ c     *	,' NSEQ=',NSEQ,' NONO=',NONO
       RETURN
       END
       SUBROUTINE SYS_CHECK(KEY2,ID,IDLST)
+	save !zvv:2019-07-18
 
 C* Looks up code in tables of System Identifiers, BIB Keywords, and 
 C*   Data Headings.
@@ -1432,7 +1494,8 @@ C---- System identifier table. (Set in DICT1)
         IF (ID.GT.17) THEN               ! File LABELS
           ID = MOD(ID,2)+1                 ! Reset ID #
         ELSE IF (ID.EQ.15) THEN          ! DATA
-          IF (IDLST.EQ.15) ID = -2         ! last was DATA, reset for heading.
+c-zvv-??          IF (IDLST.EQ.15) ID = -2         ! last was DATA, reset for heading.
+          IF ((IDLST.EQ.15).or.(IDLST.EQ.-2)) ID = -2         ! last was DATA, reset for heading.
         END IF
 
       ELSE                           ! Not System ID
@@ -1454,6 +1517,7 @@ C---- System identifier table. (Set in DICT1)
 
       END
       SUBROUTINE SYS_LOCATE(ID,LOOK,IMSNG,ISECND,*,*)
+	save !zvv:2019-07-18
 
 C* Checks System ID code against code expected.
 C* Input to routine
@@ -1491,6 +1555,7 @@ C---- Correct System ID not found.
       END IF
       END
       SUBROUTINE SYSGET(ID,IDLST,*)
+	save !zvv:2019-07-18
 
 C* Searches input file until a System Identier is found
 C*   ID:    index of System ID found
