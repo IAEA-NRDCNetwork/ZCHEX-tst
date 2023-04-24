@@ -1,10 +1,28 @@
       SUBROUTINE PASS2
+	save !zvv:2019-07-18
 !**
 !* Written by Victoria McLane
 !*            National Nuclear Data Center
 !*            Brookhaven National Laboratory
 !*            Upton, NY 11973
 !**
+!**
+!* Since 2001
+!* Extended by Viktor Zerkin
+!*            Nuclear Data Section
+!*            International Atomic Energy Agency
+!*            P.O. Box 100
+!*            A-1400 Vienna
+!*            AUSTRIA
+!**
+!* Version 2015-1 (May 2015)
+!*   Introdced Units "E" for Ratio: E2/E
+!* Version 2009-1 (October 2009)
+!*   Updated for alphanumeric page number (REF_PAGE),
+!*               illegal separator after initial in author names (AUTH_CHECK),
+!*               added checking for error values under ERR-ANALYS (ERR_ANAL), 
+!*                  (coding removed from EN_SEC; directed return removed),
+!*               NPART in REACTION SF4 (PARSER and NUCFLD).
 !* Version 2001-1 (May 2001)
 !*   Updated for upper and lower case names.
 !* Version 2000-2 (December 2000)
@@ -140,7 +158,11 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
 !     SUBENT record processing
 
-  400 CALL READ_REC(ID)                  ! Read next record
+  400 continue
+c	write (*,*) '...400...id=',ID,' ',ACNUM,INTSAN
+c	write (*,*) '...400...',ID
+      CALL READ_REC(ID)                  ! Read next record
+c	write (*,*) '...401..',ID
 
       IF(ID.EQ.7) GOTO 900               ! Branch for NOSUBENT
 
@@ -148,18 +170,25 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
   500 CALL READ_REC(ID)                  ! Read next record
 
-      CALL BIBSUB(ID,*600,*1000)         ! Initialize & process BIB 
+c	write (*,*) '...call bibsub, id=',ID,' ',ACNUM,INTSAN
+!     CALL BIBSUB(ID,*600,*1000)         ! Initialize & process BIB 
+!     CALL BIBSUB(ID,*1000)              ! debug: stop processing after BIB
+      CALL BIBSUB(ID,*600)                ! Initialize & process BIB 
+c	write (*,*) '...call bibsub, id=',ID
 
 !     COMMON section processing
 
-  600 CALL READ_REC(ID)                  ! Read next record
+  600 continue
+c	write (*,*) '...600...'
+      CALL READ_REC(ID)                  ! Read next record
 
       IF (INTSAN.EQ.1) THEN
         LDX = 1
       ELSE
         LDX = 2
       END IF
-      CALL DATASUB(LDX,ID,*700,*1000)    ! Process COMMON section
+!     CALL DATASUB(LDX,ID,*700,*1000)    ! Process COMMON section
+      CALL DATASUB(LDX,ID,*700)          ! Process COMMON section
 
 !     DATA section processing
 
@@ -167,7 +196,8 @@ c      CALL DICT13                        ! Read reaction type dictionary
         CALL READ_REC(ID)                  ! Read next record
         IF(ID.EQ.16) GOTO 800              ! Branch for NODATA
 
-        CALL DATASUB(3,ID,*800,*1000)      ! Process DATA section
+!       CALL DATASUB(3,ID,*800,*1000)      ! Process DATA section
+        CALL DATASUB(3,ID,*800)            ! Process DATA section
       END IF
 
 !     End of subentry
@@ -175,19 +205,29 @@ c      CALL DICT13                        ! Read reaction type dictionary
   800 CALL READ_REC(ID)                  ! Read ENDSUBENT
 
   900 CALL READ_REC(ID)                  ! Read SUBENT or ENDENTRY
+!	if (ID.eq.5) write (*,*) '///ENTRY: ',ACNUM
+	if (ID.eq.5) write (*,*) '---ENTRY: ',ACNUM
+c	write (*,*) '...900... id=',ID,' ',ACNUM,INTSAN
+c	write (*,*) '...602...',ID
       IF (ID.EQ.6) THEN                  ! SUBENT
         GOTO 500 
       ELSE IF (ID.EQ.7) THEN             ! NOSUBENT
         GOTO 900
       ELSE                               ! ENDENTRY
+c	write (*,*) '...609...',ID,ILAB
         CALL READ_REC(ID)                  ! Read ENTRY or END label
+c	write (*,*) '...603...',ID,ILAB
         IF (ID.NE.ILAB+1) GOTO 400
+c	write (*,*) '...604...',ID,ILAB
       END IF
 
- 1000 RETURN       
+ 1000 continue
+	write (*,*) '...End of pass-2...'
+      RETURN
       END
 
       SUBROUTINE ADD_HEAD(NEW,IPTR,*)
+	save !zvv:2019-07-18
 
 !* Add heading and pointer if not already on list.
 !*   NEW:  word to be added
@@ -202,6 +242,9 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
       CHARACTER*10 NEW
       CHARACTER IPTR
+
+!	write (*,*) '...ADD_HEAD[',NEW,']',IPTR
+!	1,' NHT=',NHT,' NH1=',NH1,' INTSAN=',INTSAN
 
       IF (NHT.NE.0) THEN              ! List already contains heading(s)
         L = LOOKUP(NEW,BHEAD,NHT)       ! Look up heading
@@ -223,7 +266,60 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
   900 RETURN 1
       END      
+
+
+
+c--zvv 30/03/2010 to avoid dupl. in ERR-ANALYS codes
+      SUBROUTINE ADD_HEAD_zv2(NEW,IPTR,*)
+	save !zvv:2019-07-18
+
+!* Add heading and pointer if not already on list.
+!*   NEW:  word to be added
+!*   IPTR: current pointer
+!*   RETURN 1: not in table
+
+!---- Stored headings from BIB codes. (Initialized in BIB_SUB)
+      COMMON/BIB_HEADzv2/NHT,NH1,BHEAD(36),NBPTR(36),NBPTR1(36),
+     *                BHPTR(20,36),MATHED(20,36)
+        CHARACTER BHPTR
+        CHARACTER*10 BHEAD
+
+      CHARACTER*10 NEW
+      CHARACTER IPTR
+      COMMON/ANSAN/INTSAN,ACNUM
+        CHARACTER*5 ACNUM 
+
+!	write (*,*) '___ADD_HEAD_zv2: Hdr[',NEW,'] Pnt=[',IPTR,']'
+!	1,' NHT=',NHT,' NH1=',NH1,' INTSAN=',INTSAN
+
+      IF (NHT.NE.0) THEN              ! List already contains heading(s)
+        L = LOOKUP(NEW,BHEAD,NHT)     ! Look up heading
+        IF (L.NE.0) GOTO 200          ! Branch if already in list
+      END IF
+
+!---- Heading not in list, add.
+      CALL ADD_LIST(BHEAD,36,NHT,NH1,NEW,'HEADINGS  ',*900) 
+      L = NHT                                ! Initialize for 1st entry
+      GOTO 600
+
+!---- Heading in list
+  200 LP = LOOKUP(IPTR,BHPTR(1,L),NBPTR(L))  ! Look for matching pointer
+      IF(LP.NE.0) RETURN                     ! Heading/pointer in list
+
+!---- Pointer not in list for heading
+  600 CALL ADD_LIST(BHPTR(1,L),50,NBPTR(L),NBPTR1(L),IPTR,
+     *   'HEADINGS  ',*900)                  ! Add pointer to list for heading
+!	if (INTSAN.eq.1) nnn0=NHT
+!	return !20190717
+
+  900 RETURN 1
+      END      
+
+
+
+
       SUBROUTINE ADD_LIST(KARD,MAX,NUM,NUM1,NEW,MARRAY,*)
+	save !zvv:2019-07-18
 
 !* Adds word to array given. If array is full, error message is written 
 !* and array is not updated.
@@ -242,6 +338,9 @@ c      CALL DICT13                        ! Read reaction type dictionary
       CHARACTER*10 MARRAY
       CHARACTER*(*) NEW,KARD(MAX)
 
+!	write (*,*) '...ADD_LIST:',ACNUM,INTSAN
+!     +,' NUM=',NUM,' MAX=',MAX,' NEW=[',NEW,']'
+
       CALL INCRMT(NUM,MAX,*200)          ! Increment # of entries in list
       IF(INTSAN.EQ.1) NUM1 = NUM
                                          ! Increment # of entries in SAN 1 list
@@ -249,12 +348,13 @@ c      CALL DICT13                        ! Read reaction type dictionary
       RETURN
 
 !---- Array is full. 
-  200 write (*,1000) MARRAY,MAX               ! Write message
+  200 write (*,1000) MARRAY,MAX,NEW           ! Write message
       RETURN 1
 
- 1000 FORMAT(/' ***** Unable to update array ',A10,' Max = ',I5/)
+ 1000 FORMAT(/' ***** Unable to update array ',A10,' Max = ',I5/A80)
       END
       SUBROUTINE AN_GET(ACNUM,INTSAN)
+	save !zvv:2019-07-18
 
 !* Sets accession number.  Initializes flags for entry.
 !*   ACNUM:  hollerith accession number (A5)
@@ -274,7 +374,7 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
       INTSAN = 0                       ! Initialize SAN for entry
       ACNUM(1:5) = KARD(7:11)          ! Store AN
-      CALL PUTAN(ACNUM)                ! Write AN on output (ERRSUB entry)
+      CALL PUTAN(ACNUM,KARD(15:22))    ! Write AN on output (ERRSUB entry)
 
       RETURN
 
@@ -294,8 +394,10 @@ c      CALL DICT13                        ! Read reaction type dictionary
       RETURN
       END
       SUBROUTINE AUTH_CHECK(KARD,NOW,NBIBR,*)
+	save !zvv:2019-07-18
 
 !* Checks the BIB keyword AUTHOR:
+!*            (VM 2009/10: added check for , after initial)
 !*   for legal characters
 !*   that string on line ends with ',' or ')'
 !*   that code string ends with ')'
@@ -319,6 +421,11 @@ c      CALL DICT13                        ! Read reaction type dictionary
 
 !---- Find next author string
   120 CALL PARSCHR(KARD,NOW,LST,N,MAX,DELIM,2,ICHR,*200)
+
+      IF (N.EQ.1) THEN                   ! Only one character in author name
+        CALL ERR_MES(1,35)
+        CALL FLAGIT(1,ARROW,NOW+11,NOW,IERR)
+      END IF
 
       CALL CHAR_NAME(2,KARD,NOW,LST)     ! Check for legal characters
       NOW = LST+2                        ! Reset current position in string
@@ -360,6 +467,7 @@ c      CALL DICT13                        ! Read reaction type dictionary
   950 RETURN
       END
       SUBROUTINE BIBSUB(ID,*)
+	save !zvv:2019-07-18:really needed
 
 !* Processes BIB section.
 !*   ID:     System ID numerical equivalent
@@ -379,8 +487,8 @@ c      CALL DICT13                        ! Read reaction type dictionary
         CHARACTER*5 ACNUM 
 
 !---- Stored flags from BIB for FLAG (1) and DECAY-DATA (2). (See FLAG_CHECK)
-      COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(200,3),FPTR(200,3),
-     * MATFLG(200,3)
+	COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(1800,3),FPTR(1800,3)
+     +  ,MATFLG(1800,3)
         CHARACTER FPTR
 
 !---- Stored headings from BIB codes. (Initialized in BIB_SUB)
@@ -395,6 +503,10 @@ c      CALL DICT13                        ! Read reaction type dictionary
      *                BHPTR(20,36),MATHED(20,36)
         CHARACTER BHPTR
         CHARACTER*10 BHEAD
+      COMMON/BIB_HEADzv2/NHTzv2,NH1zv2,BHEADzv2(36),NBPTRzv2(36)
+     *  ,NBPTR1zv2(36),BHPTRzv2(20,36),MATHEDzv2(20,36)
+        CHARACTER BHPTRzv2
+        CHARACTER*10 BHEADzv2
 
 !---- Stored BIB pointers (Initialized in BIB_SUB)
 !-      NPB:    # of BIB pointers
@@ -452,9 +564,13 @@ c      CALL DICT13                        ! Read reaction type dictionary
       CHARACTER LPTR
       INTEGER SW(100),SW4,THISAN(100),ISPSDD
 
+      COMMON/myRUNIT/myNREACT,myJSEP,myRUNIT1
+      CHARACTER*4 myRUNIT1(2)
+
 !---- Initialize data error flags to blank.
       DATA ARROW/' '/
 c_g77      DATA IERR,ISPSDD/2*0/
+      COMMON/OPMODE/ITYPE,IWARNG
 
 !---- Initialize
       KIND = 0                       ! Keyword type
@@ -467,6 +583,8 @@ c_g77      DATA IERR,ISPSDD/2*0/
       IERRD = 0                      ! Duplicate keyword error flag
 
       IF (INTSAN.EQ.1) THEN          ! SAN 1
+!	NHTzv2=0
+!	nnn0=0
         CALL FILLIN(SW,NKEY,0)         ! required keyword flags
         SW4 = 0                        ! one of codes needed
         ISPSDD = 0                     ! superseded data flag
@@ -489,6 +607,14 @@ c_g77      DATA IERR,ISPSDD/2*0/
           NHT = 0
           NMON1 = 0
           NMON = 0
+        END IF
+
+        IF (NHTzv2.NE.0) THEN      
+          CALL FILLIN(MATHEDzv2,720,0)             ! Headings
+          IF (NH1zv2.NE.0) CALL FILLIN(NBPTR1zv2,NH1zv2,0) ! Heading pointers
+          IF (NHTzv2.NE.0) CALL FILLIN(NBPTRzv2,NHTzv2,0)  ! Heading pointers
+          NH1zv2 = 0
+          NHTzv2 = 0
         END IF
 
 !----   Initialize stored REACTION pointers
@@ -532,6 +658,16 @@ c_g77      DATA IERR,ISPSDD/2*0/
           NMON = NMON1
         END IF
 
+        IF (NHTzv2.NE.0) THEN
+          DO I=1,NHTzv2
+            DO J=NBPTR1zv2(I)+1,NBPTRzv2(I)
+              MATHEDzv2(J,I)=0
+            ENDDO
+          NBPTRzv2(I)=NBPTR1zv2(I)
+          ENDDO
+          NHTzv2=NH1zv2
+        ENDIF
+
         NPR = NPR1                       ! Reset stored REACTION pointers 
 
       END IF
@@ -541,6 +677,7 @@ c_g77      DATA IERR,ISPSDD/2*0/
       CALL READ_REC(ID)                  ! Read first record
 
   210 NBIBR = NBIBR+1                    ! Increment # of BIB records found
+c	write (*,*) '---NBIBR:',NBIBR
       IK = LOOKUP(KEY2,KEYWD,NKEY)       ! Look up keyword in table
       IDB = KEYEQ(IK)
 c	write (*,*) '-zvv-5 KEY2=',KEY2(1:10),' NKEY=',NKEY,' IK=',IK
@@ -570,7 +707,9 @@ c     *	,' KEYWD=',KEYWD
         END IF
       END IF
 
-  245 IF(KARD.EQ.' ') THEN               ! Blank columns 12 - 66
+c  245 IF(KARD.EQ.' ') THEN               ! Blank columns 12 - 66
+  245 IF((KARD.EQ.' ').AND.(IWARNG.NE.0)) THEN               ! Blank columns 12 - 66
+c	write(*,*)'IWARNG:',IWARNG
         CALL ERR_WARN(1,11)                ! Warning message 
         CALL FLAGIT(1,ARROW,12,55,IERR)
         GOTO 700
@@ -588,7 +727,8 @@ C     Nonobligatory keywords with coded information
 c	write (*,*) '-zvv-5 IDB=',IDB
 
       IF (IDB.EQ.32) THEN                  ! Process ASSUMED
-        CALL REACTION(3,NOW,LPTR,*500,*805)
+!       CALL REACTION(3,NOW,LPTR,*500,*805)
+        CALL REACTION(3,NOW,LPTR,*500)
       ELSE IF (IDB.EQ.38) THEN             ! Process REL-REF
         CALL REL_REF(NOW)
       ELSE IF (IDB.EQ.37) THEN             ! Process MONITOR-REF
@@ -599,15 +739,15 @@ c	write (*,*) '-zvv-5 IDB=',IDB
       ELSE IF (IDB.EQ.29) THEN             ! Process PART-DET
         CALL PART_CHECK(KARD,NOW)
       ELSE IF (IDB.EQ.18) THEN             ! Process EN-SEC
-        CALL EN_SEC(1,7,KARD,NOW,LPTR,*500)
+        CALL EN_SEC(1,7,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.23) THEN             ! Process HALF-LIFE
-        CALL EN_SEC(2,5,KARD,NOW,LPTR,*500)
+        CALL EN_SEC(2,5,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.14) THEN             ! Process INC-SOURCE
         CALL SOURCE_CHECK(KARD,NOW)
       ELSE IF (IDB.EQ.4) THEN              ! Process EXP-YEAR
         CALL HIST_CHECK(KARD,NOW)
       ELSE IF (IDB.EQ.24) THEN             ! Process MISC-COL
-        CALL EN_SEC(3,0,KARD,NOW,LPTR,*500)
+        CALL EN_SEC(3,0,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.36) THEN             ! Process ADD-RES
         CALL CODE_CHECK(KARD,NOW,20,2)
       ELSE IF (IDB.EQ.42) THEN             ! Process FLAG
@@ -615,9 +755,9 @@ c	write (*,*) '-zvv-5 IDB=',IDB
       ELSE IF (IDB.EQ.45) THEN             ! Process LEVEL-PROP
         CALL LVL_PROP(KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.19) THEN             ! Process EMS-SEC
-        CALL EN_SEC(5,7,KARD,NOW,LPTR,*500)
+        CALL EN_SEC(5,7,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.17) THEN             ! Process MOM-SEC
-        CALL EN_SEC(6,7,KARD,NOW,LPTR,*500)
+        CALL EN_SEC(6,7,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.39) THEN             ! Process RESULT
         CALL CODE_CHECK(KARD,NOW,37,2)
       ELSE IF (IDB.EQ.22) THEN             ! Process COVARIANCE
@@ -635,11 +775,22 @@ C      Obligatory keywords
       ELSE IF (IDB.EQ.5) THEN              ! Process REFERENCE
         CALL REF_CHECK(KARD,NOW)
       ELSE IF (IDB.EQ.30) THEN             ! Process REACTION
+c	write(*,*) '...call REACTION...'
         CALL REACTION(1,NOW,LPTR,*805)
+c	write(*,*) '...return REACTION...'
+c	write (*,*) '...2... NR=',myNREACT,' JSEP=',myJSEP,myRUNIT1(1)
+c     +	,myRUNIT1(2),' NPR=',NPR,' NPR1=',NPR1,' RU:',RUNIT(1)
+	if ((myJSEP.eq.4).and.(myNREACT.eq.2)
+     +	.and.(myRUNIT1(1).eq.'E2')
+     +	.and.(myRUNIT1(2).eq.'E')
+     +	) RUNIT(NPR)='E   '
+c	write (*,*) '...2... NR=',myNREACT,' JSEP=',myJSEP,myRUNIT1(1)
+c     +	,myRUNIT1(2),' NPR=',NPR,' NPR1=',NPR1,' RU:',RUNIT(1)
       ELSE IF (IDB.EQ.31) THEN             ! Process MONITOR
         CALL REACTION(2,NOW,LPTR,*805)
       ELSE IF (IDB.EQ.21) THEN             ! Process ERR-ANALYS
-        CALL EN_SEC(4,0,KARD,NOW,LPTR,*500)
+        CALL ERR_ANAL(KARD,NOW,LPTR)              !** (New subroutine 2009/10)
+c	CALL EN_SEC(4,0,KARD,NOW,LPTR)
       ELSE IF (IDB.EQ.28) THEN             ! Process HISTORY
         CALL HIST_CHECK(KARD,NOW)
       ELSE IF (IDB.EQ.27) THEN             ! Process STATUS
@@ -651,6 +802,7 @@ C      Obligatory keywords
         CALL CODE_CHECK(KARD,NOW,KDICT(IK),2)
         SW4 = 1
       END IF
+c	write (*,*) '-zvv-5b IDB=',IDB
 
   500 IF(IERR.EQ.0 .AND. IERRP.EQ.0 .AND. IERRD.EQ.0) GOTO 800
 
@@ -677,6 +829,7 @@ C      Obligatory keywords
       ELSE                                ! New key
         IF (KREQ(IK).EQ.'R') THEN ! REQUIRED CODES.
           IF (KODED(IK).EQ.0) THEN          ! Code missing on last
+c	write (*,*) '---error in: ',KEYWD(IK)
             CALL ERR_INSERT(1,19,10,KEYWD(IK))
           ELSE                             
             IF(KODED(IK).GT.0) KODED(IK) = 0  ! Reset code to not found
@@ -687,7 +840,10 @@ C      Obligatory keywords
 
 !     End of BIB section
 
-  900 IF (INTSAN.GT.1) THEN
+  900 continue
+	!write (*,*) '___1___ID=',ID,INTSAN,'[',KEY2,IPTR,KARD,ISEQ,']'
+      IF (INTSAN.GT.1) THEN
+	!write (*,*) '___2___ID=',ID,INTSAN,'[',KEY2,IPTR,KARD,ISEQ,']'
 
 !     BIB completeness check for DATA subentry
 
@@ -695,12 +851,18 @@ C      Obligatory keywords
                                ! MONITOR not relevant, set MONITOR flag to found
 
 !----   Skip for superseded data, nonstandard entries.
+	!write (*,*) '___3___ISPSDD=',ISPSDD
         IF(ISPSDD.NE.0) GOTO 930
+	!write (*,*) '___4___ACNUM=[',ACNUM,']'
         IF(ACNUM.GT.'11000' .AND. ACNUM.LT.'12700') GOTO 930
+	!write (*,*) '___5___ACNUM=[',ACNUM,']'
         IF(ACNUM.GE.'20000') GOTO 930
+	!write (*,*) '___6___ACNUM=[',ACNUM,']'
 
 !----   Check if required keywords found
+	!write (*,*) '___required:',NKEY,' INTSAN=',INTSAN
         DO 925 I = 1,NKEY
+	!write (*,*) '___SW(I):',I,'::',SW(I),KEYWD(I)
           IF (SW(I).EQ.0) THEN
             IF (KREQ(I).EQ.'R') CALL ERR_INSERT(1,33,10,KEYWD(I)) 
             IF (KREQ(I).EQ.'X') CALL ERR_INSERT(1,34,10,KEYWD(I)) 
@@ -712,9 +874,12 @@ C      Obligatory keywords
 
       END IF
 
-  930 RETURN 1
+  930 continue
+c	write (*,*) '...930...'
+      RETURN 1
       END
       SUBROUTINE CHAR_NAME(IWAY,KARD,NOW,LST)
+	save !zvv:2019-07-18
 
 !* Checks free text.
 !*   IWAY: 2 = author's name (AUTHOR keyword)
@@ -767,6 +932,7 @@ C      Obligatory keywords
       RETURN
       END
       SUBROUTINE CHECK_HEAD(NEW,IPTR,NOW,*)
+	save !zvv:2019-07-18
 
 !* Checks if heading and pointer are in list; if pointer to be matched
 !* is blank, skips pointer check.
@@ -796,13 +962,20 @@ C      Obligatory keywords
 
       IF (NHT.EQ.0) RETURN                ! Empty list
 
+c	write (*,*) 'NEW=[',NEW,'] KEPT=[',KEPT,']'
+
       KEPT = NEW                          ! Store heading
       L = LOOKUP(KEPT,BHEAD,NHT)          ! Look up heading
 
       IF (L.EQ.0) THEN                    ! Heading not in list
         DO 150 I=10,2,-1                    ! Delete extension
           IF (KEPT(I:I).EQ.'-') THEN
-            K = LOOKUP(KEPT(I+1:I+3),NEXT,5)
+c		write (*,*) 'I=[',I,'] NEXT=[',NEXT,']'
+c            K = LOOKUP(KEPT(I+1:I+3),NEXT,5)
+	    iilast=I+3
+	    if (iilast.gt.10) iilast=10
+            K = LOOKUP(KEPT(I+1:iilast),NEXT,5)
+
             IF (K.NE.0) KEPT(I:10) = ' '
             GOTO 160
           END IF
@@ -838,11 +1011,14 @@ C      Obligatory keywords
       RETURN 1
 
 !---- More than one heading found for pointer
-  900 CALL ERR_MES(1,39)                     ! Error message 
+  900 continue
+!	write(*,*)'___1___ERR_MES(1,39)'
+      CALL ERR_MES(1,39)                     ! Error message 
       CALL FLAGIT(1,ARROW,NOW,11,IERR)
       RETURN
       END      
       SUBROUTINE CODE_CHECK(KARD,NOW,KDIC,NCOD)
+	save !zvv:2019-07-18
 
 !* Checks BIB codes in standard coding format
 !*   KARD: input array
@@ -862,6 +1038,7 @@ C      Obligatory keywords
       CHARACTER LIMTR(2)/',', ')'/
 
       INTEGER WHICH(2)
+      CHARACTER*3 STATD
 
 !---- Codes which require special processing for DETECTOR and INC-SOURCE
       DATA SPECOD/'COVAR','COIN '/
@@ -872,7 +1049,9 @@ C      Obligatory keywords
       NN = 0                           ! Initialize # of codes found
       MULTI = ' '                      ! Blank out current special code
       IERR1 = 0                        ! Turn off internal error flag
+      IERR2=0 !Cummulative IERR1 //ZVV-2021-05-19
 
+c	write (*,*) '-zvv-','KDIC=',KDIC,' NCOD=',NCOD
       I = LOOKIN(KDIC,1,WHICH,2)       ! See if dictionary has special code
       IF(I.NE.0) MULTI = SPECOD(I)     ! Store current special code
 
@@ -905,11 +1084,26 @@ C      Obligatory keywords
           CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
         END IF      
       ELSE                                          
-        CALL DANVER_NEW(KDIC,KARD(NOW:KPT),0,IERR1,*300) ! Look up code
+c	write (*,*) '-zvv2-','KDIC=',KDIC,' [',KARD(NOW:KPT),']'
+c-zvv	CALL DANVER_NEW    (KDIC,KARD(NOW:KPT),0,IERR1,*300) ! Look up code
+	CALL DANVER_STA_NEW(KDIC,KARD(NOW:KPT),0,STATD,IERR1,*300) 
         CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR1)
       END IF
 
-  300 IF(ICHR.EQ.2) GOTO 900                ! Check for end of code string
+  300 CONTINUE
+c-zvv+++2011/01/07
+c	write (*,*) '-zvv2-','KDIC=',KDIC,' [',KARD(NOW:KPT),']',ierr1
+      if (IERR1.ne.0) IERR2=1
+      IF (STATD.EQ.'EXT') THEN
+        CALL ERR_WARN(1,1)                        ! Error message 
+        CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+      ELSE IF (STATD.EQ.'OBS') THEN
+        CALL ERR_MES(1,31)
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+      END IF
+c-zvv----
+
+      IF(ICHR.EQ.2) GOTO 900                ! Check for end of code string
       NOW = KPT+2                           ! Set to read after comma
       IF(NCOD.NE.1) GOTO 200                ! More than one code allowed
 
@@ -926,13 +1120,15 @@ C      Obligatory keywords
       END IF
 
 !---- If error flag set, print message.
-  910 IF (IERR1.NE.0) THEN                  ! Errors found
+!  910 IF (IERR1.NE.0) THEN                  ! Errors found
+  910 IF ((IERR1.NE.0).or.(IERR2.NE.0)) THEN  ! Errors found
         IERR = 1                              ! Set error flag
         CALL ERR_MES(1,35)                    ! Error message 
       END IF
       RETURN
       END
       SUBROUTINE CROS_CHECK(LDX,NFLD,NLINE)
+	save !zvv:2019-07-18
 
 !* Checks independent variable links to REACTION:
 !*  - are required independent variables are found?
@@ -1011,6 +1207,12 @@ C      Obligatory keywords
 !*    Check for legal independent variables
 
       DO 180 I = 1,NFLD                         ! Loop over fields
+c-zvv	write (*,*) '-1--zvv---',' ISAN=',INTSAN,' NLINE=',NLINE
+c-zvv     +,' NFLD=',NFLD,' I=',I,' INDFAM(I)',INDFAM(I)
+c-zvv	write (*,*) '-2--zvv---',' LDX=',LDX,' NOTCK=',NOTCK
+c-zvv     +,' BHEAD(I)=',BHEAD(I)
+c-zvv	write (*,*) '-3--zvv---'
+c-zvv     +,' HEADS(I)=',HEADS(I,1),HEADS(I,2),HEADS(I,3)
         IF (INDFAM(I).LE.2 .OR. INDFAM(I).GT.10) GOTO 180             
                                                   ! Skip if not indep.var.
         N = INDFAM(I) - 2                         ! Set family index
@@ -1021,12 +1223,14 @@ C      Obligatory keywords
               IF (NEEDS(1).EQ.0) CALL ERR_INSERT(1,14,10,MESFAM(N))
                                                         ! Not energy
             ELSE IF (N.EQ.6) THEN
+c-zvv	write (*,*) '-5--zvv---',' I=',I,' N=',N,' MES=',HEADS(I,LDX)
               CALL ERR_INSERT(1,28,10,HEADS(I,LDX))   ! Message to check use
             ELSE
               CALL ERR_INSERT(1,14,10,MESFAM(N))      ! Error message
             END IF                             
           END IF
           IF (NEEDS(N).EQ.-1) THEN
+c-zvv	write (*,*) '-4--zvv---',' I=',I,' N=',N,' MES=',MESFAM(N)
             CALL ERR_INSERT(1,16,10,MESFAM(N))      ! Error message
             GOTO 180
           END IF
@@ -1076,6 +1280,7 @@ C      Obligatory keywords
 
 !*    Cross check of REACTION and BIB pointers vs. DATA and COMMON
 
+c	write (*,*) '...NPR=',NPR
       IF (NPR.GT.1) THEN             ! More than 1 REACTION pointer
 
 !----   If no pointers in DATA section, no link of REACTION to DATA
@@ -1170,6 +1375,7 @@ C      Obligatory keywords
  1100 FORMAT('DATA',7X,I11)
       END
       SUBROUTINE DATASUB(LDX,ID,*)
+	save !zvv:2019-07-18
 
 !* Processes the DATA section
 !*   LDX:    section index
@@ -1270,6 +1476,7 @@ C     Data Headings
       NDATR = NDATR+1                ! DATA or COMMON section record found
       IF (IUCNT.LT.IHCNT) GOTO 400
 
+!22073002.x4      if (IWAY.eq.2) CALL UNIT_CHECK(1,IDEP) !___ZV2019____ Check heading vs. units and reaction
       CALL UNIT_CHECK(IWAY,IDEP)   ! Check heading vs. units and reaction
 
       IF (IWAY.EQ.3) THEN               ! DATA section
@@ -1329,6 +1536,7 @@ C     Data Headings
       RETURN
       END
       SUBROUTINE DECAY(IDB,KARD,NOW,LPTR,*)
+	save !zvv:2019-07-18
 
 !* Checks the keywords DECAY-DATA, DECAY-MON and RAD-DET.
 !*   IDB:  keyword index 33 = DECAY-DATA
@@ -1346,13 +1554,29 @@ C     Data Headings
       CHARACTER*80 DICLINE
       CHARACTER*55 KARD
       CHARACTER LIMTR(4)/',', ')', ' ', '/' /
+      CHARACTER*55 snucl,spart,sene,sintens
+      CHARACTER LPTR
 
       IERRU = 0                           ! Turn off error flag
 
       IF (KARD(NOW:NOW).EQ.'(') THEN      ! FLAG field present
-        IF (IDB.EQ.34) THEN                 ! DECAY-MON, Flag field illegal
-           CALL FLAGIT(1,ARROW,NOW+11,1,IERRU) ! Set error markers
-         ELSE                              
+        IF (IDB.EQ.34) THEN               ! DECAY-MON, Flag field illegal
+!2021     CALL FLAGIT(1,ARROW,NOW+11,1,IERRU) ! Set error markers
+!2021++
+          CALL PARSCHR(KARD,NOW,KPT,NUM,10,LIMTR,2,ICHR,*200) ! find end of heading
+          NOW=NOW+1
+          CALL DANGET_NEW(24,KARD(NOW:KPT),0,0,LINE,IERRU) ! look up heading
+         write (*,*) '___DECAY:IERRU:',IERRU,'[',KARD(NOW:KPT),']'
+c	  if (KARD(NOW:NOW+4).ne.'MONIT') IERRU=1
+	  if ((IERRU.eq.0).and.(KARD(NOW:NOW+4).ne.'MONIT')) IERRU=1
+         write (*,*) '___DECAY:IERRU:',IERRU,'[',KARD(NOW:NOW+4),']'
+          if (IERRU.ne.0) then
+!?          CALL ERR_MES(1,35)                      ! error message
+            CALL FLAGIT(1,ARROW,NOW+11,KPT-NOW+1,IERRU) ! Set error markers
+          endif
+          NOW = KPT+2
+!//2021--
+        ELSE                              
            NOW = NOW+1
            CALL FLAG_CHECK(2,KARD,NOW,LPTR,*200) ! Check flag field
         END IF
@@ -1369,6 +1593,10 @@ C     Data Headings
         CALL ERR_FIELD(1,1,12)              ! Error message
         CALL FLAGIT(1,ARROW,NOW+11,1,IERR)
       ELSE
+c-2011	write (*,*) '--zvv--decay:[',KARD(NOW:KPT),']',KARD
+c-2020	write (*,*) '--zvv--Nuclide:[',KARD(NOW:KPT),'] KADR:',KARD
+c-2020	write (*,*) '--zvv--Nuclide:[',KARD(NOW:KPT),']'
+        snucl=KARD(NOW:KPT)
         CALL NUCFLD(5,KARD(NOW:KPT),NUM,IERR1,INE,MULT)   ! Check nuclide
         IF(IERR1.NE.0) CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR) ! Set error markers
       END IF
@@ -1444,6 +1672,10 @@ C     Data Headings
         END IF
       END IF
 
+c-2020	write (*,*) '--zvv--Particle:[',KARD(NOW:KPT),']'
+      spart=KARD(NOW:KPT)
+      sene=' '
+      sintens=' '
       CALL DANVER_NEW(33,KARD(NOW:KPT),0,IERR1,*460) ! Check particle
 
 !---- Illegal particle
@@ -1484,8 +1716,17 @@ C     Data Headings
         GOTO 590
       END IF
 
+c-2020	write (*,*) '--zvv--Energy:[',KARD(NOW:KPT),']'
+      sene=KARD(NOW:KPT)
       DIGIT = FLOATIT(KARD(NOW:KPT),NUM,IERR1) ! check floating point number
-      IF (IERR1.NE.0) CALL FLAGIT(1,ARROW,NOW+11,NUM,IERRU) ! set markers
+      IF (IERR1.NE.0) THEN
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERRU) ! set markers
+      ELSE
+        IF (DIGIT.LT.1.) THEN                   ! Energy<1.
+          CALL ERR_WARN(1,17)                   ! Warning message
+          CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+        END IF
+      ENDIF
 
       NOW = KPT+1
       GOTO (600,900,690,590) ICHR
@@ -1503,12 +1744,27 @@ C     Data Headings
 
       IF (NUM.EQ.0) GOTO(400,800,700) ICHR     ! Branch for empty field
 
+c-2020	write (*,*) '--zvv--Intensity:[',KARD(NOW:KPT),']'
+      sintens=KARD(NOW:KPT)
+c	write(*,*)'--zvv--Part:[',trim(spart),'] Ene:[',trim(sene)
+c     1	,'] Abu:[',trim(sintens),']'
       DIGIT = FLOATIT(KARD(NOW:KPT),NUM,IERR1) ! Check floating point number
       IF (IERR1.NE.0) THEN
         CALL FLAGIT(1,ARROW,NOW+11,NUM,IERRU)  ! Set error markers
       ELSE
-        IF (DIGIT.GT.1.0) THEN                   ! Abundance > 1.0
-          CALL ERR_WARN(1,9)                       ! Warning message
+c	write(*,*)'--zvv==Part:[',trim(spart),'] Ene:[',trim(sene)
+c     1	,'] Abu:[',trim(sintens),']'
+	if ((spart.eq.'DG').and.(sene.eq.' ').and.(sintens.ne.' '))then
+c	write(*,*)'--zvv__Part:[',trim(spart),'] Ene:[',trim(sene)
+c     1	,'] Abu:[',trim(sintens),']'
+!          CALL ERR_WARN(1,16)                      ! Warning message
+!          CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+          CALL ERR_MES(1,71)               ! Error message 
+          CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+	endif
+!2020   IF (DIGIT.GT.1.0) THEN                   ! Abundance > 1.0
+        IF (DIGIT.GT.2.0) THEN                   ! Abundance > 2.0
+          CALL ERR_WARN(1,9)                     ! Warning message
           CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
         END IF
       END IF        
@@ -1544,13 +1800,15 @@ C     Data Headings
 
   900 IF (IERRU.NE.0) THEN                     ! Internal error flag set
         IERR = 1                                 ! Set error flag
-        CALL ERR_MES(1,38)                       ! Error message 
+!2021	CALL ERR_MES(1,38)                       ! Error message 
+	CALL ERR_MES(1,35) !2021-05-24           ! Error message 
       END IF
       RETURN
 
   990 RETURN 1                                 ! Return for new keyword found
       END
       SUBROUTINE DICT13
+	save !zvv:2019-07-18
 
 !* Reads Reaction Type dictionary. Stores reaction types and fields expected.
 
@@ -1591,6 +1849,7 @@ c      CALL EXIT
 
       END
       SUBROUTINE DICT213
+	save !zvv:2019-07-18
 
 !* Reads Reaction Type dictionary. Stores reaction types and fields expected.
 
@@ -1631,22 +1890,22 @@ c      CALL EXIT
       STOP
 
       END
-      SUBROUTINE EN_SEC(KIND,IFIELD,KARD,NOW,LPTR,*)
+      SUBROUTINE EN_SEC(KIND,IFIELD,KARD,NOW,LPTR)
+	save !zvv:2019-07-18
 
-!* Checks the BIB keywords EN-SEC, HALF-LIFE, MISC, ERR-ANALYS, EMS-SEC
-!* and MOM-SEC.
+!* Checks the BIB keywords EN-SEC, HALF-LIFE, MISC, EMS-SEC and MOM-SEC.
+!*           (VM 2009/10: ERR-ANALYS moved to ERR_ANAL)
+!*           (VM 2009/10: took out useless directed return; commented out ierr1).
 !*   KIND:   keyword processed  
 !*           1 = EN-SEC
 !*           2 = HALF-LIFE
 !*           3 = MISC-COL
-!*           4 = ERR-ANALYS
 !*           5 = EMS-SEC
 !*           6 = MOM-SEC
 !*   IFIELD: nuclide field number
 !*   KARD:   input array
 !*   NOW:    position in array
 !*   LPTR:   pointer for current code
-!*   RETURN 1: do not check free text (all blank)
 
 !---- Error pointers. (Initialized in BIBSUB)
       COMMON/ERRPTR/IERR,ARROW
@@ -1660,9 +1919,11 @@ c      CALL EXIT
       CHARACTER FAMILY,LPTR
 
       IERRU = 0                            ! Turn off error flag for subroutine
+C	ierr1=0
 
 !*    Heading Field
 
+c	write (*,*) '...EN_SEC:[',KIND,'] IFIELD=[',IFIELD,']'
       CALL PARSCHR(KARD,NOW,KPT,NUM,10,LIMTR,2,ICHR,*700) ! find end of heading
 
       IF (NUM.EQ.0) THEN                   ! Empty field
@@ -1672,27 +1933,40 @@ c      CALL EXIT
       END IF
 
       CALL DANGET_NEW(24,KARD(NOW:KPT),0,0,LINE,IERRU) ! look up heading
-      IF(IERRU.NE.0) GOTO 140
 
-!---- Check family codes
-      IF (KIND.EQ.4) THEN                  ! ERR-ANALYS headings
-        DO 130 I = NOW,KPT
-          IF (KARD(I:I+2).EQ.'ERR') GOTO 150
-  130   CONTINUE
-      ELSE
+      IF (IERRU.EQ.0) THEN                 ! Check family codes
+c	write (*,*) '...FAMILY(1:1)=',FAMILY(1:1),' LINE(3:3)=',LINE(3:3)
         FAMILY(1:1) = LINE(3:3)
-        IF(FAMILY.EQ.FAMCOD(KIND)) GOTO 150
+        IF(FAMILY.EQ.FAMCOD(KIND)) GOTO 150 
+!2022-06-08
+c       CALL ERR_INSERT(1,35,6,'['//FAMILY//']['//FAMCOD(KIND)//']')   ! Message to check use
+c       CALL ERR_INSERT(1,28,KPT-NOW+1,KARD(NOW:KPT))   ! Message to check use
+       CALL ERR_INSERT(1,35,6+KPT-NOW+2,
+     + KARD(NOW:KPT)//':'//
+     + '['//FAMCOD(KIND)//']['//FAMILY//']'
+     + )   ! Message to check use
       END IF
 
-  140 CALL ERR_MES(1,35)
-      CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW),IERR) ! Set error markers
+c	write (*,*) '_____NOW=',NOW,' KPT=',KPT,(KPT-NOW),KARD(NOW:NOW+11)
+c	write (*,*) '_____NOW=',NOW,' KPT=',KPT,(KPT-NOW),KARD(NOW:KPT)
+      CALL ERR_MES(1,35)
+      CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW+1),IERR) ! Set error markers 2022-06-08
+c	write (*,*) '...IERR=',IERR,' IERRU:',IERRU,KPT-NOW
+!	write (*,*) '...IERRU:',IERRU,'[',FAMILY,'][',FAMCOD(KIND),']'
+C	ierr1=ierr1+IERR
+	return !2022-06-08
+      GOTO 200
+
+!* Legal heading found; add to stored table.
 
   150 HEAD = KARD(NOW:KPT)                 ! Store heading
       CALL ADD_HEAD(HEAD,LPTR,*200)        ! Add to list of required headings
 
 !---- Already in table
+!	write(*,*)'___2___ERR_MES(1,39)'
       CALL ERR_MES(1,39)                     ! Error message 
       CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW+1),IERR)
+C	ierr1=ierr1+IERR
 
 !*    Remaining fields
 
@@ -1700,30 +1974,209 @@ c      CALL EXIT
 
       IF (KIND.EQ.3) THEN          ! MISC-COL, only one code allowed
         IF(ICHR.EQ.2) GOTO 850       ! end of string
-      ELSE IF (KIND.EQ.4) THEN     ! ERR-ANALYS, allow code + correlation factor
-        IF(ICHR.EQ.2) GOTO 850       ! end of string
-        NOW = KPT+2
-        CALL PARSCHR(KARD,NOW,KPT,NUM,15,LIMTR(2),1,ICHR,*700)
-                                                  ! find end of subfield
-        VARBLE = FLOATIT(KARD(NOW:KPT),NUM,IERRU) ! check floating point number
-        IF(IERRU.EQ.0) GOTO 800
 
       ELSE                         ! Additional subfields required
         IF (ICHR.EQ.2) THEN          ! end of string
           CALL ERR_MES(1,38)
           CALL FLAGIT(1,ARROW,KPT,1,IERR)   ! set error markers
+C	ierr1=ierr1+IERR
           GOTO 800      
         END IF
 
 !----   Check particle field.
   500   NOW = KPT+2
         CALL PARSCHR(KARD,NOW,KPT,NUM,15,LIMTR(2),2,ICHR,*700) ! find next field
+c	write (*,*) '...1.IERRU=',IERRU,' IERR=',IERR,KARD(NOW:KPT)
         CALL NUCFLD(IFIELD,KARD(NOW:KPT),NUM,IERRU,INE,MULT)   ! check particle 
+c	write (*,*) '...2.IERRU=',IERRU,' IERR=',IERR,KARD(NOW:KPT),ICHR
         IF (IERRU.EQ.0) THEN           ! No error
           IF (ICHR.EQ.2) GOTO 500
           GOTO 800
         END IF
       END IF
+
+  700 CALL ERR_MES(1,36)
+      CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)   ! set error markers
+
+  800 NOW = KPT+2
+c	write (*,*) '...800:IERRU=',IERRU,' IERR=',IERR,KARD(NOW:KPT)
+C	IERR=ierr1+IERRU
+c	if (ierr1.ne.0) return 1
+      RETURN
+
+  850 NOW = KPT+2
+      IF (KARD(NOW:55).EQ.' ') THEN          ! blank rest of field
+        NUM = 55-NOW+1
+        CALL ERR_MES(1,45)
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+      END IF
+
+      RETURN
+      END
+
+      SUBROUTINE ERR_ANAL(KARD,NOW,LPTR)
+	save !zvv:2019-07-18
+
+!* Checks the BIB keyword ERR-ANALYS. (Added October 2009: VM)
+!*   KARD:   input array
+!*   NOW:    position in array
+!*   LPTR:   pointer for current code
+!
+!	2017-05-18
+!	modif from (ERR-4,1.,2.,0.0) to (ERR-4,1.,2.,U)
+!
+!---- Error pointers. (Initialized in BIBSUB)
+      COMMON/ERRPTR/IERR,ARROW
+        CHARACTER*80 ARROW
+        INTEGER IERR
+
+      CHARACTER*80 LINE
+      CHARACTER*55 KARD
+      CHARACTER*10 HEAD
+      CHARACTER LPTR
+      CHARACTER LIMTR(2)/',', ')'/
+
+      INTEGER NOW
+      INTEGER IERRU,IFIELD,KPT,NDFND,NUM
+
+      IERRU = 0                            ! Turn off error flag for subroutine
+      IFIELD = 0                           ! Initialize # of numeric fields
+      NUM = 1                              ! initialize # of characters to flag
+      NDFND = 0                            ! Turn off error value found flag.
+
+!* HEADING Field
+
+ccc	write (*,*) ''
+ccc	write (*,*) '___ZVV: ERR_ANAL'
+ccc	write (*,*) '___ERR_ANAL::---[',KARD,']---'
+      CALL PARSCHR(KARD,NOW,KPT,NUM,10,LIMTR,2,ICHR,*700) ! find end of heading
+
+      IF (NUM.EQ.0) THEN                   ! Empty field
+        CALL ERR_MES(1,34)
+        CALL FLAGIT(1,ARROW,NOW+11,1,IERR)
+        IF(ICHR.EQ.1) THEN                 ! Data field with no heading.
+          CALL ERR_MES(1,35)
+        END IF
+        RETURN
+      END IF
+
+      CALL DANGET_NEW(24,KARD(NOW:KPT),0,0,LINE,IERRU) ! look up heading
+ccc	write (*,*) '---[',KARD(NOW:KPT),']--','IERRU=',IERRU,' ierr=',ierr
+      IF(IERRU.NE.0) GOTO 140
+
+c-zvv
+cc	goto 2000
+ccc	write (*,*) '---[',KARD(NOW:KPT),']---0-- KPT=',KPT,' NOW=',NOW
+      HEAD = KARD(NOW:KPT)                 ! Store heading
+      CALL ADD_HEAD_zv2(HEAD,LPTR,*2000)       ! Add to list of required headings
+!---- Already in table
+!	write(*,*)'___3___ERR_MES(1,39)'
+      CALL ERR_MES(1,39)                   ! Error message 
+      CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW+1),IERR)
+2000  continue
+
+
+!---- Check for error heading.
+      DO 130 I = NOW,KPT
+ccc	write(*,*)'---130-[',KARD(i:kpt),']--1--I=',I,'now=',now,'kpt=',kpt
+        IF (KARD(I:I+2).EQ.'ERR') GOTO 200
+        IF (KARD(I:I+8).EQ.'MONIT-ERR') GOTO 200
+  130 CONTINUE
+
+!---- ERROR, not error heading.
+  140 CALL ERR_MES(1,35)
+      CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW),IERR) ! Set error markers
+
+!* DATA fields 
+
+  200 IF(ICHR.EQ.2) RETURN                 ! No numeric fields
+
+      NDFND = 0                            ! Turn off error value found flag.
+
+	iifld=0
+  220 CALL INCRMT(IFIELD,3,*500)           ! Allow up to 3 fields.
+	iifld=iifld+1
+
+!* Find end of next field
+
+ccc	write (*,*) '===2=[',KARD(NOW:NOW+1),']===now=',NOW,' kpt=',KPT
+      if (kard(kpt+1:kpt+1).eq.')') goto 900   !zvv-2017-05-10
+      NOW = KPT+2
+      IF (KARD(NOW:NOW).EQ.',') THEN           ! Field blank
+        KPT = KPT+1
+        GOTO 220
+c2017 ELSE IF (IFIELD.LT.3) THEN           ! Set data in BIB flag.
+      ELSE IF (IFIELD.LT.2) THEN           ! Set data in BIB flag.
+        NDFND = IFIELD
+      ENDIF
+
+ccc	write (*,*) '3-- IERRU=',IERRU,' now=',NOW,' kpt=',KPT
+C-zvv      CALL PARSCHR(KARD,NOW,KPT,NUM,15,LIMTR(2),1,ICHR,*900)  ! find end of subfield
+      CALL PARSCHR(KARD,NOW,KPT,NUM,15,LIMTR,2,ICHR,*900)  ! find end of subfield
+ccc	write (*,*) '4[',KARD(NOW:KPT),']',' IERRU=',IERRU
+ccc	1,' now=',NOW,' kpt=',KPT
+      VARBLE = FLOATIT(KARD(NOW:KPT),NUM,IERRU) ! check floating point number
+ccc	write (*,*) '5[',KARD(NOW:KPT),'] ERR=',IERRU,' fld=',iifld,VARBLE
+	if (iifld.eq.3) then
+	    if (KARD(NOW:KPT).eq.'U') IERRU=0
+	    if (KARD(NOW:KPT).eq.'F') IERRU=0
+	    if (KARD(NOW:KPT).eq.'P') IERRU=0
+	    if (KARD(NOW:KPT).eq.'C') IERRU=0
+	endif
+
+      IF (IERRU.NE.0) THEN
+	if (iifld.eq.3) CALL ERR_MES1(1,25)
+        if (iifld.ne.3) CALL ERR_MES1(1,20)
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+      END IF
+ccc	write (*,*) '6[',KARD(NOW:KPT),']',' IFIELD=',IFIELD,' VARBLE=',VARBLE
+
+!*    Check numerical fields.
+
+      IF (IFIELD.LE.2) THEN                      ! Error field
+        IF (VARBLE.LT. 0.0) THEN                   ! Value should be > 0
+          CALL ERR_MES(1,53)
+          CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+        END IF
+      ELSE                                        ! Correlation factor
+        IF (VARBLE.LT. 0.0 .OR. VARBLE.GT.1.0) THEN ! Value should be 0 to 1.0
+          CALL ERR_MES(1,53)
+          CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+        END IF
+      END IF
+
+      GOTO 220
+
+!* End of coding string.
+
+c-zvv  500 IF(NDFND.NE.0) RETURN                ! Error value found, do not store heading.
+  500 continue
+ccc	write (*,*) IFIELD,'++++NDFND=',NDFND,'[',KARD(NOW:KPT),']'
+	if (NDFND.ge.2) then
+	    CALL ERR_MES(1,53)
+	    NOW=KPT+1
+	    KPT=KPT+2
+	    CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW+1),IERR)
+	    return
+	end if
+      IF(NDFND.NE.0) RETURN                ! Error value found, do not store heading.
+
+!---- Uncertainty value not in record, put heading in list to check in data
+	return !2020-11-30:heading F, U, P must not be stored/checked
+
+ccc	write (*,*)'__zvv:...Store heading','[',KARD(NOW:KPT),']'
+      HEAD = KARD(NOW:KPT)                 ! Store heading
+      CALL ADD_HEAD(HEAD,LPTR,*600)        ! Add to list of required headings
+
+!* ERROR: Already in table
+
+!	write(*,*)'___4___ERR_MES(1,39)'
+      CALL ERR_MES(1,39)                     ! Error message 
+      CALL FLAGIT(1,ARROW,NOW+11,(KPT-NOW+1),IERR)
+
+  600 RETURN
+
+!---- ERRRORS
 
   700 CALL ERR_MES(1,36)
       CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)   ! set error markers
@@ -1736,12 +2189,14 @@ c      CALL EXIT
         NUM = 55-NOW+1
         CALL ERR_MES(1,45)
         CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
-        RETURN 1
       END IF
 
-      RETURN
+  900 RETURN
       END
+
+
       SUBROUTINE FACIL_CHECK(KARD,NOW)
+	save !zvv:2019-07-18
 
 !* Checks the BIB keyword FACILITY
 !* Input to routine
@@ -1754,6 +2209,7 @@ c      CALL EXIT
 
       CHARACTER*55 KARD
       CHARACTER LIMTR(2)/',', ')'/
+      CHARACTER*3 STATD
 
       N = 0
       IERRF = 0
@@ -1779,8 +2235,25 @@ c      CALL EXIT
 
   290 GOTO (100,900) ICHR                      ! Branch for comma, rparen
 
-  300 CALL DANVER_NEW(3,KARD(NOW:KPT),0,IERR1,*310) ! Look up INSTITUTE code
-      GOTO 500
+c  300 CALL DANVER_NEW(3,KARD(NOW:KPT),0,IERR1,*310) ! Look up INSTITUTE code
+c      GOTO 500
+300	continue
+	CALL DANVER_STA_NEW(3,KARD(NOW:KPT),0,STATD,IERR1,*850)!---- Look up code
+
+!---- Illegal field
+	CALL ERR_MES(1,35)                          ! Error message 
+	CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+	GOTO 310
+
+!---- Check for obsolete codes
+  850 IF (STATD.EQ.'EXT') THEN
+        CALL ERR_WARN(1,1)                        ! Error message 
+        CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+      ELSE IF (STATD.EQ.'OBS') THEN
+        CALL ERR_MES(1,31)
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+      END IF
+c	write (*,*) '...FACIL:500=[',KARD(NOW:KPT),']',IERR1,STATD
 
   310 IF(ICHR.EQ.2) GOTO 900
       NOW = KPT+2
@@ -1814,6 +2287,7 @@ c      CALL EXIT
 
       END
       SUBROUTINE FAMGET(IWAY,RTYPE,NEEDS)
+	save !zvv:2019-07-18
 
 !*    Finds independent variables required for reaction type
 !*    given.
@@ -1866,6 +2340,7 @@ c      CALL EXIT
       RETURN
       END
       SUBROUTINE FIELD_CHECK(IWAY)
+	save !zvv:2019-07-18
 
 !*  Checks DATA and COMMON headings vs. those stored from BIB.
 !*    IWAY 1 = SAN 1 COMMON section
@@ -1913,7 +2388,9 @@ c      CALL EXIT
 !----     No match, store heading root for comparison, and extension, if any
           ROOT = ' '
           KEYD = HEADS(I,J)
-          CALL GET_EXT(KEYD,EXT,N2,*150)
+c	write (*,*) '...FIELD_CHECK: KEYD=[',KEYD,'] EXT=[',EXT,'] N2=',N2
+c         CALL GET_EXT(KEYD,EXT,N2,*150) !changed, because of Maev, 2007/06/06
+          CALL GET_EXT(KEYD,EXT,N2,*500) !---approved by Otto, 2007/06/08
 
 !----     Extension found
           N = LOOKUP(EXT,REMOVE,4)             ! Look up codes to be removed
@@ -1935,6 +2412,7 @@ c      CALL EXIT
             N1 = 1
           END IF
 
+c	write (*,*) '...FIELD_CHECK: N2=',N2
           IF(KEYD(N2:N2).GE.'1' .AND. KEYD(N2:N2).LE.'9') THEN
             N2 = N2-1
           END IF
@@ -1951,6 +2429,7 @@ c      CALL EXIT
 
       END
       SUBROUTINE FIELD_COUNT(LDX,IDATA,IHCNT,IERR)
+	save !zvv:2019-07-18
 
 !* Checks that data exists for all headings and that all data fields have
 !* headings.
@@ -1989,6 +2468,7 @@ c      CALL EXIT
       RETURN
       END
       SUBROUTINE FLAG_CHECK(IWAY,KARD,NOW,LPTR,*)
+	save !zvv:2019-07-18
 
 !* Checks BIB keyword FLAG coding and the flag portion of BIB keyword
 !* DECAY-DATA. Stores data heading in list of required headings.
@@ -2010,8 +2490,8 @@ c      CALL EXIT
 !-      FLAGS:  numerical flags and pointers (Set in FLAG_CHECK)
 !-      FPTR:   pointers for stored flags (Set in FLAG_CHECK)
 !----   MATFLG: match flag, BIB vs. DATA (Set in MONOT, initialized in AN_GET)
-      COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(200,3),FPTR(200,3),
-     * MATFLG(200,3)
+	COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(1800,3),FPTR(1800,3)
+     +  ,MATFLG(1800,3)
         CHARACTER FPTR
 
 !---- Error pointers. (Initialized in BIBSUB)
@@ -2040,6 +2520,7 @@ c     *	,' NOW=',NOW,' LPTR=',LPTR
 
       DIG = FLOATIT(KARD(NOW:KPT),N,IERR)       ! Check floating point number
       IF(IERR.NE.0) THEN
+!	write (*,*) '___FLAG_CHECK:IWAY=',IWAY,'[',KARD(NOW:KPT),']'
         CALL ERR_MES(1,20)
         GOTO 400
       END IF
@@ -2052,6 +2533,7 @@ c     *	,' NOW=',NOW,' LPTR=',LPTR
         IF (DIG.EQ.FLAGS(I,IWAY) .AND. LPTR.EQ.FPTR(I,IWAY)) THEN 
                                                   ! FLAG already defined 
           IF(IWAY.GE.2) GOTO 500                    ! Branch for DECAY-DATA
+!	write(*,*)'___5___ERR_MES(1,39)'
           CALL ERR_MES(1,39)                        ! Error message 
           GOTO 400
         END IF
@@ -2061,7 +2543,8 @@ c     *	,' NOW=',NOW,' LPTR=',LPTR
   200 CALL ADD_HEAD(HFLG(IWAY),LPTR,*300)
 
 !---- Store FLAGS for comparison with DATA.
-  300 CALL INCRMT(INDX,200,*350)
+c-zvv  300 CALL INCRMT(INDX,200,*350)
+  300 CALL INCRMT(INDX,800,*350)
       IF(INTSAN.EQ.1) NF1(IWAY) = NF1(IWAY)+1
       FLAGS(INDX,IWAY) = DIG
       FPTR(INDX,IWAY) = LPTR
@@ -2105,6 +2588,7 @@ c	write (*,*) '-zvv-5 MATFLG(I,J)=',MATFLG(I,J),' I=',I,' J=',J
  6000 FORMAT(F10.2)
       END
       SUBROUTINE FLOAT_REC(ICNT,STRING,IDATA,STRDAT)
+	save !zvv:2019-07-18
 
 !* Checks data fields for legal floating point numbers.  Stores numbers.
 !*   ICNT:   # of fields to be converted
@@ -2134,7 +2618,9 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
             STRDAT(NOW) = FLOATIT(NOWREC(LOW:LOW+10),11,IERR1)
                                                   ! Convert to floating point
             IF (IERR1.NE.0) THEN                  ! Error
-              CALL FLAGIT(1,DARROW(J),LOW,LOW+10,IERRD)
+!zvv	write(*,*)'________________2022-06-06:13104004_______________',LOW
+!zvv2022      CALL FLAGIT(1,DARROW(J),LOW,LOW+10,IERRD)
+              CALL FLAGIT(1,DARROW(J),LOW,11,IERRD)
             ELSE                                  ! Data found in field
               IDATA(NOW) = 1                        
             END IF
@@ -2145,6 +2631,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
   800 RETURN
       END
       SUBROUTINE GENQM(KARD,LOW,LAST,MODAV,MODREL)
+	save !zvv:2019-07-18
 
 !* Removes General Quantity Modifier from REACTION.
 !*   KARD:   SF 5-8 of REACTION keyword
@@ -2153,7 +2640,8 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
 !*   MODAV:  average modifier flag
 !*   MODREL: rel modifier flag
 
-      CHARACTER*40 KARD
+!zvv2019      CHARACTER*40 KARD
+      CHARACTER*(*) KARD
       CHARACTER*80 MFLAG
       CHARACTER LIMTR/'/'/
 
@@ -2169,6 +2657,8 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       CALL SEARCH_END(KARD(LOW:LAST),NUM,LIMTR,1,N,ICHR) ! Find next subfield
       KPT = LOW+N-1                            ! Set # of chars in code
       CALL DANGET_NEW(34,KARD(LOW:KPT),0,0,MFLAG,IERRM)      ! Look up modifier 
+c	write (*,*) '...GENQM...','[',KARD(LOW:KPT),'] IERRM=',IERRM
+c	write (*,*) '.1.GENQM...','[',MFLAG,']'
       IF(IERRM.NE.0) GOTO 900
 
       IF(MFLAG(11:14).EQ.'GENQ') GOTO 170
@@ -2211,6 +2701,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
  1000 FORMAT(I10)
       END
       SUBROUTINE GET_EXT(KEYD,EXT,LST,*)
+	save !zvv:2019-07-18
 
 !* Find heading extension.
 !* Input to routine
@@ -2221,11 +2712,15 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
 !* RETURN
 !*   1 = no extension found
 
+!zvv2019
       CHARACTER*10 KEYD
+!      CHARACTER*(*) KEYD
       CHARACTER*4 EXT
 
       EXT = ' '
 
+      LEND=10
+!	write (*,*) '...GET_EXT: KEYD=[',KEYD,'] EXT=[',EXT,']',LEND
       DO 110 J = 10,2,-1
         IF (KEYD(J:J).NE.' ') THEN
           LEND=J                           ! Store last nonblank char. position
@@ -2255,6 +2750,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       RETURN
       END
       SUBROUTINE HEAD_PROC(LDX,KNT,KDIC,NOTFND)
+	save !zvv:2019-07-18
 
 !* Reads records, checks if Data Heading or Units. 
 !* For data headings, stores family codes, checks for required headings.
@@ -2284,7 +2780,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
 !---- Stored units for current section. (Set in HEAD_PROC)
 !-      UHEAD: dict. 24 information for headings
 !----   UTYP:  unit type for stored units 
-      COMMON/DATA_UNITS/HEAD_CODE(18),UTYP(18)
+      COMMON/DATA_UNITS/HEAD_CODE(18,3),UTYP(18,3)
         CHARACTER*15 HEAD_CODE
         CHARACTER*4 UTYP
 
@@ -2319,12 +2815,13 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
           NHD(LDX) = NHD(LDX)+1                  ! Increment heading count
           HEADS(KNT,LDX) = KEYD                  ! Store heading
           HPTR(KNT,LDX) = KEYC(I)(11:11)         ! Store pointer
-          HEAD_CODE(KNT) = DICLINE(1:15)         ! Store dict. 24 codes
+          HEAD_CODE(KNT,LDX) = DICLINE(1:15)         ! Store dict. 24 codes
 
 !*      Unit records
 
         ELSE     
-          UTYP(KNT) = DICLINE(36:39)             ! Store unit type
+c	write (*,*) '---zvv---KDIC=',KDIC,' UTYP=[',DICLINE(36:39),']'
+          UTYP(KNT,LDX) = DICLINE(36:39)             ! Store unit type
         END IF
 
   400 CONTINUE
@@ -2332,6 +2829,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       RETURN
       END
       SUBROUTINE HIST_CHECK(KARD,NOW)
+	save !zvv:2019-07-18
 
 !* Checks code string for BIB keywords HISTORY and EXP-YEAR.
 !*   KARD: input character string
@@ -2357,6 +2855,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
         CALL FLAGIT(1,ARROW,LST+12,1,IERR)
       ELSE IF (LST.GT.10) THEN               ! Code too long
         CALL ERR_MES(1,35)
+c	write (*,*) '.3..call err_mess(1,35)... LST=',LST,' KARD=',KARD
         CALL FLAGIT(1,ARROW,LST+12,1,IERR)
         GOTO 920
       END IF        
@@ -2370,6 +2869,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       RETURN
       END
       SUBROUTINE LAB_CHECK(KARD,NOW,NBIBR,*)
+	save !zvv:2019-07-18
 
 !* Checks the BIB keyword INSTITUTE for: legal codes, obsolete codes, 
 !* illegal leading blanks. 
@@ -2387,8 +2887,13 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       CHARACTER*3 STATD
       CHARACTER LIMTR(2)/',', ')'/
 
+!      write (*,*)'___LAB_CHECK:NOW=',NOW,' KARD=',KARD
+
 !---- Flag leading blanks
-  150 IF(KARD(NOW:NOW).EQ.' ') CALL LEAD_BLANK(KARD,NOW,*900)
+!  150 IF(KARD(NOW:NOW).EQ.' ') CALL LEAD_BLANK(KARD,NOW,*900)
+  150 continue
+!      write (*,*)'___150___LAB_CHECK:NOW=',NOW,' KARD=',KARD
+      IF(KARD(NOW:NOW).EQ.' ') CALL LEAD_BLANK(KARD,NOW,*900)
 
       CALL PARSCHR(KARD,NOW,KPT,NUM,7,LIMTR,2,ICHR,*800) ! Find next code
       IF (NUM.EQ.0) THEN                          ! Empty field
@@ -2426,6 +2931,12 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
             CALL ERR_MES(1,32)
             CALL FLAGIT(1,ARROW,NOW,12,IERR)
             NOW = 2
+          ELSE
+!	    write (*,*)'___870___LAB_CHECK:NOW=',NOW,' KARD=',KARD
+875	    if ((NOW.LT.55).and.(KARD(NOW:NOW).EQ.' ')) then
+		NOW=NOW+1
+		goto 875
+	    endif
           END IF
           NBIBR = NBIBR+1
         END IF
@@ -2438,6 +2949,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
   930 RETURN 1
       END
       SUBROUTINE LEAD_BLANK(KARD,NOW,*)
+	save !zvv:2019-07-18
 
 !* Flags illegal leading blanks
 !*   KARD: input array
@@ -2464,6 +2976,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       RETURN
       END
       SUBROUTINE LVL_PROP(KARD,NOW,LPTR)
+	save !zvv:2019-07-18
 
 !* Checks code for keywork LEVEL-PROP
 !*   KARD: input record (columns 12-66)
@@ -2473,7 +2986,7 @@ c?          STRDAT(NOW) = "2                      ! Set blank equivalent
       COMMON/ERRPTR/IERR,ARROW
         CHARACTER*80 ARROW
 
-      CHARACTER*80 DICLINE
+C      CHARACTER*80 DICLINE     !* removed; never referenced.
       CHARACTER*55 KARD
       CHARACTER*1 LPTR
       CHARACTER LIMTR(3)/',', ')', '/' /
@@ -2510,6 +3023,8 @@ c	write (*,*) '-zvv-5 LVL_PROP: ',KARD,NOW,LPTR
       IF (KARD(NOW:NOW+5).EQ.'E-LVL=') THEN
         NOW = NOW+6
       ELSE IF (KARD(NOW:NOW+8).EQ.'LVL-NUMB=') THEN
+        NOW = NOW+9
+      ELSE IF (KARD(NOW:NOW+8).EQ.'IAS-NUMB=') THEN
         NOW = NOW+9
       ELSE
         CALL PARSCHR(KARD,NOW,KPT,NUM,15,LIMTR,2,ICHR,*800) 
@@ -2565,6 +3080,7 @@ c	write (*,*) '-zvv-5 LVL_PROP: ',KARD,NOW,LPTR
   900 RETURN
       END
       SUBROUTINE MONOT(ICNT,NREC,STRDAT,KPTFLD,IERR)
+	save !zvv:2019-07-18
 
 !* Checks in data section:
 !* - that all independent variables types are present,
@@ -2578,8 +3094,8 @@ c	write (*,*) '-zvv-5 LVL_PROP: ',KARD,NOW,LPTR
 !* IERR:   error flag
 
 !---- Stored flags from BIB for FLAG (1) and DECAY-DATA (2). (See FLAG_CHECK)
-      COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(200,3),FPTR(200,3),
-     * MATFLG(200,3)
+	COMMON/BIB_FLAG/NF1(3),NFT(3),FLAGS(1800,3),FPTR(1800,3)
+     +  ,MATFLG(1800,3)
         CHARACTER FPTR
 
 !---- Stored headings for SAN 1 + current subentry. (Set in HEAD_PROC)
@@ -2606,6 +3122,7 @@ c	write (*,*) '-zvv-5 LVL_PROP: ',KARD,NOW,LPTR
       REAL STRDAT(18),LSTDAT(18)
       INTEGER MSORT(18)
       common/monot_g77/ MSORT
+      common/monot_gfort/ LSTDAT !2019-03-06
 
 !!!!  Initialize
       NOW = 0
@@ -2613,6 +3130,7 @@ c	write (*,*) '-zvv-5 LVL_PROP: ',KARD,NOW,LPTR
       LSTCNG = 0                           ! last variable changed
       NDFLD = 0                            ! # of data fields given
       IF (NREC.EQ.1) CALL FILLIN(MSORT,ICNT,0) ! Initialize sort flags
+c	write (*,*)'__1__NREC=',NREC,' ICNT=',ICNT,' MSORT:',MSORT(1),MSORT(2)
 
       DO 300 J = 1,3
         NOWREC = KPTFLD(J)
@@ -2654,9 +3172,27 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
               IGOT = 0                     ! Initialize indep. var. found flag
 
             ELSE IF (IND.NE.LSTFLG) THEN ! Variable type different from last
-              IF(LSTCNG.NE.0) 
-     *          CALL RESTORE(LSTDAT(NOW),ICNT-I+1,STRDAT(NOW))
-                                             ! Store data if change
+c	write (*,*) '-zvv-1-',i,' LSTCNG=',LSTCNG,NOWREC(LOW:LOW+10)
+c     +,STRDAT(NOW),LSTDAT(NOW),MSORT(NOW)
+c              IF(LSTCNG.NE.0) 
+c     *          CALL RESTORE(LSTDAT(NOW),ICNT-I+1,STRDAT(NOW))
+c                                              ! Store data if change
+
+c-zvv-2013.02.08
+c              IF(LSTCNG.NE.0) 
+c     +            CALL RESTORE(STRDAT(NOW),ICNT-I+1,LSTDAT(NOW))
+                                              ! Store data if change
+
+c-zvv-2013.02.08 tested
+               if (LSTCNG.NE.0) then
+                 IF(NOWREC(LOW:LOW+10).eq.' ') 
+     +            CALL RESTORE(STRDAT(NOW),ICNT-I+1,LSTDAT(NOW))
+c     +            STRDAT(NOW)=LSTDAT(NOW)
+                                              ! Store data if change
+ 	      end if
+
+
+
               IF (IGOT.EQ.0) THEN          ! Data not found for last variable 
                 L = LSTFLG-2
                 CALL ERR_INSERT(2,15,10,MESFAM(L))
@@ -2666,6 +3202,8 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
               IGOT = 0                     ! Turn off indep. variable found flag
             END IF
  
+c	write (*,*) '-zvv-',i,LSTCNG,'[',NOWREC(LOW:LOW+10),']Is field?'
+c     +,HEADS(NOW,3),STRDAT(NOW),LSTDAT(NOW),MSORT(NOW)
             IF(NOWREC(LOW:LOW+10).EQ.' ') GOTO 290 ! Is field blank?
             IGOT = 1                     ! Set indep. variable data found
 
@@ -2682,6 +3220,8 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
                 MSORT(NOW) = 1                        ! Set sort to ascending
               END IF
             ELSE                              ! Monotonicity flag set, check
+c	write (*,*) '_zv_',NREC,now,LSTCNG,'[',NOWREC(LOW:LOW+10),']'
+c     +,HEADS(NOW,3),'---check---',STRDAT(NOW),LSTDAT(NOW),MSORT(NOW)
               IF (STRDAT(NOW).EQ.LSTDAT(NOW)) THEN  ! Same as last
                 LSTCNG = 0                            ! Turn off change flag
                 GOTO 290
@@ -2690,9 +3230,11 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
               ELSE IF (STRDAT(NOW).GT.LSTDAT(NOW)) THEN ! Ascending order
                 IF (MSORT(NOW).GE.0) GOTO 290           ! Should be descending
               END IF
+c	write (*,*) '-zvv-',NREC,LSTCNG,'[',NOWREC(LOW:LOW+10),']'
+c     +,HEADS(NOW,3),'---error---'
               CALL ERR_INSERT(2,20,10,HEADS(NOW,3)) 
               CALL FLAGIT(1,DARROW(J),LOW,11,IERR)
-           END IF  
+            END IF  
           END IF
   290   CONTINUE
   300 CONTINUE
@@ -2708,24 +3250,11 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       SUBROUTINE NUCFLD(IFIELD,STRING,NUM,IERRU,INE,MULT)
+	save !zvv:2019-07-18
 
 !* Checks Nuclide field codes
+!*          (VM 200910: added check for NPART in SF4)
 !*   IFIELD: field to be processeed
 !*            1: REACTION SF1
 !*            2: REACTION SF2
@@ -2752,7 +3281,8 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
       CHARACTER*80 DICLINE
       CHARACTER*20 ISOTPE
       CHARACTER*20 ISOTPECHK
-      CHARACTER*10 ELEMS(3)/'ELEM      ','MASS      ','ELEM/MASS '/
+      CHARACTER*10 ELEMS(4)/'ELEM      ','MASS      ','ELEM/MASS ',
+     *                      'NPART     '/
       CHARACTER*2 MTYPE(7)/'G ','M ','M1','M2','M3','M4','T '/
       CHARACTER MNSTATE(4)/'1','2','3','4'/
       CHARACTER MLIM(4)/'-', ' ', '+', '/'/
@@ -2761,12 +3291,12 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
       CHARACTER*2 HLUNITS
       CHARACTER USES227
 
-      DIMENSION INEFY(3),NUSE(7)
+      DIMENSION INEFY(4),NUSE(7)
 
       DATA NUSE/0,2,3,0,1,0,4/      ! Particle use for reaction fields
       DATA NMETA/7/                 ! # of metastable state codes
 
-      DATA INEFY/-1000,-2000,-3000/ ! ELEM, MASS, ELEM/MASS equivalents.
+      DATA INEFY/-1000,-2000,-3000,-4000/ ! ELEM, MASS, ELEM/MASS, NPART equiv.
       COMMON/ERRPTR/IERR,ARROW
         CHARACTER*80 ARROW
 
@@ -2811,12 +3341,23 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
 !!!!  Z-S-A-M format checking
 
 
-  200 CALL PARS_CHR(STRING(L:L+3),4,MLIM,2,KPT,ICHR,*390) 
+  200 continue
+c	write (*,*) '--1--zvv:[',STRING,']',' L=',L,len(STRING)
+	Lplus3=L+3
+	if (L+3.gt.len(STRING)) Lplus3=len(STRING)-L
+c	write (*,*) '--2--zvv:[',STRING(L:Lplus3),']'
+c      CALL PARS_CHR(STRING(L:L+3),4,MLIM,2,KPT,ICHR,*390) 
+      CALL PARS_CHR(STRING(L:Lplus3),Lplus3,MLIM,2,KPT,ICHR,*390) 
                                           ! Read Z (up to 3 characters)
       LOW = 3-KPT+1                       ! Store starting posit. of Z in string
 
 !---- Read symbol (up to 2 characters)
       CALL INCRMT_NEW(L,KPT+1,NUM,*800)   ! Reset low character
+	if (L+2.gt.len(STRING)) then
+	write (*,*) '!!!! Z-S-A-M format checking !!!!'
+	write (*,*) '--3--zvv:[',STRING,']',' L=',L,len(STRING)
+	call exit(1)
+	endif
       CALL PARS_CHR(STRING(L:L+2),3,MLIM,2,KPT,ICHR,*800)
 
 !---- READ A (UP TO 3 CHARACTERS)
@@ -2830,6 +3371,8 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
       ISOTPE = ' '
       ISOTPE(LOW:LOW+LAST-1) = STRING(1:LAST) ! Readjust isotope for lookup
 
+c	write (*,*)
+c	write (*,*) 'x27:ISOTPE=',ISOTPE,' [',STRING,']'
 	MMAX=0
 	ISOTPECHK=ISOTPE
 	iISOTPECHK=1
@@ -2841,10 +3384,23 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
 	if (LAST+1.lt.NUM) then
 	    iBasic=0
 	    if (STRING(LAST+2:NUM).eq.'G') iGround=1
+
+c	    if (STRING(LAST+2:NUM).eq.'L') iBasic=1
+c	    if (STRING(LAST+2:NUM).eq.'L1') iBasic=1
+c	    if (STRING(LAST+2:NUM).eq.'L2') iBasic=1
+c	    if (STRING(LAST+2:NUM).eq.'L3') iBasic=1
+c	    if (STRING(LAST+2:NUM).eq.'L1/L2') iBasic=1
+c	    if (STRING(LAST+2:LAST+2).eq.'L') iBasic=1
+	    if (INDEX(STRING(LAST+2:NUM),'L').gt.0) iBasic=1
+
+c	write (*,*) '...27:ISOTPE=',ISOTPE,' [',STRING(LAST+2:NUM),']'
+c     *	,NUM-LAST-1
 	    do M=1,4
 		iISOTPECHK=M
 		CALL DANGETN_NEW(227,ISOTPECHK,iISOTPECHK
      *		,0,0,DICLINE,IERR) ! LOOK UP NUCLIDE
+c	write (*,*) '...ISOTPECHK=',ISOTPECHK,' iISOTPECHK=',iISOTPECHK
+c     *	,' IERR=',IERR
 		if (IERR.eq.0) then
 		    NSTATE=MNSTATE(M)
 		    MMAX=M
@@ -2852,8 +3408,10 @@ c	write (*,*) '-zvv-5 IND=',IND,' NFT(IND)=',NFT(IND)
 	    end do
 	end if
 
+c	write (*,*) '...iBasic=',iBasic,' iGround=',iGround
 	if ((iBasic.ne.0).or.((iGround.ne.0))) then
 	    CALL DANGET_NEW(227,ISOTPE,0,0,DICLINE,IERR)    ! LOOK UP NUCLIDE
+c		write (*,*) '...227:ISOTPE=[',ISOTPE,']... IERR=',IERR
 	    if (IERR.ne.0)  then
 		CALL DANGET_NEW(209,ISOTPE,0,0,DICLINE,IERR)! LOOK UP COMPOUND
 	    end if
@@ -2864,6 +3422,8 @@ c		! -M exists, bat main isitope (Basic) does not exist
 	else
 	    CALL DANGET_NEW(227,ISOTPECHK,0,0,DICLINE,IERR) ! LOOK UP NUCLIDE-M
 	end if
+c
+c	write (*,*) '   227:DICLINE=',DICLINE(1:64)
       READ(DICLINE,1110) INE,USES227,HLUNITS ! Set INE and USE flags
  1110 FORMAT(6X,I6,1X,A1,18X,A2)
 	STABL='S'
@@ -2881,12 +3441,15 @@ c     *  ,' U227=',USES227,' UNITS=',HLUNITS
 c      CALL DANGET_NEW(27,ISOTPE,0,0,DICLINE,IERR) ! LOOK UP NUCLIDE
 cc	write (*,*) ' 27:DICLINE=',DICLINE(1:64)
 
+c	write (*,*) '-----------------IERR=',IERR,' IFIELD=',IFIELD
       IF (IERR.NE.0) THEN                     ! Illegal code
         GOTO 800
       END IF
 
 c      READ(DICLINE,1100) INE,USES,STABL,NSTATE ! Set INE and USE flags
  1100 FORMAT(5X,I6,4A1,6X,A1,1X,A1)
+c	write(*,*) ' 27.INE=',INE,' USES=',USES,' STABL=',STABL
+c     *  ,' NSTATE=[',NSTATE,']'
 
 !---- Check validity of nuclide in field.
       IERRNOW = 0
@@ -2915,8 +3478,9 @@ c      READ(DICLINE,1100) INE,USES,STABL,NSTATE ! Set INE and USE flags
         IF(USES(3).NE.'3' .AND. USES(3).NE.'Z') IERRNOW = 1
       END IF
 
+c	write (*,*) '-----------------IERRNOW=',IERRNOW
       IF (IERRNOW.NE.0) THEN
-        CALL ERR_WARN(1,13)                      ! Print warning
+        CALL ERR_WARN(1,13)                      ! Print warning
         CALL FLAGIT(0,ARROW,0,0,IERRU)
       END IF
 
@@ -2935,13 +3499,31 @@ c      READ(DICLINE,1100) INE,USES,STABL,NSTATE ! Set INE and USE flags
         RETURN
       END IF
 
+c	write (*,*) '---str=[',STRING(L:L+KPT-1),']',MTYPE,NMETA,ICHR
       M = LOOKUP(STRING(L:L+KPT-1),MTYPE,NMETA) ! Look up code
+	if (iBasic.ne.0) then
+	    if (STRING(L:L+KPT-1).eq.'L') then
+		M=7
+	    else
+		if ((L+KPT-1.gt.L).and.(STRING(L:L).eq.'L')) then
+		    READ(STRING(L+1:L+KPT-1),5555,ERR=5556) iii
+c			write (*,*) '		L=',iii
+			if (iii.ge.0) M=7
+ 5555 		    FORMAT(I3)
+ 5556		    continue
+		end if
+	    end if
+	end if
+c	write (*,*) '---M=',M,' NSTATE=[',NSTATE,']'
       IF(M.EQ.0) GOTO 800
+c	write (*,*) 'm27:ISOTPE=',ISOTPE,' M=',M
+c     *	,' [',STRING(L:L+KPT-1),']'
 
       IF (M.EQ.1) THEN                         ! Ground state code
         IF(ICHR.EQ.1) GOTO 360                   ! Complex isomeric state code
-        IF (NSTATE.EQ.' ') THEN                  ! 'G' Illegal if no metastate
-          CALL ERR_WARN(1,12)                      ! Print warning
+c       IF (NSTATE.EQ.' ') THEN                  ! 'G' Illegal if no metastate
+        IF ((iBasic.ne.0).and.(NSTATE.EQ.' ')) THEN ! 'G' Illegal if no metastate
+          CALL ERR_WARN(1,12)                      ! Print warning
           CALL FLAGIT(0,ARROW,0,0,IERRU)
         END IF
       ELSE IF (M.LE.6) THEN                    ! Metastable state code
@@ -3016,9 +3598,9 @@ c      READ(DICLINE,1100) INE,USES,STABL,NSTATE ! Set INE and USE flags
 
 !!!!  ELEM,MASS checking (Fields 1, 4)
 
-!---- Check for ELEM, MASS codes.
+!---- Check for ELEM, MASS, NPART codes.
   700 IF(NUM.GT.10) GOTO 800
-      I = LOOKUP(STRING(1:NUM),ELEMS,3)
+      I = LOOKUP(STRING(1:NUM),ELEMS,4)
       IF(I.EQ.0) GOTO 800
       INE = INEFY(I)
       RETURN
@@ -3036,11 +3618,8 @@ c      READ(DICLINE,1100) INE,USES,STABL,NSTATE ! Set INE and USE flags
 
 
 
-
-
-
-
       SUBROUTINE NUCFLDold(IFIELD,STRING,NUM,IERRU,INE,MULT)
+	save !zvv:2019-07-18
 
 !* Checks Nuclide field codes
 !*   IFIELD: field to be processeed
@@ -3179,7 +3758,7 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
       END IF
 
       IF (IERRNOW.NE.0) THEN
-        CALL ERR_WARN(1,13)                      ! Print warning
+        CALL ERR_WARN(1,13)                      ! Print warning
         CALL FLAGIT(0,ARROW,0,0,IERRU)
       END IF
 
@@ -3204,7 +3783,7 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
       IF (M.EQ.1) THEN                         ! Ground state code
         IF(ICHR.EQ.1) GOTO 360                   ! Complex isomeric state code
         IF (NSTATE.EQ.' ') THEN                  ! 'G' Illegal if no metastate
-          CALL ERR_WARN(1,12)                      ! Print warning
+          CALL ERR_WARN(1,12)                      ! Print warning
           CALL FLAGIT(0,ARROW,0,0,IERRU)
         END IF
       ELSE IF (M.LE.6) THEN                    ! Metastable state code
@@ -3218,7 +3797,7 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
         END IF
 
         IF (MS.LT.(M-1)) THEN                  ! More than allowed #
-          CALL ERR_WARN(1,12)                    ! Print warning
+          CALL ERR_WARN(1,12)                    ! Print warning
           CALL FLAGIT(0,ARROW,0,0,IERRU)
         END IF
       END IF
@@ -3281,8 +3860,10 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
 
 !---- Check for ELEM, MASS codes.
   700 IF(NUM.GT.10) GOTO 800
-      I = LOOKUP(STRING(1:NUM),ELEMS,3)
+      I = LOOKUP(STRING(1:NUM),ELEMS,4)
       IF(I.EQ.0) GOTO 800
+
+      IF(IFIELD.EQ.1 .AND. I.EQ.4) GOTO 800      ! NPART not allowed in field 1.
       INE = INEFY(I)
       RETURN
 
@@ -3300,15 +3881,11 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
 
 
 
-
-
-
-
-
-
       SUBROUTINE PARSER(IWAY,LOW,LST,RUNIT)
+	save !zvv:2019-07-18
 
 !* Scans REACTION string and checks each subfield.
+!*            (VM 2009/10: added processing for NPART in SF4).
 !*   IWAY:  1  =  REACTION
 !*          2  =  MONITOR
 !*          3  =  ASSUMED
@@ -3353,9 +3930,11 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
       CHARACTER DELIM(4)/'(', ',', ')', '+'/
       CHARACTER DELIM2(3)/',', '/', ')'/
       CHARACTER*4 RUNIT
+      CHARACTER*3 STATD
 
 !!!!  Initialize
       RUNIT = ' '        ! units expected
+      STATD = ' '        ! 2018
       NOW = LOW          ! current position in array KARD
       NUCQ = 0           ! nuclear quantity flag off
       IERRU = 0          ! nuclide use error flag off
@@ -3455,6 +4034,7 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
 !----   Check code. Determine if outgoing particle or processes (negative INE).
         II = I
         CALL NUCFLD(3,KARD(NOW:KPT),NUM,IERR1,INE3,MULT)
+	if (KARD(NOW:KPT).eq.'B-') ine3=-1000 !2017-05-18
 
         IF (IERR1.GT.0) THEN                 ! If error
           CALL FLAGIT(1,ARROW,NOW+11,NUM,IERRU) ! Set error markers
@@ -3558,8 +4138,11 @@ c	write (*,*) 'x27:DICLINE=',DICLINE
         IF (INEOUT.EQ.-1000 .OR. INEOUT.EQ.-3000) THEN  ! Variable element
           CALL ADD_HEAD('ELEMENT   ',IPTR,*70)
         END IF
+
    70   IF (INEOUT.EQ.-2000 .OR. INEOUT.EQ.-3000) THEN  ! Variable mass
           CALL ADD_HEAD('MASS      ',IPTR,*300)
+        ELSE IF (INEOUT.EQ.-4000) THEN                  ! Variable # particles.
+          CALL ADD_HEAD('PART-OUT  ',IPTR,*300)
         END IF
       END IF
 
@@ -3571,6 +4154,7 @@ C     Scan SF 5-8
       IF(ICHR.EQ.2) GOTO 980                   ! End of code string
 
       CALL QUANT_CHECK(IWAY,IFIELD,NOW,LST,NUM,RUNIT,IERRU,*350)
+c	write (*,*) '...zvv...1...RUNIT(1)=',RUNIT(1)
 
       IF (NEEDS(7).NE.0) THEN                  ! Product required.
         IF(INEOUT.GT.-1000) NEEDS(7) = -INTSAN   ! Set found, if in SF4.
@@ -3636,7 +4220,9 @@ C     Quantity not found. Separate fields and check codes.
 !!!!  Scan SF9
 
   800 CALL PARSCHR(KARD,NOW,KPT,NUM,6,')',1,ICHR,*900)
-      CALL DANVER_NEW(35,KARD(NOW:KPT),0,IERR1,*990)
+!2018 CALL DANVER_NEW    (35,KARD(NOW:KPT),0,IERR1,*990)
+      CALL DANVER_STA_NEW(35,KARD(NOW:KPT),0,STATD,IERR1,*990) 
+!	write(*,*)'===sf9===[',KARD(NOW:KPT),']'
 
 !---- Errors
   900 CALL ERR_MES(1,36)
@@ -3646,12 +4232,25 @@ C     Quantity not found. Separate fields and check codes.
   980 CALL FLAGIT(1,ARROW,NOW+11,1,IERRU)         ! Set error markers
       CALL ERR_FIELD(1,IFIELD,14)                   ! Error message
 
-  990 IF(IERRF.NE.0) CALL ERR_MES(1,36)             ! Error message
+  990 IF(IERRF.NE.0) THEN
+        CALL ERR_MES(1,36)             ! Error message
+      ELSE
+!	write(*,*)'---STATD---[',STATD,']'
+        IF (STATD.EQ.'EXT') THEN
+!          CALL ERR_WARN(1,1)                        ! Error message 
+!          CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+        ELSE IF (STATD.EQ.'OBS') THEN
+           CALL ERR_MES(1,31)
+           CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+        END IF
+      END IF
       IF(IERRU.NE.0 .OR. IERRF.NE.0) IERR = 1
+!	write(*,*)'---STATD---[',STATD,']'
 
       RETURN
       END
       SUBROUTINE PART_CHECK(KARD,NOW)
+	save !zvv:2019-07-18
 
 !*  Checks BIB keyword PART-DET 
 !*    KARD: input array
@@ -3696,6 +4295,7 @@ C     Quantity not found. Separate fields and check codes.
       RETURN
       END
       SUBROUTINE QUANT_CHECK(IWAY,IFIELD,NOW,LST,NUM,RUNIT,IERRU,*)
+	save !zvv:2019-07-18
 
 !* Checks quantity part of REACTION string. 
 !*   IWAY:   1  =  REACTION
@@ -3741,6 +4341,8 @@ C     Quantity not found. Separate fields and check codes.
       CHARACTER*4 RTYPE,RUNIT
       CHARACTER*3 ISTAT
       CHARACTER RESFLG
+
+c	write (*,*) '...zvv...0...QUANT_CHECK:RUNIT=',RUNIT
 
 !!!!  Initialize
       LOWM = 0                               ! start of modifier field
@@ -3802,8 +4404,18 @@ C     Quantity not found. Separate fields and check codes.
       END IF
 
 c-zvv-      CALL DANGET_STA_NEW(36,KEY(1:30),0,0,DICLINE,ISTAT,IERR1) 
+c	write (*,*) '===236:','[',KEY(1:30),']'
       CALL DANGET_STA_NEW(236,KEY(1:30),0,0,DICLINE,ISTAT,IERR1) 
+c	write (*,*) '===ISTAT=',ISTAT,' IERR1=',IERR1
+c     +	,' DICLINE=[',DICLINE(1:mylen(DICLINE)),']'
                                              ! Look up subfields 5-8
+
+      IF (IERR1.NE.0) THEN                   ! If illegal code
+	CALL DANGET236sf7(236,KEY(1:30),0,0,DICLINE,ISTAT,IERR1)
+c	if (IERR.eq.0)
+c     +  write (*,*) '...ISTAT=',ISTAT,' IERR1=',IERR1
+c     +	,' DICLINE=[',DICLINE(1:mylen(DICLINE)),']'
+      END IF
 
       IF (IERR1.NE.0) THEN                   ! If illegal code
         RUNIT = 'MIS '                         ! Expected data units missing
@@ -3827,13 +4439,16 @@ c-zvv-      CALL DANGET_STA_NEW(36,KEY(1:30),0,0,DICLINE,ISTAT,IERR1)
         RUNIT = 'MIS '                        ! Skip unit check
         IF(MODREL.EQ.-3) NEEDFL = INTSAN      ! RAW data, no MONITOR needed 
         CALL ERR_WARN(1,14)                   ! Warning message 
-        IERRU = 1                             ! Set error flag
+        CALL FLAGIT(0,ARROW,0,0,IERR) !?2020:show only as warning
+c?2020        IERRU = 1               ! Set error flag: show in ttout but without error-message
       ELSE                                  ! Otherwise
 c-zvv-        RUNIT(1:4) = DICLINE(29:32)           ! Set units from DICT.36
 c-zvv-        RESFLG = DICLINE(33:33)
         RUNIT(1:4) = DICLINE(29-24:32-24)           ! Set units from DICT.36
         RESFLG = DICLINE(33-24:33-24)
+!	write (*,*) '...ZVV-R1...RESFLG:',RESFLG,' DICLINE:',DICLINE
       END IF
+c	write (*,*) '...zvv...3...RUNIT=',RUNIT,' MODREL=',MODREL
 
 c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
       RTYPE(1:4) = DICLINE(25-24:28-24)           ! Store quantity type
@@ -3841,12 +4456,28 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
 
       IF (IWAY.EQ.1) THEN                   ! REACTION
         CALL FAMGET(IWAY,RTYPE,NEEDS)         ! Store families expected
-        IF (NEEDS(1).NE.0) RESFLG = '.'       ! Resonance parameter
+c-zvv2012
+!2023zv        IF (NEEDS(1).NE.0) RESFLG = '.'       ! Resonance parameter
+!zv23b        if (NEEDS(1).NE.0) then
+        if (NEEDS(1).LT.0) then
+          if (RESFLG.NE.'.') RESFLG = '*' ! Resonance parameter given for another reac-type
+        endif
       END IF
+c	write (*,*) '...zvv...1...RUNIT=',RUNIT
+	IF (RESFLG.NE.' ')
+     1  write (*,*) '...ZVV-R2...RESFLG:',RESFLG,' NEEDS:',NEEDS
+!	write (*,*) '...ZVV-R2...RESFLG:',RESFLG,' NEEDS:',NEEDS
+
+
+      IF (RESFLG.EQ.'*') THEN               ! Resonance parameter given
+!        CALL ERR_FIELD(2,6,22)                ! Error message 
+        CALL ERR_INSERT(1,36,18,'RP=[.] in Dict-236')      ! Error message
+      endif
 
       IF (RESFLG.EQ.'.') THEN               ! Resonance parameter
         IF (INEOUT.NE.0) THEN                 ! If SF4 not blank
-          CALL ERR_FIELD(1,4,14)                ! Error message 
+!20230421          CALL ERR_FIELD(1,4,14)                ! Error message 
+          IF (RESFLG.EQ.'.') CALL ERR_FIELD(1,4,21)                ! Error message 
           CALL FLAGIT(1,ARROW,NOW+10,1,IERRU)   ! Set error markers
         END IF
         IF (IWAY.EQ.1) THEN                   ! If REACTION being processed
@@ -3861,9 +4492,21 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
         END IF
 
       ELSE                                   ! If not resonance parameter
-        IF (RESFLG.EQ.'.') THEN                ! Quantity at resonance
-          NEEDS(1) = NEEDS(2)                   ! Set res. en. needed
+!	write (*,*) '...ZVV-R3...RESFLG:',RESFLG,' NEEDS:',NEEDS
+	!moved up from bottom - see !^
+        IF (IWAY.EQ.1) THEN                    ! If REACTION being processed
+          IF(NEEDS(2).EQ.0 .AND. NUCQ.EQ.0) NEEDS(2) = INTSAN ! Energy required
+        END IF
+!2023zv        IF (RESFLG.EQ.'.') THEN                ! Quantity at resonance
+        IF (RESFLG.NE.' ') THEN                ! Quantity at resonance
+!zv23          NEEDS(1) = NEEDS(2)                   ! Set res. en. needed
           NEEDS(2) = 0                          ! Cancel energy needed
+
+	!---2023-04-24
+        END IF
+        IF (NEEDS(1).NE.0) THEN              ! Partial yield for spec.quantity
+          NEEDS(2) = 0                       ! Cancel energy needed
+
         END IF
         IF (RTYPE.EQ.'P * ') THEN              ! Partial yield for spec.quantity
           SPECIN(4) = INTSAN                     ! Set flag to ANSAN
@@ -3872,9 +4515,9 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
           CALL ERR_FIELD(1,4,15)                 ! Error message 
           CALL FLAGIT(1,ARROW,SUBF4,1,IERRU)     ! Set error markers
         END IF
-        IF (IWAY.EQ.1) THEN                    ! If REACTION being processed
-          IF(NEEDS(2).EQ.0 .AND. NUCQ.EQ.0) NEEDS(2) = INTSAN ! Energy required
-        END IF
+!^        IF (IWAY.EQ.1) THEN                    ! If REACTION being processed
+!^          IF(NEEDS(2).EQ.0 .AND. NUCQ.EQ.0) NEEDS(2) = INTSAN ! Energy required
+!^        END IF
       END IF
 
   330 IF (IHEAVY.GT.0) THEN                  ! If heaviest particle not in SF4
@@ -3890,9 +4533,11 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
       END IF
 
   390 NOW = KPT+2
+!	write (*,*) '...ZVV-R4...RESFLG:',RESFLG,' NEEDS:',NEEDS
       RETURN 
       END
       SUBROUTINE REACTION(IWAY,NOW,PTR,*)
+	save !zvv:2019-07-18
 
 !* Checks code for the keywords REACTION, MONITOR and ASSUMED.
 !*   IWAY: keyword to be checked
@@ -3947,21 +4592,28 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
       CHARACTER PTR
       CHARACTER SEPART(6)/'+', '-', '*', '/', '=', ','/
 
+      COMMON/myRUNIT/myNREACT,myJSEP,myRUNIT1
+      CHARACTER*4 myRUNIT1(2)
+
 !!!!  Initialize
       JSEP = 0                           ! separator to not ratio
       IRIGHT = 0                         ! # of right parens
       ILEFT = 1                          ! # of left parens
       NREACT = 1                         ! # of REACTION strings
+	longREACTION=0
 
       IF(KARD(NOW:NOW).EQ.' ') CALL LEAD_BLANK(KARD,NOW,*910) 
                                                ! Flag leading blanks
 !!!!  REACTION
 
       IF (IWAY.EQ.1) THEN        
+c...	write (*,*) '... NOW=',NOW,' NPR=',NPR,' KARD=',KARD
         IF (NPR.NE.0) THEN                     ! More than 1 pointer
           IF (PTR.EQ.' ') THEN                   ! Blank pointer, error
+c	write (*,*) '... =[',PTR,']',' IERR=',IERR
             CALL ERR_MES(1,57)
             CALL FLAGIT(1,ARROW,11,1,IERR)
+c??	return !---found:28.08.2006, implemented by "ierr_save" (see below)
             GOTO 100
           ELSE                                 ! Nonblank, check for duplicates
             J = LOOKUP(PTR,RACPTR,NPR)
@@ -3984,11 +4636,13 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
 
         IF(KARD(NOW:NOW).EQ.'(') THEN          ! Paren found
           NOW = NOW+1
+c	write(*,*) '___REACTION:NOW:',NOW,'[',KARD(NOW:NOW),'] KARD:',KARD
           IF (KARD(NOW:NOW).GE.'0' .AND. KARD(NOW:NOW).LE.'9') THEN ! Target
             ILEFT = ILEFT+1
           ELSE                                 ! Heading
             LEGHED ='MONIT'
             CALL TEST_HEAD(2,KARD,NOW,LEGHED,')',PTR,*70)
+c	write(*,*) '___REACTION:NOW:',NOW,'[',KARD(NOW:NOW),'] KARD:',KARD
             IF (KARD(NOW:NOW).EQ.',') THEN       ! illegal following comma
               CALL ERR_MES(1,43)                   ! write error message   
               CALL FLAGIT(1,ARROW,NOW+11,1,IERR)   ! flag error
@@ -4039,6 +4693,7 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
         ILEFT = ILEFT+1
         CALL INCRMT(NOW,55,*830)
       END DO
+c	write (*,*) '...now=',now
 
       IF(KARD(NOW:NOW).EQ.' ') CALL LEAD_BLANK(KARD,NOW,*910) 
                                                ! Flag leading blanks
@@ -4050,12 +4705,26 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
         IF(KARD(NOW:NOW).EQ.')') IR2 = IR2+1   ! Count right parens
         IF(IR2.GT.0) GOTO  250                 ! Check for end of string
   200 CONTINUE
+c	write (*,*) '...now=',now
+c	call READ_CONT(1,NOW,*780) !---test (long REACTION string split into 2 lines
+c	CALL ERR_MES(1,69)
+	longREACTION=1
       GOTO 830
   250 CALL INCRMT(IRIGHT,ILEFT,*810)
 
+c	write (*,*) '...1...ierr=',ierr
+	ierr_save=IERR
       CALL PARSER(IWAY,LOW,NOW,RUNIT1)         ! Check REACTION string
+	IERR=IERR+ierr_save
 
 !---- For REACTION, checked expected units
+	myJSEP=JSEP
+	myNREACT=NREACT
+	if (NREACT.eq.1) myRUNIT1(1)=RUNIT1
+	if (NREACT.eq.2) myRUNIT1(2)=RUNIT1
+c	write (*,*) '...2...ierr=',ierr,' RUNIT1=',RUNIT1,' NR=',NREACT
+c	write (*,*) '...2...IWAY=',IWAY,' NR=',NREACT,' JSEP=',JSEP
+c     + ,myRUNIT1(1),myRUNIT1(2)
       IF (IWAY.EQ.1) THEN                      ! REACTION
         IF (NREACT.EQ.1) THEN                    ! 1st string
           RUNIT(NPR) = RUNIT1                      ! Set to current
@@ -4076,7 +4745,8 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
 
 !---- Test for valid separator on next character.
   300 J = LOOKUP(KARD(NOW:NOW),SEPART,6)
-
+c
+c	write (*,*) '...zvv3.J=',J,' JSEP=',JSEP,' NPR=',NPR,' IWAY=',IWAY
       IF (J.EQ.0) THEN                         ! Not valid separator
         IF (KARD(NOW:NOW).EQ.' ') THEN
           GOTO 810
@@ -4101,6 +4771,8 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
           SPECIN(1) = INTSAN                       ! Set numerator/denom flag
         END IF
       END IF
+c	write (*,*) '...zvv3.J=',J,' JSEP=',JSEP,' NPR=',NPR
+c     + ,' IWAY=',IWAY,'u:',RUNIT(NPR)
       JSEP = J                                 ! Store separator
 
       CALL INCRMT(NOW,55,*500)
@@ -4141,6 +4813,7 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
 
 !---- Illegal REACTION string
   830 CALL ERR_MES(1,35)
+	if (longREACTION.ne.0) CALL ERR_MES(1,69)
       CALL FLAGIT(1,ARROW,LOW+11,(55-LOW),IERR)
       RETURN
 
@@ -4159,6 +4832,7 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
  1000 FORMAT(I2)
       END
       SUBROUTINE READ_CONT(IWAY,NOW,*)
+	save !zvv:2019-07-18
 
 !* Reads record. Checks for continuation record. Writes error messages for 
 !* previous record.
@@ -4217,6 +4891,7 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
 
       END
       SUBROUTINE READ_REC(ID)      
+	save !zvv:2019-07-18
 !* Reads the input file
 !*   ID:   System Identifier equivalent
 
@@ -4254,8 +4929,10 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
      * (NOWREC(12:66),KARD(1:55)),(NOWREC(67:79),ISEQ(1:13))
 
       READ(IN,8000,END=900) NOWREC         ! Read next record
+c	write (*,*) '[',trim(NOWREC),']'
       NTOTRC = NTOTRC+1                    ! Increment count
 
+c	write (*,*) NOWREC
       CALL SYS_CHECK(KEY,ID,IDLST)         ! Check if SYSTEM IDENTIFIER
 
 !---- FOR DATA, IF LAST WAS DATA, RESET ID TO 0.
@@ -4274,13 +4951,23 @@ c-zvv-      RTYPE(1:4) = DICLINE(25:28)           ! Store quantity type
       RETURN
 
 c 900 CALL EXIT
-  900 STOP
+  900 continue
+	if (NOWREC(1:8).ne.'ENDENTRY') then
+c	write (*,*)'...End of input file. Pass-2 stopped...'
+c	write (*,*)'...Last line:[',trim(NOWREC),']','<',NOWREC(1:8),'>'
+	write (*,*)'...Last line:[',trim(NOWREC),']'
+	write (*,*)'...End of input file. Pass-2 interrupted...'
+c	ID=-9000
+	endif
+	call CLOSUP
+      STOP
 
  8000 FORMAT(A79)
  9000 FORMAT(' **** End-of-file read out of order ***'/
      *       '      Execution terminated')
       END
       SUBROUTINE REF_CHECK(KARD,NOW)
+	save !zvv:2019-07-18
 
 !* Checks reference code for keywords REFERENCE, REL-REF, and MONIT-REF
 !*   KARD: input character string
@@ -4465,6 +5152,7 @@ c 900 CALL EXIT
   998 RETURN  
       END
       SUBROUTINE REF_CODE(KARD,NOW,KDIC,MAX)
+	save !zvv:2019-07-18
 
 !* Stores report code and looks up in dictionary
 !*   KARD: input array
@@ -4546,7 +5234,10 @@ c 900 CALL EXIT
 
 !!!!  BOOKS, CONFERENCES, JOURNALS, REPORTS
 
-  300 CALL DANVER_STA_NEW(KDIC,KARD(NOW:KPT),0,STATD,NONO,*390) ! Look up code
+!__zvv:20170517  300 CALL DANVER_STA_NEW(KDIC,KARD(NOW:KPT),0,STATD,NONO,*390) ! Look up code
+300	continue
+	if ((KPT-NOW.ge.11).and.(KDIC.eq.6)) KPT=KPT-1 !__zvv:20170517:00001001-x4.txt
+	CALL DANVER_STA_NEW(KDIC,KARD(NOW:KPT),0,STATD,NONO,*390) ! Look up code
       GOTO 500
 
   390 IF (STATD.EQ.'OBS') THEN
@@ -4571,6 +5262,7 @@ c 900 CALL EXIT
   900 RETURN
       END
       SUBROUTINE REF_DATE(KARD,NOW,NFLD,LST,IEND)
+	save !zvv:2019-07-18
 
 !* Stores reference date and checks.
 !*   KARD:  input array
@@ -4637,6 +5329,7 @@ c 900 CALL EXIT
       RETURN
       END
       SUBROUTINE REF_PAGE(KARD,NOW,IERRP)
+	save !zvv:2019-07-18
 
 !* Checks reference page field.
 !*   KARD:  input array
@@ -4659,7 +5352,7 @@ c 900 CALL EXIT
 
 !---- Check page # 
       IF (NUM.NE.0) THEN
-        IFIX = INTFORM(KARD(NOW:KPT),NUM,IGOOF,1)
+        IFIX = INTFORM(KARD(NOW:KPT),NUM,IGOOF,2)             !** (updated to include alpha)
         IF (IGOOF.NE.0) CALL FLAGIT(1,ARROW,NOW+11,NUM,IERRP) ! Set markers
       END IF
       NOW = KPT+1
@@ -4675,6 +5368,7 @@ c 900 CALL EXIT
   990 RETURN
       END
       SUBROUTINE REF_PART(KARD,NOW,IERRP,*)
+	save !zvv:2019-07-18
 
 !* Checks reference field contained in parentheses
 !*   KARD:  input array
@@ -4714,6 +5408,7 @@ c 900 CALL EXIT
   990 RETURN 1                            ! Error RETURN
       END
       SUBROUTINE REL_REF(NOW)
+	save !zvv:2019-07-18
 
 !* Checks keyword REL-REF and MONIT-REF (Separate ENTRY point for MONIT-REF)
 !*   NOW: starting point in input array
@@ -4762,15 +5457,22 @@ c 900 CALL EXIT
 
 !!!!  HEADING field
 
+c---zvv
+c	write (*,*) '...MONIT_REF now=',NOW,' kard=',KARD
+
       IF(KARD(NOW:NOW).EQ.'(') THEN           ! Check heading field
         NOW = NOW+1
         CALL TEST_HEAD(4,KARD,NOW,LEGHED,')',IPTR,*250)
       END IF
 
+c	write (*,*) '...2...MONIT_REF now=',NOW,' kard=',KARD
+
 !!!!  Subaccession number field
 
 !---- CHECK ACCESSION NUMBER
   250 CALL PARSCHR(KARD,NOW,KPT,N,8,LIMTR,2,ICHR,*800)
+
+c	write (*,*) '...3...MONIT_REF now=',NOW,' N=',N,' kard=',KARD
 
       IF (N.NE.0) THEN                        ! Field not empty
         IF (N.EQ.8) THEN
@@ -4795,6 +5497,12 @@ c 900 CALL EXIT
       END IF
 
 !!!!  REFERENCE FIELD
+c	write (*,*) '...4...MONIT_REF now=',NOW,' N=',N,' kard=',KARD(NOW:NOW)
+
+c---zvv+++
+      if (KARD(NOW:NOW+1).EQ.'3,') then       ! ENDF-Library
+	return
+      endif
 
       CALL REF_CHECK(KARD,NOW)                ! Check field
 
@@ -4809,6 +5517,7 @@ c 900 CALL EXIT
       RETURN
       END
       SUBROUTINE SOURCE_CHECK(KARD,NOW)
+	save !zvv:2019-07-18
 
 !* Checks coded information for BIB keyword INC-SPECT
 !*   KARD: input character string
@@ -4817,6 +5526,7 @@ c 900 CALL EXIT
 !---- Error pointers. (Initialized in BIBSUB)
       COMMON/ERRPTR/IERR,ARROW
         CHARACTER*80 ARROW
+      CHARACTER*3 STATD
 
       CHARACTER*80 DICLINE
       CHARACTER*55 KARD
@@ -4836,12 +5546,28 @@ c 900 CALL EXIT
         NOW = NOW+1
         GOTO 300
       ELSE
-        CALL DANGET_NEW(19,KARD(NOW:KPT),0,0,DICLINE,IERR1) ! Look up code
+c	write (*,*) '-zvv2-','KDIC=',19,' [',KARD(NOW:KPT),']'
+c-zvv	CALL DANGET_NEW    (19,KARD(NOW:KPT),0,0,DICLINE,IERR1) ! Look up code
+	CALL DANGET_STA_NEW(19,KARD(NOW:KPT),0,0,DICLINE,STATD,IERR1) ! Look up code
+c	write (*,*) '-zvv2-','KDIC=',19,' [',KARD(NOW:KPT),']',ierr
         IF (IERR1.NE.0) THEN
           CALL ERR_MES(1,35)
           CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)      
           GOTO 300
         END IF
+
+c-zvv+++2011/01/07
+c	write (*,*) '-zvv2-','kdic=',19,' [',KARD(NOW:KPT),']',ierr
+      IF (STATD.EQ.'EXT') THEN
+        CALL ERR_WARN(1,1)                        ! Error message 
+        CALL FLAGIT(0,ARROW,NOW+11,NUM,IERR)
+      ELSE IF (STATD.EQ.'OBS') THEN
+        CALL ERR_MES(1,31)
+        CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)
+      END IF
+c-zvv----
+
+
         LIM = DICLINE(58:58)                        ! Store delimiter
       END IF
 
@@ -4876,6 +5602,7 @@ c 900 CALL EXIT
   990 RETURN
       END
       SUBROUTINE STAT_CHECK(KARD,NOW,INTSAN,ISPSDD)
+	save !zvv:2019-07-18
 
 !* Checks coded information for BIB keyword STATUS
 !*   KARD:   input character string
@@ -4963,6 +5690,7 @@ c 900 CALL EXIT
  1000 FORMAT(I5)
       END
       SUBROUTINE TEST_HEAD(IWAY,KARD,NOW,LEGHED,LSEP,PTR,*)
+	save !zvv:2019-07-18
 
 !* Checks data heading code for BIB keywords MONITOR, ASSUMED, and REL-REF
 !*   IWAY:   index for keyword
@@ -5002,6 +5730,7 @@ c 900 CALL EXIT
         CALL ADD_HEAD(KASS,PTR,*200)            ! Add heading to list
 
 !----   Heading already on list
+!	write(*,*)'___6___ERR_MES(1,39)'
         CALL ERR_MES(1,39)
         CALL FLAGIT(1,ARROW,NOW+11,NUM,IERR)      
       END IF
@@ -5010,6 +5739,7 @@ c 900 CALL EXIT
       RETURN
       END
       SUBROUTINE UNIT_CHECK(IWAY,IDEP)
+	save !zvv:2019-07-18
 
 !* Checks units versus data headings
 !*   IWAY: 1 = SAN 1 COMMON section
@@ -5027,7 +5757,7 @@ c 900 CALL EXIT
         CHARACTER HPTR
 
 !---- Stored units for current section. (Set in HEAD_PROC)
-      COMMON/DATA_UNITS/HEAD_CODE(18),UTYP(18)
+      COMMON/DATA_UNITS/HEAD_CODE(18,3),UTYP(18,3)
         CHARACTER*15 HEAD_CODE
         CHARACTER*4 UTYP
 
@@ -5106,21 +5836,25 @@ c 900 CALL EXIT
       COMMON/VAR_FIELD/INDFAM(18)
         INTEGER INDFAM
 
-      CHARACTER*20 MESS/'     in field       '/
+c-zvv CHARACTER*20 MESS/'     in field       '/
+!     CHARACTER*20 MESS/'    field:          '/
+      CHARACTER*20 MESS/'      fld:          '/
       CHARACTER*4 UTYPE
       CHARACTER FNOW
       INTEGER IDEP
+      CHARACTER*8 subent
 
+!	write(*,*)'UNIT_CHECK:IWAY=',IWAY,' IDEP=',IDEP,' NHD=',NHD(IWAY)
       DO 500 I = 1,NHD(IWAY)               ! Loop over stored headings
 
-        READ(HEAD_CODE(I)(1:1),1000) IFAM(I) ! Store family number
-        READ(HEAD_CODE(I)(2:2),1000) ISUB(I) ! Store family number
-        UTYPE = HEAD_CODE(I)(11:14)          ! Store unit type for heading
+        READ(HEAD_CODE(I,IWAY)(1:1),1000) IFAM(I) ! Store family number
+        READ(HEAD_CODE(I,IWAY)(2:2),1000) ISUB(I) ! Store family number
+        UTYPE = HEAD_CODE(I,IWAY)(11:14)          ! Store unit type for heading
 !----   Store variable type from plotting flags.
         IF (IFAM(I).EQ.2) THEN               
-          FNOW = HEAD_CODE(I)(7:7)
+          FNOW = HEAD_CODE(I,IWAY)(7:7)
         ELSE
-          FNOW = HEAD_CODE(I)(4:4)           
+          FNOW = HEAD_CODE(I,IWAY)(4:4)           
         END IF
 
 !---- Store variable flags
@@ -5137,48 +5871,82 @@ c 900 CALL EXIT
           END IF
         END IF
 
+
+c	write (*,*) '___1___I=',I,' IFAM(I)=',IFAM(I),' FNOW=',FNOW
+c     +	,' UTYPE=',UTYPE
+c     +	,' UTYP(I)=',UTYP(I),' HEAD_CODE(I,IWAY)=',HEAD_CODE(I,IWAY)
+c     +	,' N=',N,' RUNIT=',RUNIT
+
 !!!   Dependent variables 
 
+!	write (*,*) '__1__',I,' IFAM=',IFAM(I),' FNOW=',FNOW
+!     +	,' UTYP=',UTYP(I,IWAY),' HEADS=',HEADS(I,IWAY),HEAD_CODE(I,IWAY)
         IF (IFAM(I).EQ.2) THEN               
+!	write (*,*) '__2__',I,' IFAM=',IFAM(I),' FNOW=',FNOW
+!     +	,' UTYP=',UTYP(I),' HEADS=',HEADS(I,IWAY)
           IF(NOTCK.NE.0 .OR. NPR.EQ.0) GOTO 500 
           N = LOOKUP(HPTR(I,IWAY),RACPTR,NPR)     ! Find pointer index
           IF(N.EQ.0) N = 1                        ! Default for blank pointer
           IF(RUNIT(N).EQ.'MIS ') GOTO 500         ! Unit check to be skipped
 
-          IF (RUNIT(N).NE.UTYP(I)) THEN           ! Not expected units
+c	write(*,*)'...zvv...N=',N,' RUNIT(N)=',RUNIT(N),' UTYP(I)=',UTYP(I)
+          IF (RUNIT(N).NE.UTYP(I,IWAY)) THEN           ! Not expected units
+c	write(*,*)'___zvv___.ne.RUNIT(N)=',RUNIT(N),' UTYP(I)=',UTYP(I)
 
             IF (INDFAM(I).GT.10) THEN             ! error field
-              IF (UTYP(I).EQ.'PC  ') GOTO 500       ! % allowed
-              IF (UTYP(I).EQ.'RSL ' .AND. IFAM(I).EQ.4) GOTO 500
+              IF (UTYP(I,IWAY).EQ.'PC  ') GOTO 500       ! % allowed
+              IF (UTYP(I,IWAY).EQ.'RSL ' .AND. IFAM(I).EQ.4) GOTO 500
                                                     ! energy resolution
             END IF
 
             MESS(1:4) = RUNIT(N)                    ! Store unit for listing
-            WRITE(MESS(15:16),2000) I
+c-zvv       WRITE(MESS(15:16),2000) I
+c            WRITE(MESS(11:12),2000) I
+c            MESS(14:14)='['                         !-zvv- Store unit for listing
+c            MESS(15:18) = UTYP(I)                   !-zvv- Store unit for listing
+c            MESS(19:19)=']'                         !-zvv- Store unit for listing
+            MESS(11:20)=HEADS(I,IWAY)
+            MESS(5:6)='Y-'
+	    intsan00=INTSAN
+	    if (IWAY.eq.1) INTSAN=1
+	write(subent,'(a5,i3.3)')ACNUM,INTSAN
+	write(*,*)'___zvv:ERR:Indep.:RUNIT(N)=[',TRIM(RUNIT(N)),']'
+     +		,' HDR:[',TRIM(HEADS(I,IWAY)),']'
+     +		,',UT:[',TRIM(UTYP(I,IWAY)),']'
+     +		,' SAN:',subent
             CALL ERR_INSERT(1,11,20,MESS)
+	    if (IWAY.eq.1) INTSAN=intsan00
           END IF
 
 !!!   Independent variables        
 
         ELSE IF (IFAM(I).GT.2) THEN
-          IF(UTYPE.NE.UTYP(I)) THEN             ! Unit codes not equal
+          IF(UTYPE.NE.UTYP(I,IWAY)) THEN             ! Unit codes not equal
 
             IF (INDFAM(I).EQ.4) THEN              ! Energy field
               IF(ISUB(I).EQ.4) THEN                 ! Spectrum temperature
-                IF(UTYP(I).EQ.'TEM ') GOTO 500 
+                IF(UTYP(I,IWAY).EQ.'TEM ') GOTO 500 
               ELSE IF (ISUB(I).NE.2) THEN           ! Other than momentum
-                IF(UTYP(I).EQ.'L   ') GOTO 500          ! Wave length
+                IF(UTYP(I,IWAY).EQ.'L   ') GOTO 500          ! Wave length
               END IF
 
             ELSE IF (INDFAM(I).GT.10) THEN        ! Error field
-              IF (UTYP(I).EQ.'PC  ') GOTO 500       ! % allowed for error
+              IF (UTYP(I,IWAY).EQ.'PC  ') GOTO 500       ! % allowed for error
               IF (IFAM(I).EQ.4) THEN                ! energy
-                IF (ISUB(I).LE.2 .AND. UTYP(I).EQ.'RSL ') GOTO 500
+                IF (ISUB(I).LE.2 .AND. UTYP(I,IWAY).EQ.'RSL ') GOTO 500
                                                       ! resolution allowed
               END IF
             END IF
             MESS(1:4) = UTYPE
             WRITE(MESS(15:15),1000) I
+      MESS(11:20)=HEADS(I,IWAY)
+!     MESS(20:20)='X'
+      MESS(5:6)='X-'
+	write(subent,'(a5,i3.3)')ACNUM,INTSAN
+	write(*,*)'___zvv:ERR:Dep.:UTYPE=[',TRIM(UTYPE),']'
+     +		,' HDR:[',TRIM(HEADS(I,IWAY)),']'
+     +		,',UT:[',TRIM(UTYP(I,IWAY)),']'
+     +		,' SAN:',subent
             CALL ERR_INSERT(1,11,20,MESS)
           END IF 
         END IF
@@ -5189,3 +5957,4 @@ c 900 CALL EXIT
  1000 FORMAT(I1)
  2000 FORMAT(I2)
       END     
+
