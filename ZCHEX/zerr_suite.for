@@ -36,6 +36,7 @@ C*    NADD:   # of lines to add
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
       DATA MAXLIN,NLINES/57,4/    ! Initialize maximum # of lines, line count
       
@@ -62,6 +63,7 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
       CHARACTER*80 ARROW
       CHARACTER*55 KARD
@@ -81,7 +83,7 @@ c	write (*,*) '-zvv-ERR_ARW: INTSAN=',INTSAN
       RETURN
 
  6000 FORMAT(7X,A80)
- 8000 FORMAT(7X,A10,A1,A55,A5,I3,A5,A1)
+ 8000 FORMAT(7X,A10,A1,A55,A5,I3.3,A5,A1)
       END
       SUBROUTINE ERR_ARW2(KEY2,IPTR,KARD,ISEQ,ARROW,IERR)
 
@@ -96,6 +98,7 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
       CHARACTER*80 ARROW
       CHARACTER*55 KARD
@@ -113,7 +116,7 @@ C---- I/O units, vector common flag. (Set in OPENUP)
       RETURN
 
  6000 FORMAT(7X,A80)
- 8000 FORMAT(7X,A10,A1,A55,A5,I3,A5)
+ 8000 FORMAT(7X,A10,A1,A55,A5,I3.3,A5)
       END
       SUBROUTINE ERR_EOF(IWAY,N)
 
@@ -125,6 +128,7 @@ C*    N: Index of BIB keyword to be printed
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
 C---- System identifier table. (Set in DICT1)
       COMMON/SYSTAB/NSYS,SYSID(30),INDX_SYS(30)
@@ -136,6 +140,7 @@ C---- Error messages.
      *  ' End-of-file found while looking for:   ',
      *  ' File empty - execution terminated      '/
 
+      kountErr=kountErr+1
       IF (IWAY.EQ.3) THEN
         WRITE(IOUT,3100) MESS(IWAY)
       ELSE
@@ -160,8 +165,9 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
-      CHARACTER*40 MESS(20)/
+      CHARACTER*40 MESS(22)/
      1  ' Blank in HEADING or UNIT               ',  ! Pass 1
      2  '                                        ',
      3  '                                        ',
@@ -181,9 +187,12 @@ C---- I/O units, vector common flag. (Set in OPENUP)
      7  ' Heading not defined for                ',
      8  ' Illegal field identification for       ',
      9  ' Illegal floating point number in       ',
-     A  ' Illegal leading blanks                 '/
+     A  ' Illegal leading blanks                 ',
+     1  ' Dict236.ResFlg conflicts with code in  ',
+     2  ' Com1Dat.ResPrm conflicts with code in  '/
 
 
+      kountErr=kountErr+1
       IF (IWAY.EQ.1) THEN
         WRITE(IOUT,4000) MESS(N),IFLD
         CALL ADD_LINES(1)
@@ -192,7 +201,7 @@ C---- I/O units, vector common flag. (Set in OPENUP)
         CALL ADD_LINES(2)
       END IF
       RETURN
- 4000 FORMAT('  ** ',A40,' field ',I2,19X,A5,I3/)
+ 4000 FORMAT('  ** ',A40,' field ',I2,19X,A5,I3.3/)
       END
       SUBROUTINE ERR_INSERT(IWAY,N,NCHR,KODIN)
 
@@ -213,11 +222,15 @@ C---- Fatal error flag. (Initialized in PASS1).
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
+
+      COMMON/lastKODE/lastKODE1
+      CHARACTER*200 lastKODE1
 
       CHARACTER*(*) KODIN
       CHARACTER*20 KODE
 
-      CHARACTER*40 MESS(35)/
+      CHARACTER*40 MESS(36)/
      1 ' Missing System Identitier              ',  ! Pass 1 messages
      2 '                                        ',
      3 ' Unequal # of titles and units in       ',
@@ -252,21 +265,37 @@ C---- I/O units, vector common flag. (Set in OPENUP)
      2 ' No match for DECAY FLAG                ',
      3 ' Missing required keyword               ',
      4 ' Possible missing required keyword      ',
-     5 '                                        '/
+     5 ' Expected Family Flag /vs.Dict-24/      ',
+     6 ' Com1Dat.ResPrm requires SF58.Reac-Type '/
 
+      kountErr=kountErr+1
       KODE = ' '
       KODE(1:NCHR) = KODIN
+	if (N.EQ.11) then
+	    if (lastKODE1.eq.KODE(1:NCHR)) return
+	    lastKODE1=KODE(1:NCHR)
+	endif
 
+c	if (N.EQ.27) then
+c	WRITE(*,1000) MESS(N),KODE,ACNUM,INTSAN
+c	WRITE(*,*) 'N=',N
+c	pause
+c	endif
       IF (IWAY.EQ.2) THEN               ! Print message
         WRITE(IOUT,1000) MESS(N),KODE
       ELSE                              ! Print message with AN/SAN
+	if (N.EQ.35) then
+        WRITE(IOUT,1001) MESS(N),KODE,ACNUM,INTSAN
+	else
         WRITE(IOUT,1000) MESS(N),KODE,ACNUM,INTSAN
-        IF(IWAY.EQ.3) ISTOP =1            ! Set fatal error flag
+	endif
+        IF(IWAY.EQ.3) ISTOP=3           ! Set fatal error flag
       END IF
       CALL ADD_LINES(2)
       RETURN
 
- 1000 FORMAT('  ** ',A40,1X,A20,7X,A5,I3/)
+ 1000 FORMAT('  ** ',A40,1X,A20,7X,A5,I3.3/)
+ 1001 FORMAT('  ** ',A40,1X,A27,A5,I3.3)
       END
       SUBROUTINE ERR_MES(IWAY,N)
 
@@ -281,8 +310,9 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
-      CHARACTER*45 MESS(70)
+      CHARACTER*45 MESS(71)
 
 C---- STAND ALONE ERROR MESSAGES
       DATA (MESS(I),I=1,30)/
@@ -316,7 +346,7 @@ C---- STAND ALONE ERROR MESSAGES
      8  '                                             ',
      9  '                                             ',
      A  '                                             '/  ! Message #30
-      DATA (MESS(I),I=31,70)/     
+      DATA (MESS(I),I=31,71)/     
      1  ' Obsolete code                               ',  ! Pass 2 messages
      2  ' Missing parenthesis in column 12            ',
      3  ' Illegal left parenthesis in column 12       ',
@@ -355,12 +385,22 @@ C---- STAND ALONE ERROR MESSAGES
      6  ' REACTION fields 5-8 not in dictionary       ',
      7  ' Illegal trailing commas                     ',
      8  '                                             ',
-     9  '                                             ',
-     A  ' Vector COMMON found                         '/  ! Message #70
+     9  ' or long REACTION string: not fully checked  ',
+     A  ' Vector COMMON found                         ',  ! Message #70
+     1  ' DG: Intensity without Energy                '/
 
+!---- Input record. (Set in READ_NEXT)
+      COMMON/ALLCOM/KEY2,IPTR,KARD,ISEQ
+        CHARACTER*10 KEY2
+        CHARACTER*1  IPTR
+        CHARACTER*55 KARD
+        CHARACTER*13 ISEQ
 
+      kountErr=kountErr+1
       IF (IWAY.EQ.1) THEN                    ! Write message
-        WRITE(IOUT,9000) MESS(N)
+        WRITE(IOUT,9001) MESS(N),ACNUM,INTSAN
+c	write(*,*) '...[',KEY2,IPTR,KARD,']...debug'
+c	write(IOUT,*) '...[',KEY2,IPTR,KARD,']...debug'
         CALL ADD_LINES(1)
       ELSE                                   ! Write message with AN/SAN
         WRITE(IOUT,9000) MESS(N),ACNUM,INTSAN
@@ -368,7 +408,8 @@ C---- STAND ALONE ERROR MESSAGES
       END IF
 
       RETURN
- 9000 FORMAT('  ** ',A45,23X,A5,I3/)
+ 9000 FORMAT('  ** ',A45,23X,A5,I3.3/)
+ 9001 FORMAT('  ** ',A45,23X,A5,I3.3)
       END
       SUBROUTINE ERR_MES1(IWAY,N)
 
@@ -386,6 +427,7 @@ C---- Fatal error flag. (Initialized in PASS1).
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
 C---- STAND ALONE ERROR MESSAGES
       CHARACTER*40 MESS(30)/
@@ -413,26 +455,36 @@ C---- STAND ALONE ERROR MESSAGES
      2  ' DATA Section missing                   ',
      3  ' Illegal pointer                        ',
      4  ' More than 18 fields                    ',
-     5  '                                        ',
+     5  ' Allowed: U F P C                       ',
      6  '                                        ',
      7  '                                        ',
      8  '                                        ',
      9  '                                        ',
      A  '                                        '/  ! Message #30
 
-
+      kountErr=kountErr+1
       IF (IWAY.EQ.1) THEN                    ! Write message
+!        WRITE(IOUT,9002) IWAY,N
         WRITE(IOUT,9000) MESS(N)
         CALL ADD_LINES(1)
       ELSE                                   ! Write message with AN/SAN
+!        WRITE(IOUT,9002) IWAY,N
         WRITE(IOUT,9000) MESS(N),ACNUM,INTSAN
         CALL ADD_LINES(2)
       END IF
 
-      ISTOP = 1
+!!!!!!!!!!test>>remove next 3 line for regular checking
+!20220608
+      IF (N.EQ.14) RETURN  ! Obsolete BIB Keyword
+      IF (N.EQ.18) RETURN  ! Illegal DATA HEADING or UNIT
+      IF (N.EQ.20) RETURN  ! Illegal floating point number
+
+!!!!!!!!!!test>>remove next line for full EXFOR testing
+      ISTOP=4
 
       RETURN
- 9000 FORMAT('  ** ',A40,28X,A5,I3/)
+ 9002 FORMAT('  ** ___ERR_MES1: IWAY=',I8,'  N=',I8)
+ 9000 FORMAT('  ** ',A40,28X,A5,I3.3/)
       END
       SUBROUTINE ERR_REC(KEY2,IPTR,KARD,ISEQ,IALT,N)
 
@@ -446,6 +498,7 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
 C---- Operating mode. (Set in OPENUP)
       COMMON/OPMODE/ITYPE,IWARNG
@@ -459,7 +512,7 @@ C---- Operating mode. (Set in OPENUP)
 
 C---- STAND ALONE ERROR MESSAGES
       CHARACTER*40 MESS(40)/
-     1  ' Label invalid or missing               ',
+     1  ' Label invalid or missing: TRANS        ',
      2  ' Record after end label                 ',
      3  ' Record out of sequence                 ',
      4  ' Duplicate System Identifier            ',
@@ -500,6 +553,7 @@ C---- STAND ALONE ERROR MESSAGES
      9  ' Illegal floating point number          ',
      A  '                                        '/  ! Message #40
 
+      kountErr=kountErr+1
 C---- Write error message.
       IF(N.NE.0) WRITE(IOUT,9000) MESS(N)
       CALL ADD_LINES(1)
@@ -507,11 +561,11 @@ C---- Write error message.
 C---- Write record. Increment # of lines on page.
       WRITE(IOUT,9100) KEY2,IPTR,KARD,ACNUM,INTSAN,ISEQ(9:13),IALT
       CALL ADD_LINES(2)
-      ISTOP = 1
+      ISTOP=5
       RETURN
 
- 9000 FORMAT('  ** ',A40/)
- 9100 FORMAT(7X,A10,A1,A55,A5,I3,A5,A1/)
+ 9000 FORMAT('  ** ',A40)
+ 9100 FORMAT(7X,A10,A1,A55,A5,I3.3,A5,A1/)
       END
       SUBROUTINE ERR_REC1(KEY2,IPTR,KARD,ISEQ,IALT,N)
 
@@ -528,6 +582,7 @@ C---- Fatal error flag. (Initialized in PASS1).
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
 C---- Operating mode. (Set in OPENUP)
       COMMON/OPMODE/ITYPE,IWARNG
@@ -545,7 +600,7 @@ C---- STAND ALONE ERROR MESSAGES
      2  '                                        ',
      3  ' Record out of sequence                 ',
      4  ' Duplicate System Identifier            ',
-     5  ' Invalid accession number               ',  
+     5  ' Invalid #Entry num.: must be increasing',  
      6  ' Invalid subaccession number            ',
      7  '                                        ',
      8  '                                        ',
@@ -579,11 +634,11 @@ C---- Write error message.
 C---- Write record. Increment # of lines on page.
       WRITE(IOUT,9100) KEY2,IPTR,KARD,ACNUM,INTSAN,ISEQ(9:13),IALT
       CALL ADD_LINES(2)
-      ISTOP = 1
+      ISTOP=6
       RETURN
 
  9000 FORMAT('  ** ',A40,26X,A5,I3/)
- 9100 FORMAT(7X,A10,A1,A55,A5,I3,A5,A1/)
+ 9100 FORMAT(7X,A10,A1,A55,A5,I3.3,A5,A1/)
       END
       SUBROUTINE ERR_WARN(IWAY,N)
 
@@ -602,12 +657,13 @@ C---- Current AN, SAN, Section. (Set in READ_NEXT)
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/errCOUNTS/kountErr,kountWarn
 
 C---- Operating mode. (Set in OPENUP)
       COMMON/OPMODE/ITYPE,IWARNG
 
 C---- Warning messages 
-      CHARACTER*40 MESSW(15)/
+      CHARACTER*40 MESSW(17)/
      1  ' Extinct code found                     ',  ! Pass 1
      2  ' Blank record(s) following:             ',
      3  '                                        ',
@@ -616,14 +672,17 @@ C---- Warning messages
      6  ' Possible missing code field            ',  ! Pass 2
      7  ' Separator after end of REACTION string ',
      8  ' REACTION strings not same dimension    ',
-     9  ' Abundance > 1.0                        ',
+     9  ' Abundance > 2.(200%)                   ',
      A  ' Possible missing isomeric state code   ',
      1  ' Blank free text field                  ',
      2  ' Isomeric state not defined in Dict.227 ',
      3  ' Use of nuclide in field not in Dict.227',
      4  ' Nonspecific REACTION; units not checked',
-     5  ' SF1 for use with SF2=0 only            '/
+     5  ' SF1 for use with SF2=0 only            ',
+     6  ' DG: Intensity without Energy           ',
+     7  ' Energy < 1.keV                         '/
 
+      kountWarn=kountWarn+1
       IF(IWARNG.EQ.0) RETURN                     ! Warning flag off.
 
       IF (IWAY.EQ.1) THEN                        ! Write message
@@ -635,26 +694,31 @@ C---- Warning messages
       END IF
       RETURN
 
- 5000 FORMAT('  ??  WARNING ',A40,19X,A5,I3/)
- 6000 FORMAT('  ??  WARNING ',A40/)
+ 5000 FORMAT('  ??  WARNING ',A40,19X,A5,I3.3)
+ 6000 FORMAT('  ??  WARNING ',A40)
       END
-      SUBROUTINE PUTAN(ANLIST)
+      SUBROUTINE PUTAN(ANLIST,N2ASC)
 
 C*  Writes accession # on output
 C*    ANLIST: accession #
 
 C---- I/O units, vector common flag. (Set in OPENUP)
       COMMON/IOUNIT/IN,IOUT,IVEC,IFVEC
+      COMMON/COUNTS/KOUNT(4)
 
       CHARACTER*5 ANLIST
+      CHARACTER*8 N2ASC
 
-      write (*,9500) ANLIST
-      WRITE(IOUT,9400) ANLIST
+c-zvv      write (*,9500) ANLIST
+      write (*,9501) ANLIST,N2ASC,KOUNT(2)+1
+	call flush(6) !---zvv2010
+      WRITE(IOUT,9400) ANLIST,N2ASC
       CALL ADD_LINES(2)
       RETURN
 
- 9400 FORMAT(/' ENTRY ',A5)
+ 9400 FORMAT(/' ENTRY ',A5,' ',A8)
  9500 FORMAT(1X,A5)
+ 9501 FORMAT(1X,'+++ENTRY: ',A5,' ',A8,I6)
       END
       SUBROUTINE FLAGIT(IWAY,ARROW,LOW,NUM,IERR)
 
@@ -674,6 +738,7 @@ C---- Operating mode. (Set in OPENUP)
 
       IF(IWAY.EQ.0 .AND. IWARNG.EQ.0) RETURN          ! Warning flag off.
 
+!	write (*,*) '...FLAGIT:',IWAY,LOW,NUM,IERR
 C---- Set error pointers
       IF ((NUM.GT.0).AND.(LOW.GT.0)) THEN
         DO 820 I = LOW,LOW+NUM-1
