@@ -1,0 +1,52 @@
+Title  : Program ZCHEX
+Author : V.McLane, BNL, USA, 1998-2001
+       : V.Zerkin, IAEA-NDS, 2001-2023
+
+Purpose: Checking EXFOR file
+
+Contents: (all for Windows, Linux and Mac)
+    - Dictionaries: backup, direct-access
+    - Executables: checking (zchex*.exe), reloading dictionaries (danlo*.exe)
+    - example of EXFOR file: 'a.x4'
+
+Download:
+    - go to: https://www-nds.iaea.org/public/exfor/programs/zchex-2023-04-21/
+    - download compressed package according to your OS-version:
+      ..OS......CPU.....:.package file name
+      - Windows x86/x64 : zchex-win-{date}.zip
+      - MacOS   x64     : zchex-macBigSur_x64-{date}.zip
+      - MacOS   M1      : zchex-macBigSur_M1-{date}.zip
+      - Linux   x64     : zchex-lin64-{date}.zip
+      - Linux   x86     : zchex-lin32-{date}.zip
+      - Linux   x86/x64 : zchex-lin32lf95-{date}.zip
+
+Installation:
+    - unzip files in working directory
+    - programs are ready to run
+
+Run:
+    - program should run in the directory with dictionaries (DICT_ZVV.*)
+    - run in Windows:  > zchexw.exe
+    - run in Linux:    $ ./zchexl.exe
+    - run in MacOSX:   $ ./zchexm.exe
+    - run with papameters: EXFOR-file [Trans/Prelim-mode] [Warnings:Y/N]
+        $ zchex.exe file.x4 T
+        $ zchex.exe file.x4 D
+        $ zchex.exe file.x4 D Y
+        $ zchex.exe file.x4 "" Y
+    - option for Windows: using Shortcut from the Desktop
+        a) make Shortcut to zchexw.bat:
+             explorer.exe --> mark "zchexw.bat" -->
+             --> right-mouse: Send to Desktop (create shortcut)
+        b) drag-and-drop EXFOR file to the new shortcut (desktop-icon)
+
+Example:
+    - run Cheking program in working directory and use defaults for all
+      parameters: press <Enter> for every question;
+    - result you will have in the file 'a.err' (compare with 'a.err00')
+
+How to update dictionaries:
+    copy file DAN_BACK_NEW.xxxx to the working directory and run:
+    - in Windows:      > danlow.exe
+    - in Linux:        $ ./danlol.exe
+    - run in MacOSX:   $ ./danlom.exe
