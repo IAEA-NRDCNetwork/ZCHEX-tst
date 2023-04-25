@@ -1,0 +1,58 @@
+TRANS                    20230425                                 10000  0    0 
+ENTRY            14672   20210114   20210607   20210604       147714672  0    1 
+SUBENT        14672001   20210114   20210607   20210604       147714672  1    1 
+BIB                 10         32                                 14672  1    2 
+TITLE      On the Resonance Levels of Rhodium and Indium          14672  1    3 
+AUTHOR     (J.Hornbostel,H.H.Goldsmith,J.H.Manley)                14672  1    4 
+REFERENCE  (J,PR,58,18,1940)                                      14672  1    5 
+           #doi:10.1103/physrev.58.18                             14672  1    6 
+INSTITUTE  (1USANYU,1USACOL,1USAUI)                               14672  1    7 
+INC-SOURCE (RA-BE) The neutron source was a mixture of 200 mC of  14672  1    8 
+           Ra with Be, embedded 3 cm below the surface of a       14672  1    9 
+           paraffin cylinder 15 cm high and 20 cm in diameter.    14672  1   10 
+           Average neutron energy: 3.6 MeV (13.2 MeV max).        14672  1   11 
+DETECTOR   (GEMUC)                                                14672  1   12 
+METHOD     (ACTIV) In each case, sets of four Cd shielded         14672  1   13 
+           detector slabs, each measuring 2.2 by 4 cm, were       14672  1   14 
+           irradiated at a standard elevation of 35 mm above the  14672  1   15 
+           paraffin surface in an arrangement in which they       14672  1   16 
+           covered an area of 4.5x8 cm. For counting, the         14672  1   17 
+           four detectors were placed on a frame which fitted     14672  1   18 
+           around a thin-walled Geiger-Mueller counter. The       14672  1   19 
+           counter was connected to a scale-of-eight circuit.     14672  1   20 
+           The 44" period of Rh and the 54' period of In were     14672  1   21 
+           used. The routine of counting and irradiation was, of  14672  1   22 
+           course, strictly standardized, both with regard to     14672  1   23 
+           geometrical arrangement and to timing.                 14672  1   24 
+ERR-ANALYS (DATA-ERR,,10.) Curves show that the ratios of widths  14672  1   25 
+           and spacing have an error of less than 10 percent.     14672  1   26 
+           (ERR-S,,2.) The statistical error in the               14672  1   27 
+           determination of each point was less than 2 percent.   14672  1   28 
+COMMENT    Compiler's comment: These measurements for the 1.259   14672  1   29 
+           eV resonance in Rh-103 (100% isotopic abundance) and   14672  1   30 
+           1.457 eV resonance in In-115 (95.71% isotopic          14672  1   31 
+           abundance). These resonance energies (1.259 and 1.457  14672  1   32 
+           eV) are not mentioned in the article.                  14672  1   33 
+HISTORY    (20210114C) BP                                         14672  1   34 
+ENDBIB              32          0                                 14672  1   35 
+NOCOMMON             0          0                                 14672  1   36 
+ENDSUBENT           35          0                                 14672  199999 
+SUBENT        14672003   20210114   20210607   20210604       147714672  3    1 
+BIB                  4          7                                 14672  3    2 
+REACTION  1(49-IN-115(N,G)49-IN-116-M1,,SIG,,RES)                 14672  3    3 
+          2(49-IN-115(N,TOT),,WID)                                14672  3    4 
+          3(49-IN-115(N,EL),,WID)                                 14672  3    5 
+SAMPLE     As In detectors nickel slabs were used on which 7.3    14672  3    6 
+           mg/cm2 of In was electrolytically deposited.           14672  3    7 
+DECAY-DATA (49-IN-116-M1,54.0MIN)                                 14672  3    8 
+STATUS     (TABLE) page 22-23.                                    14672  3    9 
+ENDBIB               7          0                                 14672  3   10 
+NOCOMMON             0          0                                 14672  3   11 
+DATA                 4          1                                 14672  3   12 
+EN-RES     DATA      1DATA      2DATA      3                      14672  3   13 
+EV         B          EV         EV                               14672  3   14 
+      1.457     23000.       0.07      0.001                      14672  3   15 
+ENDDATA              3          0                                 14672  3   16 
+ENDSUBENT           15          0                                 14672  399999 
+ENDENTRY             2          0                                 1467299999999 
+ENDTRANS             1          0                                 Z999999999999 
