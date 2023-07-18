@@ -230,7 +230,26 @@ c?      END IF
 
 c?400 WRITE(IDIC,25) STATUS,INDAY,KEY,REC,TAG ! WRITE RECORD ON DICTIONARY
 c-vms  400 WRITE(IDIC'NREC+1,25) STATUS,INDAY,KEY,REC,TAG ! WRITE RECORD ON DICTIONARY
-  400 WRITE(IDIC,rec=NREC+1,fmt=25) 
+  400 continue
+      if (num.eq.227) then !+++2023-07-18:added by V.Zerkin for new dict227
+c	write(*,*)'-0-',num,NREC,'[',KEY,']'
+	iimeta=index(KEY,'-G ')
+	if (iimeta.gt.0) then
+c	  write(*,*)'-1-',num,NREC,'[',KEY,']',KEY(iimeta:iimeta+2),']'
+	  KEY(iimeta:iimeta+2)=' '
+	else
+	  iimeta=index(KEY,'-M1 ')
+	  if (iimeta.le.0) iimeta=index(KEY,'-M2 ')
+	  if (iimeta.le.0) iimeta=index(KEY,'-M3 ')
+	  if (iimeta.le.0) iimeta=index(KEY,'-M4 ')
+	  if (iimeta.gt.0) then
+c	    write(*,*)'-2-',num,NREC,'[',KEY,']',KEY(iimeta:iimeta+3),']'
+	    KEY(iimeta+2:iimeta+2)=' '
+	  endif
+	endif
+c	write(*,*)'-3-',num,NREC,'[',KEY,']'
+      endif !---2023-07-18:added by V.Zerkin for new dict227
+      WRITE(IDIC,rec=NREC+1,fmt=25) 
      * STATUS,INDAY,KEY,REC,TAG ! WRITE RECORD ON DICTIONARY
       NREC = NREC+1                    ! INCREMENT # OF RECORDS IN DICTIONARY
       
