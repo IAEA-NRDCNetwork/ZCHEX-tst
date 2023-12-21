@@ -1,9 +1,9 @@
   1 System identifiers              1 A20,I09                                        25
   2 Information identifiers         1 A20,A25,A01,I02,A01,I03                        41
-  3 Institutes                      2 A17,A03,A01,A03,A53,A15                      1242
+  3 Institutes                      2 A17,A03,A01,A03,A53,A15                      1243
   4 Reference types                 1 A11,A04,A03,A35                                14
   5 Journals                        2 A16,A04,A04,A04,A20,A48                       521
-  6 Reports                         1 A21,A07,A48,A01                               696
+  6 Reports                         1 A21,A07,A48,A01                               697
   7 Conferences                     1 A20,A53,A04,A04,A10                           484
   8 Elements                        2 A13,A02,A20                                   119
  15 History                         1 A11,A15,A45                                     9
@@ -12,10 +12,10 @@
  18 Facilities                      1 A15,A53,A04                                    35
  19 Incident sources                1 A15,A53,A04,A01                                56
  20 Additional results              1 A15,A53                                        19
- 21 Methods                         1 A15,A53,A04                                    61
+ 21 Methods                         1 A15,A53,A04                                    62
  22 Detectors                       1 A15,A53,A04                                    56
  23 Analyses                        1 A15,A53,A04                                    31
- 24 Data headings                   1 A20,I01,I01,A01,I07,A04,A01,A55               520
+ 24 Data headings                   1 A20,I01,I01,A01,I07,A04,A01,A55               524
  25 Data units                      1 A20,A35,A04,E11                               202
  26 Unit families                   1 A14,I02,I02,I02,A50                            59
  30 Processes (REACTION SF 3)       1 A13,I10,A55,A04                                14
@@ -38,7 +38,7 @@
 213 Reaction types                  1 A14,A05,A04,A13,A55                           129
 227 Nuclides and nat.isot.mixtures  2 A12,A06,I07,A01,A06,A01,E11,A03,E11,E12,A21  4343
 235 Work types                      1 A11,A06,A20                                     6
-236 Quantities (REACTION SF 5-8)    1 A30,A03,A01,A04,A01,A71                       884
+236 Quantities (REACTION SF 5-8)    1 A30,A03,A01,A04,A01,A71                       886
                       
   1 INT 198211 ARCHIVE                               24                                                                       
   1 TRA 198202 BIB                                    9                                                                       
@@ -598,6 +598,7 @@
   3 TRA 200503 2JPNCIT                        CIT2JPNChiba Inst.of Technology, Narashino, Chiba                               
   3 EXT 200409 2JPNETL                        ETL2JPNElectrotechnical Laboratory, Tsukuba                                     
   3 TRA 200409 2JPNFE                         FE 2JPNFuji Electric                                                            
+  3 TRA 202312 2JPNFMU                        FMU2JPNFukushima Medical University, Fukushima                                  
   3 TRA 200110 2JPNFUK                        FUK2JPNFukuoka Univ., Fukuoka                                                   
   3 TRA 200209 2JPNGMT                        GMT2JPNGifu College of Medical Technologies, Gifu                               
   3 TRA 200209 2JPNHIR                        HIR2JPNHiroshima Univ., Hiroshima and Higashi-Hiroshima                         
@@ -883,7 +884,7 @@
   3 OBS 201105 3CHPAEP                        AEP3CHPChina Inst. of Atomic Energy, Beijing                                    
   3 OBS 199411 3CHPBNU                        BNU3CHPBeijing Normal Univ., Beijing                                            
   3 OBS 199411 3CHPLNZ                        LNZ3CHPLanzhou Univ., Lanzhou                                                   
-  3 TRA 198202 3CLMCLM                        CLM3CLMColumbia, Rep.                                       Columbia            
+  3 TRA 202312 3CLMCLM                        CLM3CLMColombia, Rep.                                       Columbia            
   3 TRA 198202 3CLMIAN                        IAN3CLMInst.de Asuntos Nucl., Bogota                                            
   3 TRA 198202 3CMRCMR                        CMR3CMRCameroon                                             Cameroon            
   3 TRA 198202 3COSCOS                        COS3COSCosta Rica                                           Costa Rica          
@@ -1220,7 +1221,7 @@
   3 OBS 199303 4CCPFVE                        FVE4CCPHigh-Energy Physics Inst.,Serpukhov                                      
   3 OBS 199303 4CCPGAC                        GAC4CCPInst. for Geo and Analytical Chemistry, Moscow                           
   3 OBS 198307 4CCPGAT                        GAT4CCPFiziko-Tekhnicheskii Inst. Ioffe, Gatchina                               
-  3 OBS 199303 4CCPGKS                        GKS4CCP State Committee on Standards, Moscow                                    
+  3 OBS 202312 4CCPGKS                        GKS4CCPState Committee on Standards, Moscow                                     
   3 OBS 199303 4CCPGOR                        GOR4CCPUniv. of Gorkii, Gorkii                                                  
   3 OBS 198307 4CCPICD                        ICD4CCPInf. Centr po Yadern. Dannym, Obninsk                                    
   3 OBS 199303 4CCPICP                        ICP4CCPInst. of Chemical Physics, Moscow                                        
@@ -1346,7 +1347,7 @@
   3 TRA 201403 4UZ NUU                        NUU4UZ National University of Uzbekistan, Tashkent                              
   3 TRA 199705 4UZ SSU                        SSU4UZ Samarkand State Univ., Samarkand                                         
   3 TRA 199303 4UZ UZ                         UZ 4UZ Uzbekistan                                           Uzbekistan          
-  3 TRA 199303 4UZ UZB                        UZB4UZ Inst. Yadernoi Fiziki Uzbekskoi A.N., Tashkent                           
+  3 TRA 202312 4UZ UZB                        UZB4UZ Institute of Nuclear Physics, Tashkent                                   
   3 TRA 201906 4ZZZDUB                        DUB4ZZZJoint Institute for Nuclear Research (JINR), Dubna   Russia              
   4 TRA 200902 0                              DATA   Experimental data library                                                
   4 TRA 200902 3                              DATA   Evaluated data library                                                   
@@ -1415,7 +1416,7 @@
   5 EXT 199411 APP                            APP 3POL    Acta Phys.Polonica  Acta Physica Polonica                           
   5 TRA 198307 APP/A                          APPA3POL    Acta Phys.Polonica AActa Physica Polonica, Part A                   
   5 TRA 198307 APP/B                          APPB3POL    Acta Phys.Polonica BActa Physica Polonica, Part B                   
-  5 TRA 202206 APP/BS                         APBS3POL    Acta Phys.Pol.B.Pro.Acta Physica Polonica, Part B Proceeding Series 
+  5 TRA 202312 APP/BS                         APBS3POL    Acta Phys.Pol.B.Pro.Acta Physica Polonica, Part B Proceeding Suppl. 
   5 TRA 200503 APPL/A                         APLA2GER    Applied Physics A   Applied Physics A                               
   5 TRA 200503 APPL/B                         APLB2GER    Applied Physics B   Applied Physics B                               
   5 TRA 198307 APS                            APS 2SWD    Acta Polytech.Scand.Acta Polytechnica Scandinavica                  
@@ -2228,6 +2229,7 @@
   6 TRA 198202 INDC(SWD)-                     3ZZZIAESwedish report to the I.N.D.C.                  *                        
   6 TRA 201412 INDC(SWT)-                     3ZZZIAESwiss report to the I.N.D.C.                    *                        
   6 TRA 200104 INDC(TAI)-                     3ZZZIAEThailand report to the I.N.D.C.                 *                        
+  6 TRA 202312 INDC(TUK)-                     3ZZZIAETurkish report to the I.N.D.C.                  *                        
   6 TRA 198202 INDC(TUR)-                     3ZZZIAETurkish report to the I.N.D.C.                  *                        
   6 TRA 198202 INDC(UK)-                      3ZZZIAEU.K. report to the I.N.D.C.                     *                        
   6 TRA 199712 INDC(UKR)-                     3ZZZIAEUkrainian report to the I.N.D.C.                *                        
@@ -3350,6 +3352,7 @@
  21 TRA 201412 CHSEP                          Chemical separation of products                                                 
  21 TRA 198202 COINC                          Coincidence                                                                     
  21 TRA 198202 DIFFR                          Diffraction                                          NEUT                       
+ 21 TRA 202312 DIFUS                          Diffusion approximation                              NEUT                       
  21 TRA 201105 DSCAT                          Double scattering                                                               
  21 TRA 198307 EDE                            Particle identification by 'E/Delta E' measurement                              
  21 TRA 198202 EDEG                           Energy degradation by foils                                                     
@@ -3527,6 +3530,7 @@
  24 TRA 200805 -t                             58 1000000EC2  4-momentum transfer squared                                      
  24 TRA 199505 ANAL-STEP                      09 0000000NO   Analysis energy step                                             
  24 TRA 198202 ANG                            61G1000000A    Angle, laboratory system                                         
+ 24 TRA 202312 ANG-APRX                       61G4000000A    Approximate angle, laboratory system                             
  24 OBS 202112 ANG-AZ                         61G0000000A    Azimuthal angle                                                  
  24 TRA 200805 ANG-AZ-RL                      61G0000000A    Azimuthal angle between 2 reaction planes                        
  24 OBS 202206 ANG-AZ1                        61G0000000A    Azimuthal angle                                                  
@@ -3553,8 +3557,8 @@
  24 TRA 202012 ANG-RL-MIN                     61G2000000A    Lower limit of relative angular range                            
  24 TRA 200908 ANG-RL-NM                      61G1100000A    Relative angle for REACTION ratio numerator                      
  24 TRA 198202 ANG-RSL                        61H9220000A    Angular resolution                                               
- 24 TRA 201704 ANG-RSL-FW                     61H9220000A    Angular resolution (FWHM)                                        
- 24 TRA 201704 ANG-RSL-HW                     61H9330000A    Angular resolution (HWHM)                                        
+ 24 TRA 202312 ANG-RSL-FW                     61H9220000A    Angular resolution (full width)                                  
+ 24 TRA 202312 ANG-RSL-HW                     61H9330000A    Angular resolution (half width)                                  
  24 TRA 200805 ANG1                           61G1000000A    1st angle, definition given in BIB Section                       
  24 TRA 200805 ANG1-CM                        61G1000001A    Angle, c.m. system, definition given in BIB                      
  24 TRA 200805 ANG1-CM-MN                     61G2000001A    Lower limit of first angle, c.m. system                          
@@ -3562,11 +3566,13 @@
  24 TRA 200512 ANG1-ERR                       61H9110000A    1st angle error, definition given in BIB section                 
  24 TRA 200902 ANG1-MAX                       61G3000000A    Upper limit of first angular range, lab. system                  
  24 TRA 200809 ANG1-MIN                       61G2000000A    Lower limit of first angular range, lab. system                  
+ 24 TRA 202312 ANG1-RSLHW                     61H9330000A    1st angular resolution (half width)                              
  24 TRA 200805 ANG2                           61G1000000A    2nd angle, definition given in BIB section                       
  24 TRA 200805 ANG2-CM                        61G1000001A    Angle, c.m. system, definition given in BIB                      
  24 TRA 199108 ANG2-ERR                       61H9110000A    2nd angle error, definition given in BIB Section                 
  24 TRA 200902 ANG2-MAX                       61G3000000A    Upper limit of second angular range, lab. system                 
  24 TRA 200809 ANG2-MIN                       61G2000000A    Lower limit of second angular range, lab. system                 
+ 24 TRA 202312 ANG2-RSLHW                     61H9330000A    2nd angular resolution (half width)                              
  24 TRA 200805 ANG3                           61G1000000A    3rd Angle, definition given in BIB Section                       
  24 TRA 200805 ANG4                           61G1000000A    4th Angle, definition given in BIB Section                       
  24 TRA 200805 ASSUM                          15 0000000*A   Assumed value, defined under ASSUMED.                            
@@ -3615,7 +3621,7 @@
  24 TRA 200104 DCNST-ERR                      87N91100001/T  Error in decay constant                                          
  24 TRA 198202 DECAY-FLAG                     02 0000000NO   Decay flag. See corresponding flag in BIB section                
  24 TRA 198202 E                              51E1000000E    Energy of outgoing particle, lab. system                         
- 24 TRA 198202 E-APRX                         51E4000000E    Approx. energy of outgoing particle, lab. system                 
+ 24 TRA 202312 E-APRX                         51E4000000E    Approximate energy of outgoing particle, lab. system             
  24 TRA 198202 E-CM                           51E1000001E    Energy of outgoing particle, c.m. system                         
  24 TRA 199108 E-CM-MAX                       51E3000001E    Upper limit of outgoing part. en. range, c.m. sys.               
  24 TRA 199108 E-CM-MIN                       51E2000001E    Lower limit of outgoing part. en. range, c.m. sys.               
@@ -3699,6 +3705,7 @@
  24 TRA 202106 E1-ERR                         51F9110000E    1st outgoing particle energy error                               
  24 TRA 200805 E1-MAX                         51E3000000E    Upper limit, 1st outgoing part. en.range, see EN-SEC             
  24 TRA 200805 E1-MIN                         51E2000000E    Lower limit, 1st outgoing part. en.range, see EN-SEC             
+ 24 TRA 202312 E1-RSL-FW                      51F9220000E    1st outgoing particle energy resolution (full width)             
  24 TRA 200805 E2                             51E1000000E    2nd outgoing part. energy, defined under EN-SEC                  
  24 TRA 202106 E2-ERR                         51F9110000E    2nd outgoing particle energy error                               
  24 TRA 200805 E2-MAX                         51E3000000E    Upper limit, 2nd outgoing part. en.range, see EN-SEC             
@@ -3723,7 +3730,7 @@
  24 OBS 200805 EMS4                           98S1000000S    4th effective mass squared, defined under MOM-SEC                
  24 OBS 200805 EMS5                           98S1000000S    5th effective mass squared, defined under MOM-SEC                
  24 TRA 198202 EN                             41A1000000E    Energy of incident projectile, laboratory system                 
- 24 TRA 198202 EN-APRX                        41A4000000E    Approximate value of incident projectile energy                  
+ 24 TRA 202312 EN-APRX                        41A4000000E    Approximate incident projectile energy                           
  24 TRA 201403 EN-CM                          41A1000001E    Sum of projectile and target energies in c.m.s.                  
  24 TRA 198202 EN-CM-MAX                      41A3000001E    Upper limit of c.m. incident projectile energy range             
  24 TRA 198202 EN-CM-MIN                      41A2000001E    Lower limit of c.m. incident projectile energy range             
@@ -9610,8 +9617,8 @@
 236 TRA 200110 ,DT                            DT  D4   Diff.c/s with respect to 4-mom.transfer squared                        
 236 TRA 198903 ,EN                            RE  E   .Resonance energy                                                       
 236 TRA 200509 ,EN,,AA                        RE  E   .Adler-Adler resonance energy                                           
-236 TRA 201307 ,ETA                           ETA YLD  Neutron yield (Eta)                                                    
-236 TRA 201307 ,ETA,,RES                      ETR YLD  Eta at resonance                                                       
+236 TRA 202306 ,ETA                           ETA MLT  Neutron yield (Eta)                                                    
+236 TRA 202306 ,ETA,,RES                      ETR MLT  Eta at resonance                                                       
 236 TRA 198508 ,FM/DA,,AL1                    POF DA   Leg.coef.of 1st kind for spin-pol.prob. * d/dA                         
 236 TRA 201301 ,FY,G                          FY  FY   Fission gamma yld for fission fragment specified                       
 236 TRA 201301 ,FY/DA/DE,*+*F/*               FY2 FYAE Diff.fis.yield d/dA(*+frag.spec.)/dE(*)                                
@@ -9927,7 +9934,7 @@
 236 TRA 199306 EP/PAR,INT                     INP B*E  Integral c/s over inc.en.for electr.polar.given                        
 236 TRA 199306 EP/PAR,SIG                     CSP B    Partial cross section for electric polar. given                        
 236 TRA 201007 EP/PAR,SIG,,SFC                CSP B*E  S-factor for electric polarity given, partial                          
-236 TRA 202306 EXL,DA                         CS  B    Angular diff. cross section inclunding excitation to low-lying levels) 
+236 TRA 202312 EXL,DA                         DA  DA   Angular diff. cross section including excitation to low-lying levels)  
 236 TRA 202306 EXL,DA,,LEG                    FL  DA   Leg.coef. d/dA=a(0)+Sum(a(L)*P(L)) incl. exciation to low-lying levels 
 236 TRA 202306 EXL,POL/DA,,ANA                POD NO   Analyzing power including excitation to low-lying levels               
 236 TRA 202212 EXL,SIG                        CS  B    Cross section including excitation to low-lying levels                 
@@ -9973,6 +9980,8 @@
 236 TRA 202007 ISP/PRE,KE,LF+HF               EP  E    Tot. kin. energy of spec.primary fragm., partial for intermediate prod.
 236 TRA 202007 ISP/SEC,FY                     FYP FY   Post-neutron-emission fission yield, partial for intermediate product  
 236 TRA 202106 ISP/SEC,KE                     E   E    Kinetic energy of post-n-emiss.prod.spec., partial for intermed.prod.  
+236 TRA 202312 L-,SIG                         CS  B    Cross section excluding quasi-metastable state production              
+236 TRA 202312 L-,SIG,,SFC                    CS+ B*E  S-factor excluding quasi-metastable state production                   
 236 TRA 200503 LL,DA/DE,,SF                   DAE DAE  Spin-flip probability S(LL)*d2/dA/d(E)                                 
 236 TRA 201007 LL,POL/DA,*,ANA                POD NO   Tensor analyzing power, A(zz)/dA(*)                                    
 236 TRA 201806 LL,POL/DA,*,D                  POD NO   Spin rotation parameter, D(LL), for part.spec.                         
