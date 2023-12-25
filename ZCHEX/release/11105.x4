@@ -1,0 +1,122 @@
+REQUEST       36576001   20231225     112655   20231219          3    0  0    0
+ENTRY            11105   20230420   20230913   20230911       150511105000    1
+SUBENT        11105001   20230420   20230913   20230911       150511105001    1
+BIB                  8         17                                 11105001    2
+TITLE      Cross section for the Li6(n,aL)H3 reaction for         11105001    3
+            1.2<En<8.0 MeV                                        11105001    4
+AUTHOR     (R.B.Murray, H.W.Schmidt)                              11105001    5
+INSTITUTE  (1USAORL)                                              11105001    6
+REFERENCE  (J,PR,115,1707,1959)                                   11105001    7
+FACILITY   (VDG,1USAORL) ORNL 5.5-Mv Van de Graaff                11105001    8
+DETECTOR   (SCIN) LiI(Eu) scintillation crystal                   11105001    9
+           (IOCH) thin-walled ionization chamber for fission      11105001   10
+            event counts                                          11105001   11
+ERR-ANALYS (DATA-ERR) Standard errors from counting statistics    11105001   12
+            and other uncertainties varying from point-to-point.  11105001   13
+           (ERR-SYS) Energy independent uncertainties such as     11105001   14
+            238U mass, 238U(n,f) cross section scale (7%)         11105001   15
+HISTORY    (19760924T) Translated from SCISRS                     11105001   16
+           (19800814A) Converted to REACTION formalism            11105001   17
+           (19840517A) BIB, data headings corrected               11105001   18
+           (20230420A) On. Major alterations in 002-004.          11105001   19
+ENDBIB              17                                            11105001   20
+COMMON               1          3                                 11105001   21
+ERR-SYS                                                           11105001   22
+PER-CENT                                                          11105001   23
+ 7.                                                               11105001   24
+ENDCOMMON            3                                            11105001   25
+ENDSUBENT           24                                            1110500199999
+SUBENT        11105002   20230420   20230913   20230911       150511105002    1
+BIB                  6         10                                 11105002    2
+REACTION  1((3-LI-6(N,T)2-HE-4,,SIG)/(93-NP-237(N,F),,SIG))       11105002    3
+          2(3-LI-6(N,T)2-HE-4,,SIG)                               11105002    4
+MONITOR   2(93-NP-237(N,F),,SIG)                                  11105002    5
+            H.W.Schmitt and R.B.Murray, to be published           11105002    6
+INC-SOURCE (P-T)                                                  11105002    7
+METHOD     Experiment No.3                                        11105002    8
+STATUS     (TABLE,,R.B.Murray+,J,PR,115,1707,1959)                11105002    9
+            Table II of Phys.Rev.115(1959)1707                    11105002   10
+           (COREL,11105003) Data taken with D(d,n) source         11105002   11
+HISTORY    (20230420A) On. RATIO -> DATA                          11105002   12
+ENDBIB              10                                            11105002   13
+NOCOMMON             0          0                                 11105002   14
+DATA                 5         14                                 11105002   15
+EN         DATA      1DATA      2DATA-ERR  2MONIT     2           11105002   16
+MEV        NO-DIM     B          B          B                     11105002   17
+ 1.20       0.163      0.272      0.025      1.67                 11105002   18
+ 1.25       0.183      0.308      0.023      1.68                 11105002   19
+ 1.31       0.163      0.276      0.025      1.69                 11105002   20
+ 1.44       0.152      0.261      0.018      1.71                 11105002   21
+ 1.56       0.150      0.261      0.017      1.73                 11105002   22
+ 1.64       0.164      0.284      0.014      1.73                 11105002   23
+ 1.72       0.155      0.270      0.014      1.74                 11105002   24
+ 1.81       0.151      0.264      0.013      1.74                 11105002   25
+ 1.92       0.157      0.276      0.014      1.75                 11105002   26
+ 2.04       0.148      0.260      0.013      1.75                 11105002   27
+ 2.16       0.141      0.247      0.012      1.75                 11105002   28
+ 2.39       0.140      0.244      0.012      1.75                 11105002   29
+ 2.92       0.112      0.191      0.010      1.71                 11105002   30
+ 3.82       0.0820     0.128      0.007      1.57                 11105002   31
+ENDDATA             16                                            11105002   32
+ENDSUBENT           31                                            1110500299999
+SUBENT        11105003   20230420   20230913   20230911       150511105003    1
+BIB                  6         10                                 11105003    2
+REACTION  1((3-LI-6(N,T)2-HE-4,,SIG)/(93-NP-237(N,F),,SIG))       11105003    3
+          2(3-LI-6(N,T)2-HE-4,,SIG)                               11105003    4
+MONITOR   2(93-NP-237(N,F),,SIG)                                  11105003    5
+            H.W.Schmitt and R.B.Murray, to be published           11105003    6
+INC-SOURCE (D-D)                                                  11105003    7
+METHOD     Experiment No.3                                        11105003    8
+STATUS     (TABLE,,R.B.Murray+,J,PR,115,1707,1959)                11105003    9
+            Table II of Phys.Rev.115(1959)1707                    11105003   10
+           (COREL,11105002) Data taken with T(p,n) source         11105003   11
+HISTORY    (20230420A) On. RATIO -> DATA                          11105003   12
+ENDBIB              10                                            11105003   13
+NOCOMMON             0          0                                 11105003   14
+DATA                 5         10                                 11105003   15
+EN         DATA      1DATA      2DATA-ERR  2MONIT     2           11105003   16
+MEV        NO-DIM     B          B          B                     11105003   17
+ 3.60       0.0893     0.143      0.008      1.61                 11105003   18
+ 3.82       0.0871     0.136      0.007      1.57                 11105003   19
+ 4.33       0.0723     0.106      0.006      1.46                 11105003   20
+ 4.88       0.0632     0.0892     0.0045     1.41                 11105003   21
+ 5.37       0.0596     0.0835     0.0044     1.40                 11105003   22
+ 5.90       0.0459     0.0714     0.0037     1.56                 11105003   23
+ 6.39       0.0362     0.0660     0.0036     1.82                 11105003   24
+ 6.90       0.0300     0.0596     0.0033     1.98                 11105003   25
+ 7.42       0.0245     0.0510     0.0028     2.08                 11105003   26
+ 7.96       0.0256     0.0546     0.0031     2.13                 11105003   27
+ENDDATA             12                                            11105003   28
+ENDSUBENT           27                                            1110500399999
+SUBENT        11105004   20230420   20230913   20230911       150511105004    1
+BIB                  7         10                                 11105004    2
+REACTION  1((3-LI-6(N,T)2-HE-4,,SIG)/(92-U-238(N,F),,SIG))        11105004    3
+          2(3-LI-6(N,T)2-HE-4,,SIG)                               11105004    4
+INC-SOURCE (P-T)                                                  11105004    5
+MONITOR   2(92-U-238(N,F),,SIG)                                   11105004    6
+MONIT-REF 2(,R.L.Henkel,R,LA-2114,1957)                           11105004    7
+FLAG       (1.) Experiment No.1                                   11105004    8
+           (2.) Experiment No.2                                   11105004    9
+STATUS     (TABLE,,R.B.Murray+,J,PR,115,1707,1959)                11105004   10
+            Table I of Phys.Rev.115(1959)1707                     11105004   11
+HISTORY    (20230420A) On. RATIO -> DATA. MONIT: 0.463 b->0.465 b.11105004   12
+ENDBIB              10                                            11105004   13
+NOCOMMON             0          0                                 11105004   14
+DATA                 6         11                                 11105004   15
+EN         DATA      1DATA      2DATA-ERR  2MONIT     2FLAG       11105004   16
+MEV        NO-DIM     B          B          B          NO-DIM     11105004   17
+ 1.72       0.559      0.260      0.018      0.465      1.        11105004   18
+ 2.01       0.450      0.241      0.013      0.535      2.        11105004   19
+ 2.17       0.440      0.240      0.017      0.545      1.        11105004   20
+ 2.52       0.367      0.200      0.013      0.545      1.        11105004   21
+ 2.54       0.363      0.198      0.010      0.545      2.        11105004   22
+ 2.77       0.339      0.182      0.012      0.537      1.        11105004   23
+ 3.10       0.292      0.156      0.008      0.535      2.        11105004   24
+ 3.16       0.269      0.144      0.010      0.535      1.        11105004   25
+ 3.21       0.258      0.138      0.010      0.535      1.        11105004   26
+ 3.53       0.231      0.125      0.007      0.540      2.        11105004   27
+ 4.13       0.190      0.103      0.005      0.540      2.        11105004   28
+ENDDATA             13                                            11105004   29
+ENDSUBENT           28                                            1110500499999
+ENDENTRY             4                                            1110599999999
+ENDREQUEST           1                                            Z999999999999
