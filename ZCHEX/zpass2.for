@@ -5469,6 +5469,7 @@ c	write (*,*) '...2...MONIT_REF now=',NOW,' kard=',KARD
 
 !!!!  Subaccession number field
 
+      ENTRY STATUS_REF(NOW)
 !---- CHECK ACCESSION NUMBER
   250 CALL PARSCHR(KARD,NOW,KPT,N,8,LIMTR,2,ICHR,*800)
 
@@ -5480,6 +5481,7 @@ c	write (*,*) '...3...MONIT_REF now=',NOW,' N=',N,' kard=',KARD
           IF(NONO.NE.0) CALL FLAGIT(1,ARROW,NOW+11,N,IERRM) ! Set markers
           IF(ICHR.NE.1) GOTO 800
         ELSE
+          !CALL ERR_MES(1,62)!?20231225
           CALL FLAGIT(1,ARROW,NOW+11,N,IERRM)   ! Set error markers
         END IF
       END IF
@@ -5624,6 +5626,13 @@ c-zvv----
 
   110 CALL PARSCHR(KARD,NOW,KPT,NUM,5,LIMTR,3,ICHR,*800) ! Find code
 
+!	write (*,*) '...STAT_CHECK now=',NOW,' IFIELD:',IFIELD,'[',KARD
+      IF (IFIELD.EQ.2) THEN   !20231225:[,Author,Reference) note:subentry must be empty
+!	write (*,*) '---STAT_CHECK now=',NOW,' IFIELD:',IFIELD,'[',KARD
+        CALL STATUS_REF(NOW)  ! (ENTRY in REL_REF)
+        return
+      END IF
+
       IF (NUM.EQ.0) THEN                    ! Empty field
         CALL ERR_MES(1,63)
         CALL FLAGIT(1,ARROW,NOW+11,1,IERR)      
@@ -5673,7 +5682,10 @@ c-zvv----
         CALL ERR_MES(1,37)                    ! Error message 
         GOTO 200
       ELSE                                  ! SAN found
-        IF(NUM.NE.8) GOTO 800                 ! Not 8 digits
+        IF(NUM.NE.8) then !2023
+!          CALL ERR_MES(1,62) !2023
+          GOTO 800                 ! Not 8 digits
+	endif
         IF(ICHR.EQ.2) GOTO 900                ! Should be end of string
       END IF
 
