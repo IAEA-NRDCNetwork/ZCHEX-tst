@@ -15,7 +15,7 @@ cp -p zorder-mac-gfort.exe zorderm.exe
 ./danlom.exe <tt0.inp
 ./test-all-mac.sh
 set +x
-echo ---Finished. You must have [38] files.err in this directory---
+echo ---Finished. You must have [39] files.err in this directory---
 ls -la *.err
 ls -la *.err | wc -l
 
@@ -26,7 +26,7 @@ du -d 1 zchex-mac-`date +%F`
 zip -r zchex-mac-`date +%F`.zip zchex-mac-`date +%F`
 
 echo "___File zchex.tto2 must be empty___";ls -la zchex-mac-`date +%F`/zchex.tto2
-echo "___You must have [38] files *.err and [3412] lines in the file ___allerr.txt"
+echo "___You must have [39] files *.err and [3440] lines in the file ___allerr.txt"
 ls -la zchex-mac-`date +%F`/*.err | wc -l
 wc -l  zchex-mac-`date +%F`/___allerr.txt
 exit
