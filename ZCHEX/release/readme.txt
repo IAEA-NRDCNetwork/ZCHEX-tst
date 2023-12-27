@@ -1,5 +1,5 @@
 Title     : Program ZCHEX
-Version   : 2023-07-18, IAEA-NDS
+Version   : 2023-12-27, IAEA-NDS
 Author    : V.McLane, BNL, USA, 1998-2001
           : V.Zerkin, IAEA-NDS, 2001-2023
 Purpose   : Checking EXFOR entries
@@ -137,6 +137,10 @@ Updated:
          2023-07-18   V.Zerkin
                       - Windows/Linux/MacOS: EXFOR Dictionary 9128
                       - DANLO: adapted for using new Dict.227
+         2023-12-27   V.Zerkin
+                      - Windows/Linux/MacOS: EXFOR Dictionary 9129
+                      - process new STATUS with REFERENCE-code, e.g.:
+                        (TABLE,,D.M.Chittenden+,P,ORO-367,1,196101)
 
 History:
          1998-2001
@@ -163,4 +167,4 @@ History:
          Austria, Europe
          PHONE    :+43 1-2600-21714
          FAX      :+43 1-26007
-         E-MAIL   :v.zerkin@iaea.org
+         E-MAIL   :v.zerkin@iaea.org, v.zerkin@gmail.com
