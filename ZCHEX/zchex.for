@@ -1,4 +1,4 @@
-      PROGRAM CHEX
+      PROGRAM ZCHEX
 !**Title  : Program ZCHEX
 !**Purpose: Checking EXFOR file: format and content
 !**OS     : VAX-VMS, Windows, Linux, MacOS
@@ -20,6 +20,9 @@
 !______________________________________________________________________________
 !
 !**Updates since 2002
+!*         2023-12-27   V.Zerkin
+!*                      - process new STATUS with REFERENCE-code, e.g.:
+!*                        (TABLE,,D.M.Chittenden+,P,ORO-367,1,196101)
 !*         2023-07-18   V.Zerkin
 !*                      - DANLO: adapted for using new Dict.227
 !*         2023-05-29   V.Zerkin
@@ -160,8 +163,8 @@
 !* Uses DANIEL data base on logical DANIEL$LIBRARY
 !**
 !* Checks an input file in the EXFOR transmission format.
-!* Makes two passes on file.  Fatal errors on first pass will cause program 
-!* to terminate.  Fatal errors:
+!* Makes two passes on file.
+!* Fatal errors on first pass will cause program to terminate:
 !* - missing, illegal or out-of-order System Identifier
 !* - illegal or obsolete BIB Keyword
 !* - illegal or obsolete Data Heading or Unit
@@ -186,6 +189,8 @@
 !*   DICT2: Reads BIB Keyword Dictionary. Stores BIB Keywords and status
 !*   OPENUP: Sets input and output files.
 !**
+!______________________________________________________________________________
+!
 
 !---- Fatal error flag. (Initialized in PASS1).
       COMMON/ENDITALL/ISTOP,IS
@@ -280,7 +285,8 @@ c5000 FORMAT(/' ZCHEX (Ver-2022-06-09) run on ',A11/1X,41('-'))
 c5000 FORMAT(/' ZCHEX (Ver-2023-04-21) run on ',A11/1X,41('-'))
 c5000 FORMAT(/' ZCHEX (Ver-2023-04-24) run on ',A11/1X,41('-'))
 c5000 FORMAT(/' ZCHEX (Ver-2023-04-25) run on ',A11/1X,41('-'))
- 5000 FORMAT(/' ZCHEX (Ver-2023-07-18) run on ',A11/1X,41('-'))
+c5000 FORMAT(/' ZCHEX (Ver-2023-07-18) run on ',A11/1X,41('-'))
+ 5000 FORMAT(/' ZCHEX (Ver-2023-12-27) run on ',A11/1X,41('-'))
  5100 FORMAT(/' - First pass checking -')
  9000 FORMAT(/' *** MAJOR ERRORS FOUND *** must be corrected before ',
      *       'checking will continue')
