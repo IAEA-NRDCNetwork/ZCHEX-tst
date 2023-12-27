@@ -38,6 +38,7 @@ rm *.err
 ./zchexw.exe 10053003.x4         2>>zchex.tto2
 ./zchexw.exe G4012002.x4         2>>zchex.tto2
 ./zchexw.exe 14672003.x4         2>>zchex.tto2
+./zchexw.exe 11105.x4            2>>zchex.tto2
 cat *.err >___allerr.txt
 echo ___Program errors file: zchex.tto2 >>___allerr.txt
 cat zchex.tto2 >>___allerr.txt
