@@ -10,7 +10,7 @@ by V.Zerkin, IAEA-NDS, 2024-01-30
 
 ## Links
 
-* **NRDC** International Network of Nuclear Reaction Data Centres [NRDC](https://nds.iaea.org/nrdc/)
-* **IAEA-NDS** International Atomic Energy Agency, Nuclear Data Service [IAEA-NDS](https://nds.iaea.org/)
-* **NNDC** National Nuclear Data Center, Brookhaven National Laboratory, USA [NNDC](https://www.nndc.bnl.gov/)
-* **EXFOR** Web-Retrieval System [EXFOR](https://nds.iaea.org/exfor/)
+* **[NRDC](https://nds.iaea.org/nrdc/)** International Network of Nuclear Reaction Data Centres 
+* **[IAEA-NDS](https://nds.iaea.org/)** International Atomic Energy Agency, Nuclear Data Service 
+* **[NNDC](https://www.nndc.bnl.gov/)** National Nuclear Data Center, Brookhaven National Laboratory, USA 
+* **[EXFOR](https://nds.iaea.org/exfor/)** Web-Retrieval System 
